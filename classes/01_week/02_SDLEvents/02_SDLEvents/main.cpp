@@ -18,7 +18,7 @@ int main( int argc, char* args[] )
 	if ( SDL_Init( SDL_INIT_VIDEO ) == -1 )
 	{
 		// irjuk ki a hibat es terminaljon a program
-		std::cout << "[SDL indítása]Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
+		std::cout << "[SDL indítása] Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
 		return 1;
 	}
 			
@@ -37,7 +37,7 @@ int main( int argc, char* args[] )
 	// ha nem sikerült létrehozni az ablakot, akkor írjuk ki a hibát, amit kaptunk és lépjünk ki
     if (win == nullptr)
 	{
-		std::cout << "[Ablak létrehozása]Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
+		std::cout << "[Ablak létrehozása] Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
         return 1;
     }
 
@@ -53,7 +53,7 @@ int main( int argc, char* args[] )
 																						// hardveresen gyorsított és vsync-et beváró
     if (ren == nullptr)
 	{
-        std::cout << "[Renderer létrehozása]Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
+        std::cout << "[Renderer létrehozása] Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
         return 1;
     }
 
@@ -67,6 +67,7 @@ int main( int argc, char* args[] )
 	SDL_Event ev;
 	// egér X és Y koordinátái
 	Sint32 mouseX = 0, mouseY = 0;
+	int size = 20;
 
 	while (!quit)
 	{
@@ -111,11 +112,18 @@ int main( int argc, char* args[] )
 		
 		// definiáljunk egy (mouseX, mouseY) középpontó, tengelyekkel párhuzamos oldalú
 		// 20x20-as négyzetet:
+
+		size = sinf(SDL_GetTicks() / 100.0f) * 20.0f + 20.0f;
+		// SDL_GetTicks() - indulás eltelt idõmennyiség
+		// sinf(SDL_GetTicks() / 100) * 20  --> -20-ba becsúszunk
+		// (SDL_GetTicks() / 100) * 20 + 20 --> szaggatás, egészértékek vannak
+		// VYSNC-et kikapcsolva elszabadulna
+
 		SDL_Rect cursor_rect;
-		cursor_rect.x = mouseX - 10;
-		cursor_rect.y = mouseY - 10;
-		cursor_rect.w = 20;
-		cursor_rect.h = 20;
+		cursor_rect.x = mouseX - size * 0.5;
+		cursor_rect.y = mouseY - size * 0.5;
+		cursor_rect.w = size;
+		cursor_rect.h = size;
 		// legyen a kitöltési szín piros
 		SDL_SetRenderDrawColor( ren, 255, 0, 0, 255 );
 		SDL_RenderFillRect( ren, &cursor_rect);
