@@ -16,11 +16,13 @@ int main( int argc, char* args[] )
 	// 1. lépés: inicializáljuk az SDL-t
 	//
 
-	// a grafikus alrendszert kapcsoljuk csak be, ha gond van, akkor jelezzük és lépjünk ki
+	// a grafikus alrendszert (SDL_INIT_VIDEO)
+	// kapcsoljuk csak be, ha gond van, akkor jelezzük és lépjünk ki
 	if ( SDL_Init( SDL_INIT_VIDEO ) == -1 )
 	{
-		// irjuk ki a hibat es terminaljon a program
-		std::cout << "[SDL indítása]Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
+		// irjuk ki a hibat (utolso hiba: SDL_GetError())
+		// es terminaljon a program
+		std::cout << "[SDL indítása] Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
 		return 1;
 	}
 			
@@ -39,7 +41,7 @@ int main( int argc, char* args[] )
 	// ha nem sikerült létrehozni az ablakot, akkor írjuk ki a hibát, amit kaptunk és lépjünk ki
     if (win == nullptr)
 	{
-		std::cout << "[Ablak létrehozása]Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
+		std::cout << "[Ablak létrehozása] Hiba az SDL inicializálása közben: " << SDL_GetError() << std::endl;
         return 1;
     }
 
@@ -60,7 +62,7 @@ int main( int argc, char* args[] )
     }
 
 	//
-	// 3. lépés: töröljük az ablak háttérszínét és várjunk 2 másodpercet
+	// 4. lépés: töröljük az ablak háttérszínét és várjunk 2 másodpercet
 	//
 
 	// aktuális rajzolási szín legyen fekete és töröljük az aktuális rajzolási színnel az ablak kliensterületét
@@ -78,9 +80,15 @@ int main( int argc, char* args[] )
 							0,		// kék
 							255);	// átlátszatlanság
 
+	// bal-szara
 	SDL_RenderDrawLine(	ren,	// renderer címe, ahová vonalat akarunk rajzolni
 						10, 10, // vonal kezdõpontjának (x,y) koordinátái
 						10, 60);// vonal végpontjának (x,y) koordinátái
+
+	// vizszintes osszekoto
+	SDL_RenderDrawLine(ren, 10, 30, 50, 30);
+	// jobb-szara
+	SDL_RenderDrawLine(ren,	50, 10, 50, 60);
 
 	// 1. feladat: egészítsük ki a fenti vonalat egy H betûvé!
 
@@ -94,7 +102,16 @@ int main( int argc, char* args[] )
 	// 3. feladat: 2 másodpercenként változzon a háttér színe! Elõször legyen piros, aztán zöld és végül kék,
 	// majd lépjen ki a program!
 
-	// jelenítsük meg a backbuffer tartalmát
+	SDL_SetRenderDrawColor(ren, 255, 0, 0, 255);
+	SDL_RenderClear(ren);
+	SDL_RenderPresent(ren);
+	SDL_Delay(2000);
+	SDL_SetRenderDrawColor(ren, 0, 255, 0, 255);
+	SDL_RenderClear(ren);
+	SDL_RenderPresent(ren);
+	SDL_Delay(2000);
+	SDL_SetRenderDrawColor(ren, 0, 0, 255, 255);
+	SDL_RenderClear(ren);
 	SDL_RenderPresent(ren);
 
 	// várjunk 2 másodpercet
