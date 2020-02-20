@@ -2,6 +2,7 @@ Számítógépes grafika - 2019/20 - Tavaszi félév
 
 Szabó Dávid - sasasoft@inf.elte.hu
 
+
 ------------
 |  		   |
 |  2. hét  |
@@ -86,6 +87,8 @@ Szabó Dávid - sasasoft@inf.elte.hu
 
 
 
+=======
+>>>>>>> 7b5bd420d42d8b66af819b038569ec77a63e0ab7
 ------------
 |  		   |
 |  1. hét  |
@@ -161,9 +164,9 @@ Szabó Dávid - sasasoft@inf.elte.hu
 			sin(2*M_PI / 10 * (i+1)) * 100 + 200
 		);
 	}
-		
+
 02_SDLEvents:
-	- Üzenetfeldolgozás:  
+	- Üzenetfeldolgozás:
 		-- INIT -> <<steps>> -> CLEAR
 		
 		<<steps>>:
