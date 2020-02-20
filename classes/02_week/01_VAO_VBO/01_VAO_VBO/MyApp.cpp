@@ -55,6 +55,9 @@ bool CMyApp::Init()
 		{glm::vec3( 1,  1, 0), glm::vec3(1, 1, 1)}
 	};
 
+
+// 
+
 	// 1 db VAO foglalasa
 	glGenVertexArrays(1, &m_vaoID);
 	// a frissen generált VAO beallitasa aktívnak
@@ -64,16 +67,24 @@ bool CMyApp::Init()
 	glGenBuffers(1, &m_vboID); 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID); // tegyük "aktívvá" a létrehozott VBO-t
 	// töltsük fel adatokkal az aktív VBO-t
+	
+	//rendszer memóriából vidd el az adatokat a videómemóriába
 	glBufferData( GL_ARRAY_BUFFER,	// az aktív VBO-ba töltsünk adatokat
 				  sizeof(vert),		// ennyi bájt nagyságban
 				  vert,	// errõl a rendszermemóriabeli címrõl olvasva
 				  GL_STATIC_DRAW);	// úgy, hogy a VBO-nkba nem tervezünk ezután írni és minden kirajzoláskor felhasnzáljuk a benne lévõ adatokat
 	
 
+
+//---------------------------
+
+
 	// VAO-ban jegyezzük fel, hogy a VBO-ban az elsõ 3 float sizeof(Vertex)-enként lesz az elsõ attribútum (pozíció)
-	glEnableVertexAttribArray(0); // ez lesz majd a pozíció
+	glEnableVertexAttribArray(0); // ez lesz majd a pozíció => bitmágia
+
+	
 	glVertexAttribPointer(
-		(GLuint)0,				// a VB-ben található adatok közül a 0. "indexû" attribútumait állítjuk be
+		(GLuint)0,				// a VB-ben található adatok közül a 0. "indexû" attribútumait állítjuk be -> 0-dik csatorna
 		3,				// komponens szam
 		GL_FLOAT,		// adatok tipusa
 		GL_FALSE,		// normalizalt legyen-e
@@ -81,6 +92,10 @@ bool CMyApp::Init()
 		0				// a 0. indexû attribútum hol kezdõdik a sizeof(Vertex)-nyi területen belül
 	); 
 
+
+
+	//emiatt csak nvidián mûködik a projekt: AMD-Intelnél nem tudjuk hol van a szín
+	
 	// a második attribútumhoz pedig a VBO-ban sizeof(Vertex) ugrás után sizeof(glm::vec3)-nyit menve újabb 3 float adatot találunk (szín)
 	glEnableVertexAttribArray(3); // ez lesz majd a szín - de miért 3-as attribútum?
 	glVertexAttribPointer(
@@ -89,7 +104,18 @@ bool CMyApp::Init()
 		GL_FLOAT,
 		GL_FALSE,
 		sizeof(Vertex),
-		(void*)(sizeof(glm::vec3)) );
+		(void*)(sizeof(glm::vec3)) ); //ennyit kell ugrani hogy a legelsõ színt megtaláljuk
+		
+	/*
+	-----------|----------
+	|	 P     |    C    |
+	----------------------
+	|	FFF	   | FFF     |
+	|	FFF	   | FFF     |
+	|	FFF	   | FFF     |
+	|	FFF	   | FFF     |
+	----------------------
+	*/
 
 	glBindVertexArray(0); // feltöltüttük a VAO-t, kapcsoljuk le
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // feltöltöttük a VBO-t is, ezt is vegyük le

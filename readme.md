@@ -92,6 +92,21 @@ Szabó Dávid - sasasoft@inf.elte.hu
 		a videókártya annyira nagy, hogy rátesznek egy memóriát: GRAM
 		
 		GRAM: amikor töltődik a szoftver --> letöltjük a GRAM-ba az adatokat
+		
+		VBO (viszi az adatot)
+		VertexArrayObject (magyarázza az adatot) --> videókártya nem tudja értelmezni, neki szimpla bináris (byte-ok)
+		
+		el kell magyarázni a videókártyának:
+			struct Vertex {
+				
+			
+			
+			};
+			
+	házi:
+		körlap középre - +1 pont
+		külön VAO-VBO-ban legyen a körlap - +1 pont
+		
 
 =======
 >>>>>>> 7b5bd420d42d8b66af819b038569ec77a63e0ab7
