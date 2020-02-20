@@ -8,8 +8,80 @@ Szabó Dávid - sasasoft@inf.elte.hu
 |  		   |
 ------------
 
-SDL_GLContext --> OpenGL renderelő kontextus
+03_SDLOGL_FW:
+	- SDL_GLContext --> OpenGL renderelő kontextus
+	- többi kódba lett kommentelve
+	
+01_VAO_VBO:
+	- lineárisan interpolálva vannak a számok
+	
+	kék 	------------------
+	|		|				 |
+	|		|				 |
+	v		|				 |
+			|				 |
+			|				 |
+			|				 |
+	piros 	------------------
 
+	- két háromszög: felső - alsó
+		
+		csúcspontokban eltárolni [P(osition), C(olor) párok]:
+			- pozíció
+			- szín
+	
+	- a többit oldja meg a videókártya
+	
+	Vertex-ekhez koordinátarendszer magyarázat: normalizált eszközkoordinátarendszer
+	
+	(-1,1)			^             (1,1)
+					|
+					|
+					|
+					|
+					|
+					|
+(-1,0) -----------(0,0)-----------> (1,0)
+					|
+					|
+					|
+					|
+					|
+	(-1,-1)			|			  (1,-1)
+
+
+	A projektben lévő háromszög:
+
+	(-1,1)			^             (1,1)
+	(kék)			|
+		\			|
+		|	\		|
+		|		\	|
+		|			| \
+		|			|   \
+(-1,0) -----------(0,0)--\-------> (1,0)
+		|	<-^		|     \
+		|  (*)|		|      \
+		|	->|		|       \
+		|			|		 \
+		|-----------|---------\
+	(piros)			|           \  (zöld)
+	(-1,-1)			|			  (1,-1)
+
+
+
+	GL_TRIANGLE_STRIP 	(mindig az újabb pontot hozzáköti a másik kettőhöz -> szalagszerű)
+	GL_TRIANGLE_FAN 	(körszerű)
+
+	TRIANGLE-s esetén figyelni kell a csúcspontok sorrendjére:
+		- órajárással ellentétes sorrendben kell megadni őket (*)
+		
+	STRIP-nél az elsőt fogja követni
+	
+	hiba lehetőség:
+		- rossz a pozíció
+		- ki se rajzolja
+		- rossz a körbejárási irány
 
 
 

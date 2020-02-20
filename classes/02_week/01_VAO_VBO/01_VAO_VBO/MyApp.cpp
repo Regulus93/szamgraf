@@ -17,7 +17,7 @@ bool CMyApp::Init()
 	// törlési szín legyen kékes
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
 
-	glEnable(GL_CULL_FACE); // kapcsoljuk be a hatrafele nezo lapok eldobasat
+	glEnable(GL_CULL_FACE); // kapcsoljuk be a hatrafele nezo lapok eldobasat, szinte felezi a videókártya munkáját, egyik legkomolyabb optimalizálás
 	glEnable(GL_DEPTH_TEST); // mélységi teszt bekapcsolása (takarás)
 
 	//
@@ -26,7 +26,11 @@ bool CMyApp::Init()
 
 	Vertex vert[] =
 	{ 
-		{glm::vec3(-1, -1, 0), glm::vec3(1, 0, 0)},
+		//így az egyik háromszög nem is látszódhat
+		//{glm::vec3(1, -1, 0), glm::vec3(0, 1, 0)},
+		//{glm::vec3(-1, -1, 0), glm::vec3(1, 0, 0)}, 
+		
+		{glm::vec3(-1, -1, 0), glm::vec3(1, 0, 0)}, // 1 db vertex --> 1 db position, 1 db szín
 		{glm::vec3( 1, -1, 0), glm::vec3(0, 1, 0)},
 		{glm::vec3(-1,  1, 0), glm::vec3(0, 0, 1)},
 		{glm::vec3( 1,  1, 0), glm::vec3(1, 1, 1)},
@@ -93,7 +97,7 @@ void CMyApp::Render()
 	// kapcsoljuk be a VAO-t (a VBO jön vele együtt)
 	glBindVertexArray(m_vaoID);
 
-	// kirajzolás
+	// kirajzolás --> szalagszerû, 4 db vertex
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 	// VAO kikapcsolasa

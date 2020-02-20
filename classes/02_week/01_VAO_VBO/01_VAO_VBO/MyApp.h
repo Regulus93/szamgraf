@@ -36,8 +36,8 @@ protected:
 
 	struct Vertex
 	{
-		glm::vec3 p;
-		glm::vec3 c;
+		glm::vec3 p; //position
+		glm::vec3 c; //color
 	};
 };
 
