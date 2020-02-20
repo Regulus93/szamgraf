@@ -4,6 +4,18 @@ Szabó Dávid - sasasoft@inf.elte.hu
 
 ------------
 |  		   |
+|  2. hét  |
+|  		   |
+------------
+
+SDL_GLContext --> OpenGL renderelő kontextus
+
+
+
+
+
+------------
+|  		   |
 |  1. hét  |
 |  		   |
 ------------
