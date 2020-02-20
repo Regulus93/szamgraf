@@ -13,10 +13,12 @@ CMyApp::~CMyApp(void)
 bool CMyApp::Init()
 {
 	// törlési szín legyen kékes
+	// miért 0-1 közötti float-ok? miért nem maradunk a byteoknál? válasz: színmélység miatt
+	// normalizált koordináta rendszer
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
 
 	// kapcsoljuk be a hatrafele nezo lapok eldobasat
-	glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE); 
 	glEnable(GL_DEPTH_TEST);
 
 	return true;
@@ -63,6 +65,7 @@ void CMyApp::MouseWheel(SDL_MouseWheelEvent& wheel)
 }
 
 // a két paraméterbe az új ablakméret szélessége (_w) és magassága (_h) található
+// ezzel támogajtuk az ablak átméretezését
 void CMyApp::Resize(int _w, int _h)
 {
 	glViewport(0, 0, _w, _h );
