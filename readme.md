@@ -85,7 +85,13 @@ Szabó Dávid - sasasoft@inf.elte.hu
 		- rossz a körbejárási irány
 
 
-
+	GPU/CPU/RAM:
+	
+		memória és a videókártya között kapcsolat --> régen 30 Gb/s (ez elég kevés)
+		
+		a videókártya annyira nagy, hogy rátesznek egy memóriát: GRAM
+		
+		GRAM: amikor töltődik a szoftver --> letöltjük a GRAM-ba az adatokat
 
 =======
 >>>>>>> 7b5bd420d42d8b66af819b038569ec77a63e0ab7
