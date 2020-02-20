@@ -30,10 +30,24 @@ bool CMyApp::Init()
 		//{glm::vec3(1, -1, 0), glm::vec3(0, 1, 0)},
 		//{glm::vec3(-1, -1, 0), glm::vec3(1, 0, 0)}, 
 		
+		/*
+		-1,1,0;1,0,0
+		-1,0,0;1,0,0
+		 0,1,0;1,0,0
+
+		 0,1,0;0,1,0
+		 1,0,0;0,1,0
+		 1,1,0;0,1,0
+
+
+		
+		*/
+
+
 		{glm::vec3(-1, -1, 0), glm::vec3(1, 0, 0)}, // 1 db vertex --> 1 db position, 1 db szín
 		{glm::vec3( 1, -1, 0), glm::vec3(0, 1, 0)},
 		{glm::vec3(-1,  1, 0), glm::vec3(0, 0, 1)},
-		{glm::vec3( 1,  1, 0), glm::vec3(1, 1, 1)},
+		{glm::vec3( 1,  1, 0), glm::vec3(1, 1, 1)}
 	};
 
 	// 1 db VAO foglalasa
