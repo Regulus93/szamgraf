@@ -182,7 +182,7 @@ int main( int argc, char* args[] )
 		app.Update();
 		app.Render();
 
-		SDL_GL_SwapWindow(win);
+		SDL_GL_SwapWindow(win); //front-backbuffer cseréje
 	}
 
 
@@ -190,7 +190,7 @@ int main( int argc, char* args[] )
 	// 4. lépés: lépjünk ki
 	// 
 
-	// takarítson el maga után az objektumunk
+	// takarítson el maga után az objektumunk (destruktor elõtt lefut)
 	app.Clean();
 
 	SDL_GL_DeleteContext(context);

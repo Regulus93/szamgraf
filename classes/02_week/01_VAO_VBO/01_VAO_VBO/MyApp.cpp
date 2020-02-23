@@ -15,7 +15,7 @@ CMyApp::~CMyApp(void)
 bool CMyApp::Init()
 {
 	// törlési szín legyen kékes
-	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
+	glClearColor(0.125f, 0.25f, 0.5f, 1.0f); // <-- intenzítás floatok (R, G, B, átlátszatlanság)
 
 	glEnable(GL_CULL_FACE); // kapcsoljuk be a hatrafele nezo lapok eldobasat, szinte felezi a videókártya munkáját, egyik legkomolyabb optimalizálás
 	glEnable(GL_DEPTH_TEST); // mélységi teszt bekapcsolása (takarás)
@@ -24,6 +24,7 @@ bool CMyApp::Init()
 	// geometria letrehozasa
 	//
 
+	// Geometriánk csúcspontjai
 	Vertex vert[] =
 	{ 
 		//így az egyik háromszög nem is látszódhat
@@ -48,8 +49,10 @@ bool CMyApp::Init()
 		 1,0, 0;
 		*/
 
+		//perspektív korrigált lineáris interpoláció
 
-		{glm::vec3(-1, -1, 0), glm::vec3(1, 0, 0)}, // 1 db vertex --> 1 db position, 1 db szín
+		// 1 db position		 1 db szín
+		{glm::vec3(-1, -1, 0), glm::vec3(1, 0, 0)}, //1 db vertex
 		{glm::vec3( 1, -1, 0), glm::vec3(0, 1, 0)},
 		{glm::vec3(-1,  1, 0), glm::vec3(0, 0, 1)},
 		{glm::vec3( 1,  1, 0), glm::vec3(1, 1, 1)}
@@ -69,6 +72,7 @@ bool CMyApp::Init()
 	// töltsük fel adatokkal az aktív VBO-t
 	
 	//rendszer memóriából vidd el az adatokat a videómemóriába
+	//memóriát allokál GPU memóriában
 	glBufferData( GL_ARRAY_BUFFER,	// az aktív VBO-ba töltsünk adatokat
 				  sizeof(vert),		// ennyi bájt nagyságban
 				  vert,	// errõl a rendszermemóriabeli címrõl olvasva
@@ -88,8 +92,8 @@ bool CMyApp::Init()
 		3,				// komponens szam
 		GL_FLOAT,		// adatok tipusa
 		GL_FALSE,		// normalizalt legyen-e
-		sizeof(Vertex),	// stride (0=egymas utan)
-		0				// a 0. indexû attribútum hol kezdõdik a sizeof(Vertex)-nyi területen belül
+		sizeof(Vertex),	// stride (0=egymas utan) => mennyit kell ugrani a következõ komponenshez
+		0				// a 0. indexû attribútum hol kezdõdik a sizeof(Vertex)-nyi területen belül (hol található a csatorna)
 	); 
 
 
@@ -117,8 +121,9 @@ bool CMyApp::Init()
 	----------------------
 	*/
 
-	glBindVertexArray(0); // feltöltüttük a VAO-t, kapcsoljuk le
-	glBindBuffer(GL_ARRAY_BUFFER, 0); // feltöltöttük a VBO-t is, ezt is vegyük le
+	//0-s indexen sose foglal le az OpenGL erõforrást, ezért lényegében bekapcsoljuk
+	glBindVertexArray(0); // feltöltüttük a VAO-t, kapcsoljuk le (unbind)
+	glBindBuffer(GL_ARRAY_BUFFER, 0); // feltöltöttük a VBO-t is, ezt is vegyük le (unbind) 
 
 	return true;
 }
@@ -139,11 +144,13 @@ void CMyApp::Render()
 	// töröljük a frampuffert (GL_COLOR_BUFFER_BIT) és a mélységi Z puffert (GL_DEPTH_BUFFER_BIT)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// kapcsoljuk be a VAO-t (a VBO jön vele együtt)
+	// kapcsoljuk be a VAO-t (a VBO jön vele együtt) ==> VAO-hoz tartozik egy VBO, hisz valamit mindig le kell írnia
 	glBindVertexArray(m_vaoID);
 
-	// kirajzolás --> szalagszerû, 4 db vertex
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	
+	glDrawArrays(GL_TRIANGLE_STRIP, // kirajzolás --> szalagszerû
+		0,  // 0-dik csúcsponttól kezdve rajzolunk
+		4); // 4 db-ot (vertex-et)
 
 	// VAO kikapcsolasa
 	glBindVertexArray(0);
