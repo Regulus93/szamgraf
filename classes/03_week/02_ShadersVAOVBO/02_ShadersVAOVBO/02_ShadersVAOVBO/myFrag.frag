@@ -14,11 +14,12 @@ void main()
 	//fs_out_col = vec4(vec3(1) - vs_out_col, 1);	=> invertálás
 	//discard;										=> glClearColor törlési szín kékre lett állítva
 
-	if (vs_out_pos.x > 0) {
-		fs_out_col = vec4(vec3(1) - vs_out_col, 1);
-	} else {
-		discard;
-	}
+ if( pow ( vs_out_pos.x, 2) + pow(vs_out_pos.y, 2) < 1) {
+	fs_out_col = vec4(1,1,1,1);
+ } else {
+	discard;
+ }
+
 }
 
 // 1. feladat: rajzoljuk ki fehérrel a téglalapot!
