@@ -5,6 +5,9 @@ in vec3 vs_out_pos;
 
 out vec4 fs_out_col;
 
+//csak néha szeretnénk leküldeni C++-ból
+uniform float t = 0.5f;
+
 void main()
 {
 	//végleges szín beállítása
@@ -14,7 +17,7 @@ void main()
 	//fs_out_col = vec4(vec3(1) - vs_out_col, 1);	=> invertálás
 	//discard;										=> glClearColor törlési szín kékre lett állítva
 
- if( pow ( vs_out_pos.x, 2) + pow(vs_out_pos.y, 2) < 1) {
+ if( pow ( vs_out_pos.x, 2) + pow(vs_out_pos.y, 2) < t) {
 	fs_out_col = vec4(1,1,1,1);
  } else {
 	discard;

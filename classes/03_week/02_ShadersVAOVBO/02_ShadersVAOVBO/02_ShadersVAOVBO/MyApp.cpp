@@ -116,6 +116,10 @@ bool CMyApp::Init()
 	glDeleteShader( vs_ID );
 	glDeleteShader( fs_ID );
 
+
+	//uniform változó címét lekérni
+	m_t_loc = glGetUniformLocation(m_programID, "t");
+
 	return true;
 }
 
@@ -140,6 +144,14 @@ void CMyApp::Render()
 	// shader bekapcsolasa 
 	// -> miért? több Shader program lehet egy alkalmazásban
 	glUseProgram( m_programID );
+
+	glUniform1f(m_t_loc, 
+		sinf( //ciklikusság
+		SDL_GetTicks() //eltelt idõ
+		* M_PI //amplitudó gyorsítása
+	    / 2000.0f // diszkrét értékek floattá konvertálása
+		+ 1) //pozitív intervallumba tolás
+		/ 2.0f); //intervallum szûkítése
 
 	// kapcsoljuk be a VAO-t (a VBO jön vele együtt)
 	glBindVertexArray(m_vaoID);

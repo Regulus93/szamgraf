@@ -32,6 +32,7 @@ public:
 protected:
 	// shaderekhez szükséges változók
 	GLuint m_programID; // shaderek programja
+	GLuint m_t_loc;
 
 	// OpenGL-es dolgok
 	GLuint m_vaoID; // vertex array object erõforrás azonosító
