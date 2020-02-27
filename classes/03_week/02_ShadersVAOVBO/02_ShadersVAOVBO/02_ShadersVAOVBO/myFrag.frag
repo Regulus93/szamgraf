@@ -7,6 +7,7 @@ out vec4 fs_out_col;
 
 void main()
 {
+	//végleges szín beállítása
 	fs_out_col = vec4(vs_out_col, 1);
 }
 
