@@ -75,7 +75,14 @@ Grafikus-szerelőszalag:
 		- 500 db-ot z célra (pl. fragmentekre bontás)
 		
 		Egy idő után minden szalag fázisban lesz adat, amit feldolgozhat a szerelőszalag.
-	   
+		
+
+Programozható fázisok: Vertex és fragment feldolgozás
+
+Alapértelmezett nVidia: 3-as
+
+
+
 ------------
 |  		   |
 |  2. hét  |
