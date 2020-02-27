@@ -18,10 +18,10 @@ Grafikus-szerelőszalag:
 
 		#1. Vertexeink feldolgozása (3D-s transzformációknál fontos):
 
-			- [input] vertex -> [output] módosított vertex
+			- [input] vertex -> [output] módosított vertex (cél #1.: végleges pozíció meghatározása)
 			- 3D-s euklideszi koordinátarendszer
 			
-			- homogenizálás: videókártya jobban dolgozna homogén térbe ==> 
+			- cél #2.: homogenizálás: videókártya jobban dolgozna homogén térbe ==> 
 
 		#2. Vertexek geometriai feldolgozás:
 
@@ -79,7 +79,7 @@ Grafikus-szerelőszalag:
 
 Programozható fázisok: Vertex és fragment feldolgozás
 
-Alapértelmezett nVidia: 3-as
+Alapértelmezett nVidia: 3-as (?)
 
 
 

@@ -74,22 +74,25 @@ bool CMyApp::Init()
 	glBindVertexArray(0); // feltöltüttük a VAO-t, kapcsoljuk le
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // feltöltöttük a VBO-t is, ezt is vegyük le
 
+    //új rész
 	//
 	// shaderek betöltése
 	//
 	GLuint vs_ID = loadShader(GL_VERTEX_SHADER,		"myVert.vert");
 	GLuint fs_ID = loadShader(GL_FRAGMENT_SHADER,	"myFrag.frag");
 
+	//új rész
 	// a shadereket tároló program létrehozása
 	m_programID = glCreateProgram();
 
+	//új rész
 	// adjuk hozzá a programhoz a shadereket
 	glAttachShader(m_programID, vs_ID);
 	glAttachShader(m_programID, fs_ID);
 
 	// attributomok osszerendelese a VAO es shader kozt
-	glBindAttribLocation( m_programID, 0, "vs_in_pos");
-	glBindAttribLocation( m_programID, 1, "vs_in_col");
+	glBindAttribLocation( m_programID, 0, "vs_in_pos"); //pozíciós csatorna
+	glBindAttribLocation( m_programID, 1, "vs_in_col"); //szín csatorna
 
 	// illesszük össze a shadereket (kimenõ-bemenõ változók összerendelése stb.)
 	glLinkProgram(m_programID);
@@ -99,6 +102,8 @@ bool CMyApp::Init()
 
 	glGetProgramiv(m_programID, GL_LINK_STATUS, &result);
 	glGetProgramiv(m_programID, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+	//program futásakor fordul a kód, tehát futás közben derül ki ha nem jó a kódunk
 	if (GL_FALSE == result )
 	{
 		char* error = new char[infoLogLength];
@@ -132,7 +137,8 @@ void CMyApp::Render()
 	// töröljük a frampuffert (GL_COLOR_BUFFER_BIT) és a mélységi Z puffert (GL_DEPTH_BUFFER_BIT)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// shader bekapcsolasa
+	// shader bekapcsolasa 
+	// -> miért? több Shader program lehet egy alkalmazásban
 	glUseProgram( m_programID );
 
 	// kapcsoljuk be a VAO-t (a VBO jön vele együtt)
