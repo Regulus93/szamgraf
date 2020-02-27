@@ -5,6 +5,79 @@ Szabó Dávid - sasasoft@inf.elte.hu
 
 ------------
 |  		   |
+|  3. hét  |
+|  		   |
+------------
+
+Grafikus-szerelőszalag:
+
+	A videókártya, hogy dolgozza fel az adatokat.
+
+	Feldolgozási lépések (cél, backbuffer celláiba adatot írni) - (pl. OpenGL 4.4 pipline):
+	(Pozíció,szín) -> [...] -> millónyi pixel
+
+		#1. Vertexeink feldolgozása (3D-s transzformációknál fontos):
+
+			- [input] vertex -> [output] módosított vertex
+			- 3D-s euklideszi koordinátarendszer
+			
+			- homogenizálás: videókártya jobban dolgozna homogén térbe ==> 
+
+		#2. Vertexek geometriai feldolgozás:
+
+			- glDrawArrays:
+			
+			Input => Output
+			
+			.    =>  /\ 
+		   . .   => /__\
+
+		
+		#3. Raszterizáció és interpoláció:
+			
+			- primitív felbontása fragmentekre (pixel => pozíció, adott szín; fragment => pozíción lévő adathalmaz [később több adat lehet egy pozíción])
+			
+			- baricentrikus interpolálás
+
+				Input ===> Output
+					
+					/\           o
+				   /  \    ===> ooo
+				  /    \       ooooo
+				 /______\     ooooooo
+				 
+		 
+		#4. "Fragmens" feldolgozás:
+		
+			- minden fragmens színét megmondhatom, vagy eldobhatom
+	 
+			  CPU
+			-------
+			|  |  |
+			|--|--|
+			|__|__|
+			   |
+			   |           RAM
+			   |----------------
+			   |         |     |
+			   |         |  v  |
+			   |         |_____|
+	   GPU 	   |
+	---------  |
+	|   | v |---
+	--------- 
+	
+	GPU-ban több processzormag van: vertikális párhuzamosítás
+	
+	A szerelőszalag csoportokba osztja:
+		- 200 db-ot x célra
+		- 300 db-ot y célra
+		- 500 db-ot z célra (pl. fragmentekre bontás)
+		
+		Egy idő után minden szalag fázisban lesz adat, amit feldolgozhat a szerelőszalag.
+	   
+------------
+|  		   |
 |  2. hét  |
 |  		   |
 ------------
