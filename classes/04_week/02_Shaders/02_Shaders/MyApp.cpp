@@ -211,6 +211,10 @@ void CMyApp::Render()
 	// shader bekapcsolasa: ezzel jelezzük, hogy ezt a programunkat szeretnénk használni, ebben vannak a shaderjeink
 	glUseProgram( m_programID );
 
+	//minden rendeléskor megcsináljuk ezt
+	GLuint locT = glGetUniformLocation(m_programID, "t"); //kvázi pointer, de nem gazdaságos mert mindig lekérjük a változó helyét: ezt majd initben kell megtenni
+	glUniform1f(locT, SDL_GetTicks() / 1000.0); //egy elemi tömb, egy darab float kvázi
+
 	// kapcsoljuk be a VAO-t (a VBO jön vele együtt)
 	glBindVertexArray(m_vaoID);
 
