@@ -15,6 +15,14 @@ Feladat:
 	a többi helyen csak az előzőeket (Zoldberg fej, és szivárványszín).
 	Csak fragmentekkel.
 
+Feladat: pulzáljon
+
+Feladat: írjunk mandelbrot halmazt fragment shaderben 
+(mandelbrot: egy komplex számsíkon értelmezett halmaz, 
+olyan c komplex számokból áll, melyekre ha megadunk egy rekurzív sorozatot hogy
+ x1 = c, aztán x2 = x1^2 + c ...
+ 
+ ez a sorozat a komplex szám hosszára tekintve korlátos, akkor beletesszük ebbe a halmazba (kirajzoljuk)
 
  
 
