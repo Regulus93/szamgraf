@@ -2,6 +2,16 @@ Számítógépes grafika - 2019/20 - Tavaszi félév
 
 Szabó Dávid - sasasoft@inf.elte.hu
 
+------------
+|  		   |
+|  4. hét  |
+|(itthoni) |
+------------
+
+Dinamikus adatváltozóra átállás: array -> vector
+
+
+
 
 ------------
 |  		   |
