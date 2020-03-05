@@ -132,7 +132,7 @@ bool CMyApp::Init()
 	// a második attribútumhoz pedig a VBO-ban sizeof(Vertex) ugrás után sizeof(glm::vec3)-nyit menve újabb 3 float adatot találunk (szín)
 	glEnableVertexAttribArray(1); // ez lesz majd a szín
 	glVertexAttribPointer(
-		(GLuint)1,
+		(GLuint)1, // !!! nvidia "hiba" javítása
 		3, 
 		GL_FLOAT,
 		GL_FALSE,
@@ -156,6 +156,7 @@ bool CMyApp::Init()
 	glAttachShader(m_programID, fs_ID);
 
 	// attributomok osszerendelese a VAO es shader kozt
+	//vertex melyik csatornáját szeretnék a vertex melyik változójához bind-olni
 	glBindAttribLocation( m_programID, 0, "vs_in_pos");
 	glBindAttribLocation( m_programID, 1, "vs_in_col");
 
@@ -182,6 +183,7 @@ bool CMyApp::Init()
 	}
 
 	// mar nincs ezekre szukseg
+	//törlésre történõ kijelölés: csak a program befejezõdése után fognak törlõdni (program instance élethez köti õket)
 	glDeleteShader( vs_ID );
 	glDeleteShader( fs_ID );
 
@@ -205,8 +207,8 @@ void CMyApp::Render()
 {
 	// töröljük a frampuffert (GL_COLOR_BUFFER_BIT) és a mélységi Z puffert (GL_DEPTH_BUFFER_BIT)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// shader bekapcsolasa
+	
+	// shader bekapcsolasa: ezzel jelezzük, hogy ezt a programunkat szeretnénk használni, ebben vannak a shaderjeink
 	glUseProgram( m_programID );
 
 	// kapcsoljuk be a VAO-t (a VBO jön vele együtt)

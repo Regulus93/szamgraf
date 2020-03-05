@@ -10,8 +10,37 @@ Szabó Dávid - sasasoft@inf.elte.hu
 
 Dinamikus adatváltozóra átállás: array -> vector
 
+Kör kirajzolása:
 
+ - TriangleFan kirajzolásakor az első és utolsó pontnak meg kell egyeznie
 
+Először nem látszódik semmi, mert a Z koordináta mindenütt 0:
+	Z-buffering algoritmus:
+		
+		z-buffer           képernyő
+		        /|                 /|                
+               /||                /||                
+              / ||               / ||                
+             /| ||    	        /| ||                
+            / | ||    	       / | ||                   
+		   /| | ||    	      /| | ||                
+		  / | | |/           / | | |/                
+	     /| | | /           /| | | /                 
+		/ | | |/           / | | |/                  
+		| | | /   A   B    | | | /                   
+		| | |/    /    |   | | |/                       (szem)
+		|(0,2)-- /|-- /|---|x| /     <------------------- o
+		| |/    /--  /-|   | |/                      
+		| /    (0,4) (0,2) | /                       
+		|/                 |/                        
+
+		(z-bufferbe B háromszögnek a mélysége fog kerülni, kitakarja A háromszög egybeeső pontját a képernyőn)
+
+	(Az algoritmus nem kisebbegyenlőt néz, hanem kisebbet!!!)
+	
+	megoldás:
+	1. glEnable(GL_DEPTH_TEST) kikommentelése: érkezés szerint fog kirajzolódni
+	2. glDepthFunc(GL_ALWAYS); => ilyen relációval vizsgálja meg a z értékeket (mindig a kisebb nyer), mindig a későbbi fog látszódni
 
 ------------
 |  		   |
@@ -26,8 +55,16 @@ Grafikus-szerelőszalag:
 	Feldolgozási lépések (cél, backbuffer celláiba adatot írni) - (pl. OpenGL 4.4 pipline):
 	(Pozíció,szín) -> [...] -> millónyi pixel
 
-		#1. Vertexeink feldolgozása (3D-s transzformációknál fontos):
-
+		#1. Vertexeink feldolgozása (3D-s transzformációknál fontos): 
+			
+			(- modellezési transzformációval elhelyezhetjük a világkoordinátarendszerben               )
+			(- ezután a kamera/nézeti transzformációval elhelyezhetjük a kamera koordinátarendszerben  )
+			(- projekciós transzformáció révén átkerülhetünk kezdetben egy olyan koordinátarendszerben,) 
+			(  ahol megtörténik a vágás/homogénosztás                                                  )
+			(  ===> normalizált eszközkoordinátarendszer (kvázi egy kocka)                             )
+			(  ===> képernyőkoordinátarendszer														   )
+			
+			(vertex shader)
 			- [input] vertex -> [output] módosított vertex (cél #1.: végleges pozíció meghatározása)
 			- 3D-s euklideszi koordinátarendszer
 			
@@ -56,8 +93,19 @@ Grafikus-szerelőszalag:
 				  /    \       ooooo
 				 /______\     ooooooo
 				 
-		 
+				 o információi lehetnek:
+					-- textúra
+					-- szín
+					
+				- fragmens shader:
+					-- fragmensből pixelt gyárt: a fenti adatokból összeállít egy színt
+				 
+
 		#4. "Fragmens" feldolgozás:
+
+			- merging stage:
+				-- hogyan kombinálja a backbufferbe illetve a z pufferbe az értékeket (itt történik a z teszt)	
+		 
 		
 			- minden fragmens színét megmondhatom, vagy eldobhatom
 	 
