@@ -22,18 +22,50 @@ bool CMyApp::Init()
 
 	glEnable(GL_CULL_FACE); // kapcsoljuk be a hatrafele nezo lapok eldobasat
 	glEnable(GL_DEPTH_TEST); // mélységi teszt bekapcsolása (takarás)
+	glDepthFunc(GL_ALWAYS); //=> ilyen relációval vizsgálja meg a z értékeket(mindig a kisebb nyer), mindig a késõbbi fog látszódni
 
 	//
 	// geometria letrehozasa
 	//
 
-	Vertex vert[] =
-	{ 
-		{glm::vec3(-1, -1, 0), glm::vec3(1, 0, 0)},
-		{glm::vec3( 1, -1, 0), glm::vec3(0, 1, 0)},
-		{glm::vec3(-1,  1, 0), glm::vec3(0, 0, 1)},
-		{glm::vec3( 1,  1, 0), glm::vec3(1, 1, 1)},
-	};
+
+	std::vector<Vertex> vertices;
+	vertices.push_back({ glm::vec3(-1, -1, 0), glm::vec3(1, 0, 0) });
+	vertices.push_back({ glm::vec3(1, -1, 0),  glm::vec3(0, 1, 0) });
+	vertices.push_back({ glm::vec3(-1, 1, 0),  glm::vec3(0, 0, 1) });
+	vertices.push_back({ glm::vec3(1, 1, 0),   glm::vec3(1, 1, 1) });
+
+	//TRIANGLE FAN KÖZÉPPONTJA
+	vertices.push_back({ glm::vec3(-0.3, 0.3, 0),   glm::vec3(1, 1, 1) });
+
+	for (int i = 0; i < 10; ++i) {
+		//sugár mérete: 0.2
+		//eltolás mértéke (x tengely): -0.3
+		//eltolás mértéke (y tengely): + 0.3
+		vertices.push_back({
+			glm::vec3(
+				cos(2 * M_PI / 9 * i) * 0.2 - 0.3, //x
+				sin(2 * M_PI / 9 * i) * 0.2 + 0.3, //y
+				0								   //z
+			)
+			, glm::vec3(1,1,1) });
+	}
+
+	//TRIANGLE FAN KÖZÉPPONTJA
+	vertices.push_back({ glm::vec3(0.3, 0.3, 0),   glm::vec3(1, 1, 1) });
+
+	for (int i = 0; i < 10; ++i) {
+		//sugár mérete: 0.2
+		//eltolás mértéke (x tengely): -0.3
+		//eltolás mértéke (y tengely): + 0.3
+		vertices.push_back({
+			glm::vec3(
+				cos(2 * M_PI / 9 * i) * 0.2 + 0.3, //x
+				sin(2 * M_PI / 9 * i) * 0.2 + 0.3, //y
+				0								   //z
+			)
+			, glm::vec3(1,1,1) });
+	}
 
 	// 1 db VAO foglalasa
 	glGenVertexArrays(1, &m_vaoID);
@@ -45,8 +77,8 @@ bool CMyApp::Init()
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID); // tegyük "aktívvá" a létrehozott VBO-t
 	// töltsük fel adatokkal az aktív VBO-t
 	glBufferData( GL_ARRAY_BUFFER,	// az aktív VBO-ba töltsünk adatokat
-				  sizeof(vert),		// ennyi bájt nagyságban
-				  vert,	// errõl a rendszermemóriabeli címrõl olvasva
+				  vertices.size() * sizeof(Vertex),		// ennyi bájt nagyságban
+				  &vertices[0],	// errõl a rendszermemóriabeli címrõl olvasva
 				  GL_STATIC_DRAW);	// úgy, hogy a VBO-nkba nem tervezünk ezután írni és minden kirajzoláskor felhasnzáljuk a benne lévõ adatokat
 	
 
@@ -146,6 +178,8 @@ void CMyApp::Render()
 
 	// kirajzolás
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glDrawArrays(GL_TRIANGLE_FAN, 4, 11);
+	glDrawArrays(GL_TRIANGLE_FAN, 15, 11);
 
 	// VAO kikapcsolasa
 	glBindVertexArray(0);

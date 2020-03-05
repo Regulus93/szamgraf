@@ -9,6 +9,7 @@
 #include <sstream>
 
 #include "MyApp.h"
+#include <vector>
 
 void exitProgram()
 {
