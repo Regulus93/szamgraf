@@ -37,6 +37,8 @@ protected:
 	GLuint m_vaoID; // vertex array object erõforrás azonosító
 	GLuint m_vboID; // vertex buffer object erõforrás azonosító
 
+	float offset[2];
+
 	struct Vertex
 	{
 		glm::vec3 p;

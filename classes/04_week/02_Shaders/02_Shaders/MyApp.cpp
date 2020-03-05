@@ -182,6 +182,9 @@ bool CMyApp::Init()
 		delete aSzoveg;
 	}
 
+	offset[0] = 0;
+	offset[1] = 0;
+
 	// mar nincs ezekre szukseg
 	//törlésre történõ kijelölés: csak a program befejezõdése után fognak törlõdni (program instance élethez köti õket)
 	glDeleteShader( vs_ID );
@@ -213,7 +216,8 @@ void CMyApp::Render()
 
 	//minden rendeléskor megcsináljuk ezt
 	GLuint locT = glGetUniformLocation(m_programID, "t"); //kvázi pointer, de nem gazdaságos mert mindig lekérjük a változó helyét: ezt majd initben kell megtenni
-	glUniform1f(locT, SDL_GetTicks() / 1000.0); //egy elemi tömb, egy darab float kvázi
+	glUniform1f(locT, SDL_GetTicks() / 1000.0); //egy elemi tömb, kvázi egy darab float
+	glUniform2f(glGetUniformLocation(m_programID, "offset"), offset[0], offset[1]);
 
 	// kapcsoljuk be a VAO-t (a VBO jön vele együtt)
 	glBindVertexArray(m_vaoID);
@@ -233,6 +237,20 @@ void CMyApp::Render()
 
 void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
 {
+	switch (key.keysym.sym) {
+	case SDLK_DOWN:
+		offset[1] -= 0.01;
+		break;
+	case SDLK_UP:
+		offset[1] += 0.01;
+		break;
+	case SDLK_LEFT:
+		offset[0] -= 0.01;
+		break;
+	case SDLK_RIGHT:
+		offset[0] += 0.01;
+		break;
+	}
 }
 
 void CMyApp::KeyboardUp(SDL_KeyboardEvent& key)
