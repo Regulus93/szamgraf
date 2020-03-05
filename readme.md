@@ -8,6 +8,18 @@ Szabó Dávid - sasasoft@inf.elte.hu
 |(itthoni) |
 ------------
 
+(08-as videó)
+
+Feladat:
+	A négyzeten az origó középpontú 0.5 sugarú környezetében háttérszínt lássunk,
+	a többi helyen csak az előzőeket (Zoldberg fej, és szivárványszín).
+	Csak fragmentekkel.
+
+
+ 
+
+(06-os videó)
+
 Dinamikus adatváltozóra átállás: array -> vector
 
 Kör kirajzolása:

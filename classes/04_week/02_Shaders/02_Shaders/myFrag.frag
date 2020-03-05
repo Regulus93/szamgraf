@@ -6,14 +6,16 @@ out vec4 fs_out_col;
 
 void main()
 {
-	fs_out_col = vec4(vs_out_col, 1);
+	if ( 
+		sqrt  
+			( pow ( vs_out_pos.x, 2 ) + pow ( vs_out_pos.y, 2 ) )
+		< 0.5 
+	    )
+	{
+	
+	discard; //fragment eldobása: háttérszín-törlésiszín jelenik meg
+	
+	}
+
+	fs_out_col = vec4(vs_out_col, 1); //1 - homogénkoordináta
 }
-
-// 1. feladat: rajzoljuk ki fehérrel a téglalapot!
-
-// 2. feladat: uniform változók - az alkalmazás állítsa be, hogy milyen színnel töltsünk ki!
-
-// 3. feladat: rajzoljuk ki az origó középpontú, 1 sugarú kört! Mit kell tenni, ha nem a
-//    körlapot, hanem csak a körvonalat akarjuk? Eml.: discard eldobja a fragmentet
-
-// 4. feladat: komplex számok....
