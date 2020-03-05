@@ -13,7 +13,7 @@ vec2 mul( vec2 u, vec2 v ) {
 
 void main()
 {
-	vec2 z = vs_out_pos.xy; // komplex számunk: vs_out_pos.xy --> interpolációból megkapott pozíció, amit a csúcspontokból nyerünk
+	vec2 z = vs_out_pos.xy/t+0.25; // komplex számunk: vs_out_pos.xy --> interpolációból megkapott pozíció, amit a csúcspontokból nyerünk
 	vec2 c = z;
 
 	//30 lépésben próbáljuk eldönteni, hogy konvergens-e a szám
