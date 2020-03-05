@@ -66,6 +66,42 @@ bool CMyApp::Init()
 			)
 			, glm::vec3(1,1,1) });
 	}
+	/*
+
+	X irányba ugyanazt toljuk el:
+
+	-0.50,    0, 0
+	-0.50, -0.5, 0
+	-0.25,    0, 0
+
+	- 0.50 + 0.25,    0, 0
+	- 0.50 + 0.25, -0.5, 0
+	- 0.25 + 0.25,    0, 0
+
+	- 0.50 + 0.50,    0, 0
+	- 0.50 + 0.50, -0.5, 0
+	- 0.25 + 0.50,    0, 0
+
+	- 0.50 + 0.75,    0, 0
+	- 0.50 + 0.75, -0.5, 0
+	- 0.25 + 0.75,    0, 0
+	*/
+
+	vertices.push_back({ glm::vec3(-0.50,     0, 0), glm::vec3(1, 0, 0) });
+	vertices.push_back({ glm::vec3(- 0.50, -0.5, 0), glm::vec3(1, 0, 0) });
+	vertices.push_back({ glm::vec3(- 0.25,    0, 0), glm::vec3(1, 0, 0) });
+
+	vertices.push_back({ glm::vec3(- 0.50 + 0.25,    0, 0), glm::vec3(1, 0, 0) });
+	vertices.push_back({ glm::vec3(- 0.50 + 0.25, -0.5, 0), glm::vec3(1, 0, 0) });
+	vertices.push_back({ glm::vec3(- 0.25 + 0.25,    0, 0), glm::vec3(1, 0, 0) });
+														  
+	vertices.push_back({ glm::vec3(- 0.50 + 0.50,    0, 0), glm::vec3(1, 0, 0) });
+	vertices.push_back({ glm::vec3(- 0.50 + 0.50, -0.5, 0), glm::vec3(1, 0, 0) });
+	vertices.push_back({ glm::vec3(- 0.25 + 0.50,    0, 0), glm::vec3(1, 0, 0) });
+														
+	vertices.push_back({ glm::vec3(- 0.50 + 0.75,    0, 0), glm::vec3(1, 0, 0) });
+	vertices.push_back({ glm::vec3(- 0.50 + 0.75, -0.5, 0), glm::vec3(1, 0, 0) });
+	vertices.push_back({ glm::vec3(- 0.25 + 0.75,    0, 0), glm::vec3(1, 0, 0) });
 
 	// 1 db VAO foglalasa
 	glGenVertexArrays(1, &m_vaoID);
@@ -179,7 +215,8 @@ void CMyApp::Render()
 	// kirajzolás
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glDrawArrays(GL_TRIANGLE_FAN, 4, 11);
-	glDrawArrays(GL_TRIANGLE_FAN, 15, 11);
+	glDrawArrays(GL_TRIANGLE_FAN, 15, 11);	
+	glDrawArrays(GL_TRIANGLES, 26, 12);
 
 	// VAO kikapcsolasa
 	glBindVertexArray(0);
