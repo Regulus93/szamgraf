@@ -27,7 +27,9 @@ bool CMyApp::Init()
 
 	glEnable(GL_CULL_FACE); // kapcsoljuk be a hatrafele nezo lapok eldobasat
 	glEnable(GL_DEPTH_TEST); // mélységi teszt bekapcsolása (takarás)
-	glDepthFunc(GL_ALWAYS); //=> ilyen relációval vizsgálja meg a z értékeket(mindig a kisebb nyer), mindig a késõbbi fog látszódni
+	//glDepthFunc(GL_ALWAYS); //=> ilyen relációval vizsgálja meg a z értékeket(mindig a kisebb nyer), mindig a késõbbi fog látszódni
+	//drótvázas debug
+	//glPolygonMode(GL_BACK, GL_LINE);
 
 	//
 	// geometria letrehozasa
@@ -35,10 +37,29 @@ bool CMyApp::Init()
 
 
 	std::vector<Vertex> vertices;
-	vertices.push_back({ glm::vec3(-1, -1, 0), glm::vec3(1, 0, 0) });
-	vertices.push_back({ glm::vec3(1, -1, 0),  glm::vec3(0, 1, 0) });
-	vertices.push_back({ glm::vec3(-1, 1, 0),  glm::vec3(0, 0, 1) });
-	vertices.push_back({ glm::vec3(1, 1, 0),   glm::vec3(1, 1, 1) });
+	vertices.push_back({ glm::vec3(1, 0, 1), glm::vec3(1, 0, 0) });
+	vertices.push_back({ glm::vec3(-1, 0, -1),  glm::vec3(1, 1, 0) });
+	vertices.push_back({ glm::vec3(1, 0, -1),  glm::vec3(1, 0, 1) });
+
+	vertices.push_back({ glm::vec3(-1, 0, 1), glm::vec3(1, 0, 0) });
+	vertices.push_back({ glm::vec3(-1, 0, -1),  glm::vec3(1, 1, 0) });
+	vertices.push_back({ glm::vec3(1, 0, 1),  glm::vec3(1, 0, 1) });
+
+	vertices.push_back({ glm::vec3(-1, 0, 1), glm::vec3(1, 0, 0) });
+	vertices.push_back({ glm::vec3(1, 0, 1),  glm::vec3(1, 1, 0) });
+	vertices.push_back({ glm::vec3(0, 2, 0),  glm::vec3(1, 0, 1) });
+
+	vertices.push_back({ glm::vec3(1, 0, 1), glm::vec3(1, 0, 0) });
+	vertices.push_back({ glm::vec3(1, 0, -1),  glm::vec3(1, 1, 0) });
+	vertices.push_back({ glm::vec3(0, 2, 0),  glm::vec3(1, 0, 1) });
+
+	vertices.push_back({ glm::vec3(1, 0, -1), glm::vec3(1, 0, 0) });
+	vertices.push_back({ glm::vec3(-1, 0, -1),  glm::vec3(1, 1, 0) });
+	vertices.push_back({ glm::vec3(0, 2, 0),  glm::vec3(1, 0, 1) });
+
+	vertices.push_back({ glm::vec3(-1, 0, -1), glm::vec3(1, 0, 0) });
+	vertices.push_back({ glm::vec3(-1, 0, 1),  glm::vec3(1, 1, 0) });
+	vertices.push_back({ glm::vec3(0, 2, 0),  glm::vec3(1, 0, 1) });
 
 	// 1 db VAO foglalasa
 	glGenVertexArrays(1, &m_vaoID);
@@ -151,7 +172,7 @@ void CMyApp::Update()
 {
 	//kamera transzformációs mátrix legenerálása
 	m_matView = glm::lookAt(
-		glm::vec3(0, 4, 5),  //honnan nézzük
+		glm::vec3(5, 10, 5),  //honnan nézzük
 		glm::vec3(0, 0, 0),  //melyik pontját nézzük
 		glm::vec3(0, 1, 0) //melyik irány van felfelé (elsõ két vektor nem határozza meg egyértelmûen a kamera irányát)
 	); //hová nézünk
@@ -166,26 +187,56 @@ void CMyApp::Render()
 	// shader bekapcsolasa: ezzel jelezzük, hogy ezt a programunkat szeretnénk használni, ebben vannak a shaderjeink
 	glUseProgram( m_programID );
 
-	//rotation lebegõpontos változó (másodpercenként 1-et nõjjön) => 1 mp alatt 1 teljes kör (360)
-	float rot = SDL_GetTicks() / 100000.0 / 10.0f * 360;
-	//forgatási szög, ezeket milyen szorzóval vegye figyelembe (itt most y tengely szerint fogja forgatni)
-	m_matWorld = glm::rotate(rot, glm::vec3(0, 1, 0));
 
 	//modellezési transzformációt átküldjük a shadernek
-	glUniformMatrix4fv(m_loc_world, 1, GL_FALSE, &(m_matWorld[0][0]));
+	glUniformMatrix4fv(m_loc_proj, 1, GL_FALSE, &(m_matProj[0][0]));
 	//kamera transzformációt átküldjük a shadernek
 	glUniformMatrix4fv(m_loc_view, 1, GL_FALSE, &(m_matView[0][0]));
-	//projekciós transzformációt átküldjük a shadernek
-	glUniformMatrix4fv(m_loc_proj, 1, GL_FALSE, &(m_matProj[0][0]));
-
 	//shader ezeket fogja fogadni, összeszorozza az aktuálisan bejövõ vertexxel és kidobja a már clipping space-ben lévõ vertexeket
+
+
 
 	// kapcsoljuk be a VAO-t (a VBO jön vele együtt)
 	glBindVertexArray(m_vaoID);
 
-	// kirajzolás
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	GLuint time = SDL_GetTicks() / 100;
 
+	//10 piramis kirajzolása (fordítva)
+	for (int i = 0; i < 10; ++i) {
+		m_matWorld =
+		      glm::rotate<float>(360 / 10.0f * i, glm::vec3(0, 1, 0))                    //mindig egy piramis sorszámának megfelelõ számmal szorozzuk meg az elforgatást
+			* glm::rotate<float>(time / 10000 / 10.0f * 360 , glm::vec3(0, 1, 0))        //majd y tengely körül elforgatjuk: azt szeretnénk, hogy egy teljes kört 10 mp alatt tegyen meg
+			* glm::translate<float>(glm::vec3(5, 0, 0))                                  //eltranszformáljuk x tengely mentén jobbra, körnek a sugara nagyjából 5 lesz
+			* glm::rotate<float>(time / 1000.0f * (2 * 6 *M_PI / 10.0)/2.0*90, glm::vec3(-1, 0, 0))//1 másodpercenként forduljon/gördüljön (x tengely körül)
+			* glm::rotate<float>(90, glm::vec3(0, 0, 1))                                 //a z tengely körül elforgatjuk 90 fokkal
+			* glm::translate(glm::vec3(0,-1,0));                                         //letoljuk 1-gyel, hogy a testnek a középpontja nagyjából az origo-ban legyen
+			                                                                             //legutolsónak mindig a legelsõ transzformációt adjuk meg
+
+		//(2 * 6 *M_PI / 10.0)/2.0*90
+		//kör kerülete osztva 10-el (1 mp alatt mennyit tesz meg a körpályán) és osztva 2-vel (oldalhossza a piramisnak) => hány negyedfordulatot tesz 1 mp alatt => 90-el megszorozva megkapjuk a fokbeli elfordulását
+
+			//projekciós transzformációt átküldjük a shadernek
+		glUniformMatrix4fv(m_loc_world, 1, GL_FALSE, &(m_matWorld[0][0]));
+		glDrawArrays(GL_TRIANGLES, 0, 18);
+	}
+
+	//negatív skála is lesz
+	m_matWorld = 
+		glm::rotate<float>(time / 10000.0f * 360, glm::vec3(0, 1, 0)) //Y tengely körül forgatás=> 10 mp alatt forduljon körbe
+		* glm::scale<float>(
+		    glm::vec3(1,                             //x
+			sin(time / 10000.0f * 2 * M_PI),         //Y tengely körüli pulzálás
+													 //=> másodpercenként egyet nõ, majd 2 PI-vel beszorozzuk 
+													 // => sin egy periódusát egy mp alatt fogja megtenni 
+													 // => majd beszorozzuk kettõvel, hogy 2 és -2 között ingadozzunk
+				1                                    //z
+			)
+		);
+
+	glUniformMatrix4fv(m_loc_world, 1, GL_FALSE, &(m_matWorld[0][0]));
+	glDrawArrays(GL_TRIANGLES, 0, 18);
+
+	 
 	// VAO kikapcsolasa
 	glBindVertexArray(0);
 
