@@ -8,6 +8,18 @@ Szabó Dávid - sasasoft@inf.elte.hu
 |(itthoni) |
 ------------
 
+(09-es videó)
+
+Merőleges (ortogonális) vetítés helyett Perspektívikus:
+
+- csonka gúla --> kamera néz valamerre
+
+függőleges és vízszintes látószög (fokban)
+van valamilyen első és hátsó vágósígja --> emiatt lesz csonkagúla
+
+
+
+
 (08-as videó)
 
 Feladat:

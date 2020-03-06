@@ -37,7 +37,14 @@ protected:
 	GLuint m_vaoID; // vertex array object erõforrás azonosító
 	GLuint m_vboID; // vertex buffer object erõforrás azonosító
 
-	float offset[2];
+	glm::mat4 m_matWorld;
+	glm::mat4 m_matView;
+	glm::mat4 m_matProj;
+
+	//location
+	GLuint m_loc_world;
+	GLuint m_loc_view;
+	GLuint m_loc_proj;
 
 	struct Vertex
 	{

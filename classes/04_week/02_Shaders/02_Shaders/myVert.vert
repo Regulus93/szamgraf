@@ -8,9 +8,16 @@ in vec3 vs_in_col;
 out vec3 vs_out_pos;
 out vec3 vs_out_col;
 
+//a modell koord. -ból a clipping koord.-ba (szorzás)
+//C++ (CPU-ból kapjuk)
+uniform mat4 world;//modell
+uniform mat4 view; //view
+uniform mat4 proj; //projection
+
 void main()
 {
-	gl_Position = vec4( vs_in_pos, 1 );
-	vs_out_pos = vs_in_pos;
+	//oszlopok lesznek bázisok --> oszlop vektorok (jobbról szorozzuk a vertexeinkkel a mátrixainkat); a transzformációk is jobbról balra haladnak
+	//a sorrend fontos, de az hogy az OpenGL hogyan végzi az nem
+	gl_Position = proj * view * world * vec4(vs_in_pos, 1);
 	vs_out_col = vs_in_col;
 }

@@ -3,6 +3,11 @@
 
 #include <math.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform2.hpp>
+
+
 CMyApp::CMyApp(void)
 {
 	m_vaoID = 0;
@@ -34,74 +39,6 @@ bool CMyApp::Init()
 	vertices.push_back({ glm::vec3(1, -1, 0),  glm::vec3(0, 1, 0) });
 	vertices.push_back({ glm::vec3(-1, 1, 0),  glm::vec3(0, 0, 1) });
 	vertices.push_back({ glm::vec3(1, 1, 0),   glm::vec3(1, 1, 1) });
-
-	//TRIANGLE FAN KÖZÉPPONTJA
-	vertices.push_back({ glm::vec3(-0.3, 0.3, 0),   glm::vec3(1, 1, 1) });
-
-	for (int i = 0; i < 10; ++i) {
-		//sugár mérete: 0.2
-		//eltolás mértéke (x tengely): -0.3
-		//eltolás mértéke (y tengely): + 0.3
-		vertices.push_back({
-			glm::vec3(
-				cos(2 * M_PI / 9 * i) * 0.2 - 0.3, //x
-				sin(2 * M_PI / 9 * i) * 0.2 + 0.3, //y
-				0								   //z
-			)
-			, glm::vec3(1,1,1) });
-	}
-
-	//TRIANGLE FAN KÖZÉPPONTJA
-	vertices.push_back({ glm::vec3(0.3, 0.3, 0),   glm::vec3(1, 1, 1) });
-
-	for (int i = 0; i < 10; ++i) {
-		//sugár mérete: 0.2
-		//eltolás mértéke (x tengely): -0.3
-		//eltolás mértéke (y tengely): + 0.3
-		vertices.push_back({
-			glm::vec3(
-				cos(2 * M_PI / 9 * i) * 0.2 + 0.3, //x
-				sin(2 * M_PI / 9 * i) * 0.2 + 0.3, //y
-				0								   //z
-			)
-			, glm::vec3(1,1,1) });
-	}
-	/*
-
-	X irányba ugyanazt toljuk el:
-
-	-0.50,    0, 0
-	-0.50, -0.5, 0
-	-0.25,    0, 0
-
-	- 0.50 + 0.25,    0, 0
-	- 0.50 + 0.25, -0.5, 0
-	- 0.25 + 0.25,    0, 0
-
-	- 0.50 + 0.50,    0, 0
-	- 0.50 + 0.50, -0.5, 0
-	- 0.25 + 0.50,    0, 0
-
-	- 0.50 + 0.75,    0, 0
-	- 0.50 + 0.75, -0.5, 0
-	- 0.25 + 0.75,    0, 0
-	*/
-
-	vertices.push_back({ glm::vec3(-0.50,     0, 0), glm::vec3(1, 0, 0) });
-	vertices.push_back({ glm::vec3(- 0.50, -0.5, 0), glm::vec3(1, 0, 0) });
-	vertices.push_back({ glm::vec3(- 0.25,    0, 0), glm::vec3(1, 0, 0) });
-
-	vertices.push_back({ glm::vec3(- 0.50 + 0.25,    0, 0), glm::vec3(1, 0, 0) });
-	vertices.push_back({ glm::vec3(- 0.50 + 0.25, -0.5, 0), glm::vec3(1, 0, 0) });
-	vertices.push_back({ glm::vec3(- 0.25 + 0.25,    0, 0), glm::vec3(1, 0, 0) });
-														  
-	vertices.push_back({ glm::vec3(- 0.50 + 0.50,    0, 0), glm::vec3(1, 0, 0) });
-	vertices.push_back({ glm::vec3(- 0.50 + 0.50, -0.5, 0), glm::vec3(1, 0, 0) });
-	vertices.push_back({ glm::vec3(- 0.25 + 0.50,    0, 0), glm::vec3(1, 0, 0) });
-														
-	vertices.push_back({ glm::vec3(- 0.50 + 0.75,    0, 0), glm::vec3(1, 0, 0) });
-	vertices.push_back({ glm::vec3(- 0.50 + 0.75, -0.5, 0), glm::vec3(1, 0, 0) });
-	vertices.push_back({ glm::vec3(- 0.25 + 0.75,    0, 0), glm::vec3(1, 0, 0) });
 
 	// 1 db VAO foglalasa
 	glGenVertexArrays(1, &m_vaoID);
@@ -182,13 +119,22 @@ bool CMyApp::Init()
 		delete aSzoveg;
 	}
 
-	offset[0] = 0;
-	offset[1] = 0;
-
 	// mar nincs ezekre szukseg
 	//törlésre történõ kijelölés: csak a program befejezõdése után fognak törlõdni (program instance élethez köti õket)
 	glDeleteShader( vs_ID );
 	glDeleteShader( fs_ID );
+
+	m_matProj = glm::perspective(
+		45.0f, //függõleges látószög fokban
+		640 / 480.0f, //oldalarány, ebbõl kerül kikalkulálásra a vízszintes látószög is
+		1.0f, //közeli vágósík távolsága a kamera koord. -ben a kamerától mérve
+		1000.0f //távoli vágósík távolsága ....
+		);
+
+	m_loc_world = glGetUniformLocation(m_programID, "world");
+	m_loc_view  = glGetUniformLocation(m_programID, "view");
+	m_loc_proj  = glGetUniformLocation(m_programID, "proj");
+
 
 	return true;
 }
@@ -203,6 +149,12 @@ void CMyApp::Clean()
 
 void CMyApp::Update()
 {
+	//kamera transzformációs mátrix legenerálása
+	m_matView = glm::lookAt(
+		glm::vec3(0, 4, 5),  //honnan nézzük
+		glm::vec3(0, 0, 0),  //melyik pontját nézzük
+		glm::vec3(0, 1, 0) //melyik irány van felfelé (elsõ két vektor nem határozza meg egyértelmûen a kamera irányát)
+	); //hová nézünk
 }
 
 
@@ -214,19 +166,25 @@ void CMyApp::Render()
 	// shader bekapcsolasa: ezzel jelezzük, hogy ezt a programunkat szeretnénk használni, ebben vannak a shaderjeink
 	glUseProgram( m_programID );
 
-	//minden rendeléskor megcsináljuk ezt
-	GLuint locT = glGetUniformLocation(m_programID, "t"); //kvázi pointer, de nem gazdaságos mert mindig lekérjük a változó helyét: ezt majd initben kell megtenni
-	glUniform1f(locT, SDL_GetTicks() / 1000.0); //egy elemi tömb, kvázi egy darab float
-	glUniform2f(glGetUniformLocation(m_programID, "offset"), offset[0], offset[1]);
+	//rotation lebegõpontos változó (másodpercenként 1-et nõjjön) => 1 mp alatt 1 teljes kör (360)
+	float rot = SDL_GetTicks() / 100000.0 / 10.0f * 360;
+	//forgatási szög, ezeket milyen szorzóval vegye figyelembe (itt most y tengely szerint fogja forgatni)
+	m_matWorld = glm::rotate(rot, glm::vec3(0, 1, 0));
+
+	//modellezési transzformációt átküldjük a shadernek
+	glUniformMatrix4fv(m_loc_world, 1, GL_FALSE, &(m_matWorld[0][0]));
+	//kamera transzformációt átküldjük a shadernek
+	glUniformMatrix4fv(m_loc_view, 1, GL_FALSE, &(m_matView[0][0]));
+	//projekciós transzformációt átküldjük a shadernek
+	glUniformMatrix4fv(m_loc_proj, 1, GL_FALSE, &(m_matProj[0][0]));
+
+	//shader ezeket fogja fogadni, összeszorozza az aktuálisan bejövõ vertexxel és kidobja a már clipping space-ben lévõ vertexeket
 
 	// kapcsoljuk be a VAO-t (a VBO jön vele együtt)
 	glBindVertexArray(m_vaoID);
 
 	// kirajzolás
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	glDrawArrays(GL_TRIANGLE_FAN, 4, 11);
-	glDrawArrays(GL_TRIANGLE_FAN, 15, 11);	
-	glDrawArrays(GL_TRIANGLES, 26, 12);
 
 	// VAO kikapcsolasa
 	glBindVertexArray(0);
@@ -237,20 +195,6 @@ void CMyApp::Render()
 
 void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
 {
-	switch (key.keysym.sym) {
-	case SDLK_DOWN:
-		offset[1] -= 0.01;
-		break;
-	case SDLK_UP:
-		offset[1] += 0.01;
-		break;
-	case SDLK_LEFT:
-		offset[0] -= 0.01;
-		break;
-	case SDLK_RIGHT:
-		offset[0] += 0.01;
-		break;
-	}
 }
 
 void CMyApp::KeyboardUp(SDL_KeyboardEvent& key)
@@ -278,4 +222,12 @@ void CMyApp::MouseWheel(SDL_MouseWheelEvent& wheel)
 void CMyApp::Resize(int _w, int _h)
 {
 	glViewport(0, 0, _w, _h );
+
+	//Ablakátméretezéskor frissíteni kell a látószögeket (csonkagúlát)
+	m_matProj = glm::perspective(
+		45.0f, //függõleges látószög fokban (ez itt 90 fok)
+		_w / (float) _h, //oldalarány, ebbõl kerül kikalkulálásra a vízszintes látószög is
+		1.0f, //közeli vágósík távolsága a kamera koord. -ben a kamerától mérve
+		100.0f //távoli vágósík távolsága ....
+	);
 }

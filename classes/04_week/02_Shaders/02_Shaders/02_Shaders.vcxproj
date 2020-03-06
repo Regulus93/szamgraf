@@ -47,8 +47,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>T:\OGLPack\include;$(IncludePath)</IncludePath>
-    <LibraryPath>t:\OGLPack\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>Y:\OGLPack\include;$(IncludePath)</IncludePath>
+    <LibraryPath>Y:\OGLPack\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -88,7 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyApp.h" />
-    <ClInclude Include="T:\03\02_Shaders\02_Shaders\GLUtils.hpp" />
+    <ClInclude Include="e:\Egyetem\Tananyagok\2019-20--2\szamgraf\classes\04_week\02_Shaders\02_Shaders\GLUtils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="myFrag.frag" />

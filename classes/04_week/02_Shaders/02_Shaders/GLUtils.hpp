@@ -6,6 +6,8 @@
 
 #include <GL/glew.h>
 
+
+
 /* 
 
 Az http://www.opengl-tutorial.org/ oldal alapján.
