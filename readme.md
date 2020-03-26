@@ -8,6 +8,10 @@ Szabó Dávid - sasasoft@inf.elte.hu
 |		   |
 ------------
 
+02_Indicies:
+
+
+
 Ismétlés:
 01_Transforms:
 	myVert.vert:
