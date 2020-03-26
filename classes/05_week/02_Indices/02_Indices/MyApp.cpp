@@ -39,7 +39,8 @@ bool CMyApp::Init()
 		{glm::vec3( 1,  1, 0), glm::vec3(1, 1, 1)},
 	};
 
-	// indexpuffer adatai
+	// indexpuffer adatai:
+	// elég egyszer felvenni a csúcspontokat, és aztán hivatkozhatunk a lentieknek megfelelõen
     GLushort indices[]=
     {
 		// 1. háromszög
@@ -84,14 +85,15 @@ bool CMyApp::Init()
 		sizeof(Vertex),
 		(void*)(sizeof(glm::vec3)) );
 
-	// index puffer létrehozása
+	// index puffer létrehozása (headerben új erõforrásmezõ lett hozzáadva)
 	glGenBuffers(1, &m_ibID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibID);
+	//lefoglal memóriaterületet, és leviszi a GPU-ra az adatot
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glBindVertexArray(0); // feltöltüttük a VAO-t, kapcsoljuk le
+	glBindVertexArray(0); // feltöltöttük a VAO-t, kapcsoljuk le
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // feltöltöttük a VBO-t is, ezt is vegyük le
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // feltöltöttük a VBO-t is, ezt is vegyük le
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // feltöltöttük a VBO-t is, ezt is vegyük le (ez már nem viszi le GPU-ra, indexbuffer miatt!!!)
 
 	//
 	// shaderek betöltése
@@ -155,6 +157,7 @@ bool CMyApp::Init()
 void CMyApp::Clean()
 {
 	glDeleteBuffers(1, &m_vboID);
+	//erõforrás törlése
 	glDeleteBuffers(1, &m_ibID);
 	glDeleteVertexArrays(1, &m_vaoID);
 
@@ -189,6 +192,7 @@ void CMyApp::Render()
 	*/
 	m_matWorld = glm::mat4(1.0f);
 
+	
 	glm::mat4 mvp = m_matProj * m_matView * m_matWorld;
 
 	// majd küldjük át a megfelelõ mátrixot!
@@ -201,6 +205,7 @@ void CMyApp::Render()
 	glBindVertexArray(m_vaoID);
 
 	// kirajzolás
+	// eddig glDrawArrays-t használtunk!
 	glDrawElements(	GL_TRIANGLES,		// primitív típus
 					6,					// hany csucspontot hasznalunk a kirajzolashoz
 					GL_UNSIGNED_SHORT,	// indexek tipusa

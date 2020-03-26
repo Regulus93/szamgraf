@@ -12,6 +12,8 @@ uniform mat4 MVP;
 
 void main()
 {
+	//eddig 6 vertexet küldtünk le és külön szoroztunk 
+	//de most már csak egy szorzást kell végezni, erõforrásbarátabb
 	gl_Position = MVP * vec4( vs_in_pos, 1 );
 	vs_out_col = vs_in_col;
 }

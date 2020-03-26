@@ -38,6 +38,7 @@ protected:
 	// OpenGL-es dolgok
 	GLuint m_vaoID; // vertex array object erõforrás azonosító
 	GLuint m_vboID; // vertex buffer object erõforrás azonosító
+	//új erõforrás!
 	GLuint m_ibID;  // index buffer object erõforrás azonosító
 
 	// transzformációs mátrixok
