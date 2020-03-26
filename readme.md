@@ -8,21 +8,34 @@ Szabó Dávid - sasasoft@inf.elte.hu
 |		   |
 ------------
 
-02_Indicies:
+- Ismétlés:
+	01_Transforms:
+		myVert.vert:
+			- mátrixszorzás (jobb asszociatív)
+		
 
+- Több világtranszformáció alkalmazása: lehetséges
+- gúlák egyenletes elosztása
 
+- Indexbuffer
 
-Ismétlés:
-01_Transforms:
-	myVert.vert:
-		- mátrixszorzás (jobb asszociatív)
+- Parametrikus felületek:
+	- olyan egyenlet, amellyel bizonyos geometrikákat elő lehet állítani (henger, tórusz stb.)
+	- másképpen: hogyan kellene egy darab papírból összehajtogatni?
 	
-
-Több világtranszformáció alkalmazása: lehetséges
-gúlák egyenletes elosztása
-
-	
-
+		-- van egy parametrikus síkunk
+		
+		
+		---------------------------------
+		|	|	|	|	|	|	|	|	|
+		|	|	|	|	|	|	|	|	|
+		---------------------------------
+		|	|	|	|	|	|	|	|	|
+		|	|	|	|	|	|	|	|	|
+		---------------------------------
+		|	|	|	|	|	|	|	|	|
+		|	|	|	|	|	|	|	|	|
+		---------------------------------
 
 ------------
 |  		   |
