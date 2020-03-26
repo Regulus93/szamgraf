@@ -59,7 +59,7 @@ protected:
 
 	// NxM darab négyszöggel közelítjük a parametrikus felületünket => (N+1)x(M+1) pontban kell kiértékelni
 	// vertex numbers
-	static const int N	= 5;
-	static const int M	= 5;
+	static const int N	= 20;
+	static const int M	= 20;
 };
 

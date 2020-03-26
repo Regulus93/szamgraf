@@ -23,6 +23,7 @@ CMyApp::~CMyApp(void)
 //
 glm::vec3	CMyApp::GetPos(float u, float v)
 {
+	// itt a parametrikus egyenlet
 	// origó középpontú, egységsugarú gömb parametrikus alakja: http://hu.wikipedia.org/wiki/G%C3%B6mb#Egyenletek 
 	// figyeljünk:	matematikában sokszor a Z tengely mutat felfelé, de nálunk az Y, tehát a legtöbb képlethez képest nálunk
 	//				az Y és Z koordináták felcserélve szerepelnek
@@ -52,9 +53,11 @@ bool CMyApp::Init()
 	for (int i=0; i<=N; ++i)
 		for (int j=0; j<=M; ++j)
 		{
+			//i és j függ a felbontástól, ezért normalizáljuk UV koordinátarendszerbe (0,0-ból [balfelsõ sarok] u és v irányba)
 			float u = i/(float)N;
 			float v = j/(float)M;
 
+			// adott u-ra és v-re kiértékeli a geometriánkat
 			vert[i + j*(N+1)].p = GetPos(u, v);
 			vert[i + j*(N+1)].c = glm::normalize( vert[i + j*(N+1)].p );
 		}
