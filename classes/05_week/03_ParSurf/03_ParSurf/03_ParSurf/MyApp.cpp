@@ -35,7 +35,7 @@ glm::vec3	CMyApp::GetPos(float u, float v)
 	float r = 2;
 	float R = 5;
 
-	return glm::vec3( (R + r * cu) * cv, (R + r * cu) * sv, r * su );
+	return glm::vec3( (R + r * cu) * cv, r * su, (R + r * cu) * sv);
 }
 
 bool CMyApp::Init()
