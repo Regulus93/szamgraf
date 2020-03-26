@@ -224,7 +224,8 @@ void CMyApp::Render()
 
 	//for ( int i = 0; i < 6; i++)
 	{
-		m_matWorld = glm::translate(glm::vec3(3, 0, 0)) * glm::rotate(3.14f / 2.0f, glm::vec3(0,1,0));
+		//m_matWorld = glm::translate(glm::vec3(3, 0, 0)) * glm::rotate(3.14f / 2.0f, glm::vec3(0,1,0));
+		m_matWorld = glm::scale(glm::vec3(0.25f, 0.25f, 0.25f)) * glm::translate(glm::vec3(3, 0, 0));
 		glUniformMatrix4fv(m_loc_world,// erre a helyre töltsünk át adatot
 			1,			// egy darab mátrixot
 			GL_FALSE,	// NEM transzponálva
