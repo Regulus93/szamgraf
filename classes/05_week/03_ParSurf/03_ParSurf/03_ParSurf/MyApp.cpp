@@ -30,9 +30,12 @@ glm::vec3	CMyApp::GetPos(float u, float v)
 	u *= 2*3.1415f;
 	v *= 3.1415f;
 	float cu = cosf(u), su = sinf(u), cv = cosf(v), sv = sinf(v);
+	
+	//szükséges két sugár
 	float r = 2;
+	float R = 5;
 
-	return glm::vec3( r*cu*sv, r*cv, r*su*sv );
+	return glm::vec3( (R + r * cu) * cv, (R + r * cu) * sv, r * su );
 }
 
 bool CMyApp::Init()
@@ -203,7 +206,7 @@ void CMyApp::Update()
 {
 	// nézeti transzformáció beállítása
 	float t = SDL_GetTicks()/1000.0f;
-	m_matView = glm::lookAt(glm::vec3( 5*cosf(t),  5,  5*sinf(t)),		// honnan nézzük a színteret
+	m_matView = glm::lookAt(glm::vec3( 15*cosf(t),  5,  15*sinf(t)),		// honnan nézzük a színteret
 							glm::vec3( 0,  0,  0),		// a színtér melyik pontját nézzük
 							glm::vec3( 0,  1,  0));		// felfelé mutató irány a világban
 }
