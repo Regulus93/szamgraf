@@ -28,7 +28,7 @@ glm::vec3	CMyApp::GetPos(float u, float v)
 	// figyeljünk:	matematikában sokszor a Z tengely mutat felfelé, de nálunk az Y, tehát a legtöbb képlethez képest nálunk
 	//				az Y és Z koordináták felcserélve szerepelnek
 	u *= 2*3.1415f;
-	v *= 3.1415f;
+	v *= 2*3.1415f;
 	float cu = cosf(u), su = sinf(u), cv = cosf(v), sv = sinf(v);
 	
 	//szükséges két sugár
