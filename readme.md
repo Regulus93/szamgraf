@@ -4,6 +4,22 @@ Szabó Dávid - sasasoft@inf.elte.hu
 
 ------------
 |  		   |
+|  5. hét  |
+|		   |
+------------
+
+Ismétlés:
+01_Transforms:
+	myVert.vert:
+		- mátrixszorzás (jobb asszociatív)
+	
+
+
+	
+
+
+------------
+|  		   |
 |  4. hét  |
 |(itthoni) |
 ------------
