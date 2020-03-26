@@ -62,7 +62,11 @@ bool CMyApp::Init()
 
 			// adott u-ra és v-re kiértékeli a geometriánkat
 			vert[i + j*(N+1)].p = GetPos(u, v);
-			vert[i + j*(N+1)].c = glm::normalize( vert[i + j*(N+1)].p );
+			vert[i + j*(N+1)].c = 
+				glm::normalize( vert[i + j*(N+1)].p ); 
+			// pozíció - szín megfeleltetés:
+			// probléma nem minden háromszög különbözõ színû
+			// 
 		}
 
 	// indexpuffer adatai: NxM négyszög = 2xNxM háromszög = háromszöglista esetén 3x2xNxM index
