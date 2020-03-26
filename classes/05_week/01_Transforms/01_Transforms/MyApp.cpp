@@ -222,7 +222,8 @@ void CMyApp::Render()
 	glUniformMatrix4fv(m_loc_view, 1, GL_FALSE, &(m_matView[0][0]));
 	glUniformMatrix4fv(m_loc_proj, 1, GL_FALSE, &(m_matProj[0][0]));
 
-	float t = SDL_GetTicks() / 1000.0f;
+	//raise value by 2 PI (one cycle in 5 mp)
+	float t = SDL_GetTicks() / 5000.0f * 6.28f;
 
 	for ( int i = 0; i < 6; i++)
 	{

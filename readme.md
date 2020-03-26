@@ -14,6 +14,8 @@ Ismétlés:
 		- mátrixszorzás (jobb asszociatív)
 	
 
+Több világtranszformáció alkalmazása: lehetséges
+gúlák egyenletes elosztása
 
 	
 
