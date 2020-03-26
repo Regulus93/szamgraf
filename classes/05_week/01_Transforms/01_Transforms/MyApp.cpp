@@ -177,8 +177,8 @@ void CMyApp::Update()
 	float t = SDL_GetTicks() / 1000.0f;
 
 	// nézeti transzformáció beállítása
-	m_matView = glm::lookAt(glm::vec3(cosf(t) * 5, 5, sinf(t) * 5),		// honnan nézzük a színteret
-	//m_matView = glm::lookAt(glm::vec3( 0,  5,  5),		// honnan nézzük a színteret
+	//m_matView = glm::lookAt(glm::vec3(cosf(t) * 5, 5, sinf(t) * 5),		// honnan nézzük a színteret
+	m_matView = glm::lookAt(glm::vec3( 0,  5,  5),		// honnan nézzük a színteret
 							glm::vec3( 0,  0,  0),		// a színtér melyik pontját nézzük
 							glm::vec3( 0,  1,  0));		// felfelé mutató irány a világban
 }
@@ -222,9 +222,11 @@ void CMyApp::Render()
 	glUniformMatrix4fv(m_loc_view, 1, GL_FALSE, &(m_matView[0][0]));
 	glUniformMatrix4fv(m_loc_proj, 1, GL_FALSE, &(m_matProj[0][0]));
 
+	float t = SDL_GetTicks() / 1000.0f;
+
 	for ( int i = 0; i < 6; i++)
 	{
-		m_matWorld = glm::rotate(6.28f / 6.0f * i, glm::vec3(0, 1, 0)) * glm::translate(glm::vec3(3, 0, 0));
+		m_matWorld = glm::rotate(6.28f / 6.0f * i + t, glm::vec3(0, 1, 0)) * glm::translate(glm::vec3(3, 0, 0));
 		glUniformMatrix4fv(m_loc_world,// erre a helyre töltsünk át adatot
 			1,			// egy darab mátrixot
 			GL_FALSE,	// NEM transzponálva
