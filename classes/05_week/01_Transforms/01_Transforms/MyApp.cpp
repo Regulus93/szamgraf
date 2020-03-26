@@ -177,8 +177,8 @@ void CMyApp::Update()
 	float t = SDL_GetTicks() / 1000.0f;
 
 	// nézeti transzformáció beállítása
-	//m_matView = glm::lookAt(glm::vec3(cosf(t) * 5, 5, sinf(t) * 5),		// honnan nézzük a színteret
-	m_matView = glm::lookAt(glm::vec3( 0,  5,  5),		// honnan nézzük a színteret
+	m_matView = glm::lookAt(glm::vec3(cosf(t) * 5, 5, sinf(t) * 5),		// honnan nézzük a színteret
+	//m_matView = glm::lookAt(glm::vec3( 0,  5,  5),		// honnan nézzük a színteret
 							glm::vec3( 0,  0,  0),		// a színtér melyik pontját nézzük
 							glm::vec3( 0,  1,  0));		// felfelé mutató irány a világban
 }
@@ -204,23 +204,36 @@ void CMyApp::Render()
 	//m_matWorld = glm::mat4(1.0f);
 	//m_matWorld = glm::translate(glm::vec3(2, 0, 0));
 	//m_matWorld = glm::scale(glm::vec3(2, 0.5f, 1));
-	m_matWorld = glm::rotate(glm::radians(45.0f), glm::vec3(0, 1, 0));
-
-	// majd küldjük át a megfelelõ mátrixokat!
-	glUniformMatrix4fv( m_loc_world,// erre a helyre töltsünk át adatot
-						1,			// egy darab mátrixot
-						GL_FALSE,	// NEM transzponálva
-						&(m_matWorld[0][0]) ); // innen olvasva a 16 x sizeof(float)-nyi adatot
-	glUniformMatrix4fv( m_loc_view,  1, GL_FALSE, &( m_matView[0][0]) );
-	glUniformMatrix4fv( m_loc_proj,  1, GL_FALSE, &( m_matProj[0][0]) );
 
 	// kapcsoljuk be a VAO-t (a VBO jön vele együtt)
 	glBindVertexArray(m_vaoID);
 
-	// kirajzolás
+	{
+	m_matWorld = glm::scale(glm::vec3(0.25f, 0.25f, 0.25f));
+	glUniformMatrix4fv( m_loc_world,// erre a helyre töltsünk át adatot
+						1,			// egy darab mátrixot
+						GL_FALSE,	// NEM transzponálva
+						&(m_matWorld[0][0]) ); // innen olvasva a 16 x sizeof(float)-nyi adatot
 	glDrawArrays(	GL_TRIANGLES,	// rajzoljunk ki háromszöglista primitívet
 					0,				// a VB elsõ eleme legyen az elsõ kiolvasott vertex
 					18);				// és 6db csúcspont segítségével rajzoljunk háromszöglistát
+	}
+
+	glUniformMatrix4fv(m_loc_view, 1, GL_FALSE, &(m_matView[0][0]));
+	glUniformMatrix4fv(m_loc_proj, 1, GL_FALSE, &(m_matProj[0][0]));
+
+	//for ( int i = 0; i < 6; i++)
+	{
+		m_matWorld = glm::translate(glm::vec3(3, 0, 0)) * glm::rotate(3.14f / 2.0f, glm::vec3(0,1,0));
+		glUniformMatrix4fv(m_loc_world,// erre a helyre töltsünk át adatot
+			1,			// egy darab mátrixot
+			GL_FALSE,	// NEM transzponálva
+			&(m_matWorld[0][0])); // innen olvasva a 16 x sizeof(float)-nyi adatot
+		glDrawArrays(GL_TRIANGLES,	// rajzoljunk ki háromszöglista primitívet
+			0,				// a VB elsõ eleme legyen az elsõ kiolvasott vertex
+			18);				// és 6db csúcspont segítségével rajzoljunk háromszöglistát
+	}
+
 
 	// VAO kikapcsolasa
 	glBindVertexArray(0);
