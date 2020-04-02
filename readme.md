@@ -4,6 +4,16 @@ Szabó Dávid - sasasoft@inf.elte.hu
 
 ------------
 |  		   |
+|  6. hét  |
+|		   |
+------------
+
+- új koordinátarendszer:
+	-- origó bal alsó sarok
+
+
+------------
+|  		   |
 |  5. hét  |
 |		   |
 ------------
