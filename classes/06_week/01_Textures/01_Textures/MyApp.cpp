@@ -22,16 +22,21 @@ CMyApp::~CMyApp(void)
 {
 }
 
+//random textúra generálása
 GLuint CMyApp::GenerateRandomTexture()
 {
 	const int W = 128, H = 128;
 	unsigned char tex[W][H][3];
 
+	//random számok generálása
 	for (int i = 0; i < W; ++i)
 		for (int j = 0; j < H; ++j)
 		{
+			//vörös csatorna
 			tex[i][j][0] = rand() % 256;
+			//zöld csatorna
 			tex[i][j][1] = rand() % 256;
+			//kék csatorna
 			tex[i][j][2] = rand() % 256;
 		}
 
@@ -43,8 +48,9 @@ GLuint CMyApp::GenerateRandomTexture()
 	glBindTexture(GL_TEXTURE_2D, tmpID);
 
 	// töltsük fel adatokkal
+	// ez viszi le a pixeladatokat a videókártyára
 	glTexImage2D(GL_TEXTURE_2D,		// melyik binding point-on van a textúra erõforrás, amihez tárolást rendelünk
-		0,					// melyik részletességi szint adatait határozzuk meg
+		0,					// melyik részletességi szint adatait határozzuk meg (a mipmapek közül melyik méretet szeretnénk megadni => 0 a legnagyobb)
 		GL_RGB,				// textúra belsõ tárolási formátuma (GPU-n)
 		W, H,			// szélesség, magasság
 		0,					// nulla kell, hogy legyen ( https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml )
@@ -52,6 +58,22 @@ GLuint CMyApp::GenerateRandomTexture()
 		GL_UNSIGNED_BYTE,	// forrás egy pixelének egy csatornáját hogyan tároljuk
 		tex);				// forráshoz pointer
 
+	/*
+	Az összes olyan grafikus API-ban van olyan, hogy mipmap generálás: 
+		- mintavételezési probléma
+
+		- az 512x512 felbontású kép a képernyőn pontosan 512x512 méretet vegyen fel
+
+		emberke helyzetéhez viszonyítva: nagyítani a falat - kicsinyíteni
+
+		  /|
+		 / |    O      O      O
+		/  |    |	   |	  |
+		|  /   / \	  / \	 / \
+		| /
+		|/
+
+	*/
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
