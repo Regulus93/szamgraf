@@ -298,6 +298,8 @@ bool CMyApp::Init()
 	m_loc_mvp = glGetUniformLocation( m_programID, "MVP");
 	m_loc_w = glGetUniformLocation( m_programID, "world" );
 	m_loc_tex = glGetUniformLocation(m_programID, "texImage");
+	m_loc_tex2 = glGetUniformLocation(m_programID, "texImage2");
+	m_loc_t = glGetUniformLocation(m_programID, "texImage2");
 
 	return true;
 }
@@ -349,11 +351,25 @@ void CMyApp::Render()
 	// aktiváljuk a 0-ás textúramintavételezőt (innenőt a gl*Texture* hívások erre vonatkoznak)
 	// ez akkor fontos, ha több textúrát akarunk egyszerre használni, ha egyszerre csak egy kell,
 	// akkor ezt elhagyva automatikusan a 0-ás mintavételező aktív
+	//0-s mintavételező bekapcsolása
 	glActiveTexture(GL_TEXTURE0);
 	// bindoljuk a zaj textúrát (az aktív 0-ás mintavételezőhöz)
 	glBindTexture(GL_TEXTURE_2D, m_generatedTextureID);
+	//shadernek is el kell magyarázni melyiket használjuk
+
+
 	// beállítjuk, hogy a fragment shaderben a "texImage" nevű mintavételező a 0-ás számú legyen
 	glUniform1i(m_loc_tex, 0);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, m_loadedTextureID);
+	glUniform1i(m_loc_tex2, 1);
+
+	glUniform1f(m_loc_t, sinf(SDL_GetTicks() / 2000.0f * 2.f * M_PI) * 0.5f + 0.5f);
+
+	
+	
+
 
 	// kirajzolás
 	//A draw hívásokhoz a VAO és a program bindolva kell legyenek (glUseProgram() és glBindVertexArray())

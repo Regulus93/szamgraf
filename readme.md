@@ -11,6 +11,12 @@ Szabó Dávid - sasasoft@inf.elte.hu
 - új koordinátarendszer:
 	-- origó bal alsó sarok
 
+- mipmap (mintavételezési probléma)
+
+- textúra mintavételező egységek (sampler)
+
+- azért fragment shaderben olvassuk ki a textúrát (a vertexben gyorsabb lenne):
+	-- pixelenként akarjuk kiértékelni, hogy azon a ponton épp milyen színnek kéne lennie
 
 ------------
 |  		   |

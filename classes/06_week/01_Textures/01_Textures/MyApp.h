@@ -64,6 +64,8 @@ protected:
 	GLuint	m_loc_mvp;
 	GLuint  m_loc_w;
 	GLuint	m_loc_tex;
+	GLuint	m_loc_tex2;
+	GLuint	m_loc_t;
 
 	// a jobb olvashatóság kedvéért
 	void InitCube();
