@@ -82,5 +82,6 @@ protected:
 	glm::vec3 m_fw = ToDescartes(m_u, m_v);
 	//a fejemre helyezem a gömbikoordinátarendszert
 	glm::vec3 m_at = m_eye + m_fw;
+	bool is_mouse_pressed = false;
 };
 

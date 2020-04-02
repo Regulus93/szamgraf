@@ -449,16 +449,28 @@ void CMyApp::KeyboardUp(SDL_KeyboardEvent& key)
 
 void CMyApp::MouseMove(SDL_MouseMotionEvent& mouse)
 {
+	if (is_mouse_pressed) {
+		//mouse sensibility
+		m_u += mouse.xrel / 100.0f;
+		m_v += mouse.yrel / 100.0f;
 
+		m_fw = ToDescartes(m_u, m_v);
+		m_at = m_eye + m_fw;
+	}
 }
 
 void CMyApp::MouseDown(SDL_MouseButtonEvent& mouse)
 {
+	if (mouse.button == SDL_BUTTON_LEFT)
+		is_mouse_pressed = true;
 }
 
 void CMyApp::MouseUp(SDL_MouseButtonEvent& mouse)
 {
+	if (mouse.button == SDL_BUTTON_LEFT)
+		is_mouse_pressed = false;
 }
+
 
 void CMyApp::MouseWheel(SDL_MouseWheelEvent& wheel)
 {

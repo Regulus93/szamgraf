@@ -17,6 +17,10 @@ Szabó Dávid - sasasoft@inf.elte.hu
 
 - azért fragment shaderben olvassuk ki a textúrát (a vertexben gyorsabb lenne):
 	-- pixelenként akarjuk kiértékelni, hogy azon a ponton épp milyen színnek kéne lennie
+	
+feladat:
+	- körbefordulást meggátolni
+	- balra - jobbra, előre - hátra mozgás W, A, S, D billentyűlenyomásokkal
 
 ------------
 |  		   |
