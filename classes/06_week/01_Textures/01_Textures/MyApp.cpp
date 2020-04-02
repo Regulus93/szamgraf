@@ -319,12 +319,23 @@ void CMyApp::Clean()
 	glDeleteProgram( m_programID );
 }
 
+// r * cos (phi) * sin (theta)
+// r * sin (phi) * sin (theta)
+// r * cos (theta)
+glm::vec3 CMyApp::ToDescartes(float u, float v) {
+	return glm::vec3(
+		cosf(u) * sinf(v),
+		cosf(v),
+		sinf(u) * sin(v)
+	);
+}
+
 void CMyApp::Update()
 {
 	// nézeti transzformáció beállítása
-	m_matView = glm::lookAt(glm::vec3( 0,  6, 10),		// honnan nézzük a színteret
-							glm::vec3( 0,  0,  0),		// a színtér melyik pontját nézzük
-							glm::vec3( 0,  1,  0));		// felfelé mutató irány a világban
+	m_matView = glm::lookAt(m_eye,		// honnan nézzük a színteret
+		m_at,		// a színtér melyik pontját nézzük
+		glm::vec3(0, 1, 0));		// felfelé mutató irány a világban
 }
 
 void CMyApp::Render()

@@ -72,5 +72,15 @@ protected:
 	void InitFloor();
 	void InitShaders();
 	void InitTextures();
+
+	glm::vec3 ToDescartes(float u, float v);
+
+	glm::vec3 m_eye = glm::vec3(0, 6, 10);
+	float m_u = 0; // phi
+	float m_v = 3; //theta
+	//forward vector
+	glm::vec3 m_fw = ToDescartes(m_u, m_v);
+	//a fejemre helyezem a gömbikoordinátarendszert
+	glm::vec3 m_at = m_eye + m_fw;
 };
 
