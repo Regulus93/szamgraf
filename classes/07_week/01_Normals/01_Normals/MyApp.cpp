@@ -170,6 +170,7 @@ void CMyApp::InitShaders()
 	glBindAttribLocation(m_programID,	// shader azonosítója, amibõl egy változóhoz szeretnénk hozzárendelést csinálni
 		0,				// a VAO-beli azonosító index
 		"vs_in_pos");	// a shader-beli változónév
+
 	glBindAttribLocation(m_programID, 1, "vs_in_col");
 	glBindAttribLocation(m_programID, 2, "vs_in_tex0");
 
@@ -228,6 +229,7 @@ bool CMyApp::Init()
 	m_loc_mvp = glGetUniformLocation(m_programID, "MVP");
 	m_loc_world = glGetUniformLocation(m_programID, "world");
 	m_loc_worldIT = glGetUniformLocation(m_programID, "worldIT");
+	m_loc_eyePos = glGetUniformLocation(m_programID, "eyePos");
 	//m_loc_tex = glGetUniformLocation(m_programID, "texImage");
 	
 	return true;
@@ -266,6 +268,7 @@ void CMyApp::Render()
 	// - Gömb kirajzolása
 	//
 
+
 	glm::mat4 viewProj = m_camera.GetViewProj();
 	glm::mat4 world = glm::mat4(1.0f);
 	glm::mat4 wolrdIT = glm::inverse(glm::transpose(world));
@@ -273,6 +276,7 @@ void CMyApp::Render()
 	glUniformMatrix4fv(m_loc_mvp, 1, GL_FALSE, &mvp[0][0]);
 	glUniformMatrix4fv(m_loc_world, 1, GL_FALSE, &world[0][0]);
 	glUniformMatrix4fv(m_loc_worldIT, 1, GL_FALSE, &wolrdIT[0][0]);
+	glUniform3fv(m_loc_eyePos, 1, &m_camera.GetEye()[0]);
 
 	// feladat - textúra
 

@@ -4,6 +4,7 @@
 in vec3 vs_out_pos;
 in vec3 vs_out_norm;
 in vec2 vs_out_tex;
+in vec3 vs_out_eyePos;
 
 // kimenõ érték - a fragment színe
 out vec4 fs_out_col;
@@ -57,8 +58,8 @@ void main()
 	// fényfoltképzõ szín
 	//
 	/* segítség:
-		- reflect: http://www.opengl.org/sdk/docs/manglsl/xhtml/reflect.xml
-		- power: http://www.opengl.org/sdk/docs/manglsl/xhtml/pow.xml
+		- reflect: http://www.opengl.org/sdk/docs/manglsl/xhtml/reflect.xml visszaverődő r kiszámítása
+		- power: http://www.opengl.org/sdk/docs/manglsl/xhtml/pow.xml 
 	*/
 
 	//vec3 specular = ;
