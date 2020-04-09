@@ -40,6 +40,11 @@ Előző óra:
 	 /   x  /
 	/------/
 
+	normálvektor kiszámítás: gömb az egyetlen parametrikus felület, a normálvektor ugyanaz mint a pozícióvektor
+	
+	feladatok: 
+		- irány fényforrást pontra cserélni
+		- fényeket textúrára alkalmazni
 ------------
 |  		   |
 |  6. hét  |
