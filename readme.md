@@ -21,6 +21,21 @@ Előző óra:
 		-- nap eléggé messze van, és így kb. a sugarai eléggé párhuzamosak
 		
 		(kitekintő: softbox)
+		
+	- ambient kiszámítása (myFrag.frag)
+	
+	- felületi normális:
+	
+	
+	
+	@ szög: l és n között
+	
+		 ^
+  -l \   | n
+	  \@ |
+	  /\-|---/
+	 /   x  /
+	/------/
 
 ------------
 |  		   |

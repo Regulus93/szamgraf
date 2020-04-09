@@ -17,9 +17,6 @@ uniform vec3 Ld = vec3(0.6, 0.6, 0.6);
 
 // anyagtulajdonságok: ambiens, diffúz, ...
 uniform vec3 Ka = vec3(1, 1, 1);
-//uniform vec3 Ka = vec3(0.2, 0.4, 0.6);
-
-//uniform vec3 Kd = vec3(0.2, 0.4, 0.6);
 uniform vec3 Kd = vec3(1, 1, 1);
 
 //uniform sampler2D texImage;
@@ -27,6 +24,7 @@ uniform vec3 Kd = vec3(1, 1, 1);
 void main()
 {	
 	vec3 l = normalize(light_dir);
+	
 	//
 	// ambiens szín számítása
 	//
@@ -41,8 +39,6 @@ void main()
 	    - skaláris szorzat: http://www.opengl.org/sdk/docs/manglsl/xhtml/dot.xml
 	    - clamp: http://www.opengl.org/sdk/docs/manglsl/xhtml/clamp.xml
 	*/
-
-	//vec3 diffuse = ;
 
 	//
 	// fényfoltképzõ szín
@@ -59,11 +55,10 @@ void main()
 	//
 
 	//fs_out_col = vec4(ambient + diffuse + specular, 1);
-	//tegyél hozzá egy "a" átlátszóságot
 	fs_out_col = vec4(ambient, 1);
 
 	// felületi normális
-	fs_out_col = vec4(vs_out_norm, 1);
+	//fs_out_col = vec4(vs_out_norm, 1);
 
 
 
