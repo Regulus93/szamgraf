@@ -418,6 +418,8 @@ void CMyApp::MouseMove(SDL_MouseMotionEvent& mouse)
 		m_u += mouse.xrel / 100.0f;
 		m_v += mouse.yrel / 100.0f;
 
+		m_v = glm::clamp(m_v, 0.01f, 3.13f);
+
 		m_fw = ToDescartes(m_u, m_v);
 		m_at = m_eye + m_fw;
 	}

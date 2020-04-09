@@ -4,6 +4,18 @@ Szabó Dávid - sasasoft@inf.elte.hu
 
 ------------
 |  		   |
+|  7. hét  |
+|		   |
+------------
+
+Előző óra:
+- körbefordulást meggátolni:
+
+	- megoldás: A forgási szög leszorítása
+		-- m_v = glm::clamp(m_v, 0.01f, 3.13f);
+
+------------
+|  		   |
 |  6. hét  |
 |		   |
 ------------
