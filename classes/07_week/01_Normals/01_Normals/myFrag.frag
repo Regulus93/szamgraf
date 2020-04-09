@@ -40,6 +40,19 @@ void main()
 	    - clamp: http://www.opengl.org/sdk/docs/manglsl/xhtml/clamp.xml
 	*/
 
+	vec3 n = normalize(vs_out_norm);
+	vec3 toLight = -l;
+	float di = clamp(dot(n, toLight), 
+		0, //minimum 
+		1  //maximum
+		);
+	vec3 diffuse = 
+		Ld *
+		Kd *
+		di //diffúz intenzitás
+
+	;
+
 	//
 	// fényfoltképzõ szín
 	//
@@ -55,7 +68,7 @@ void main()
 	//
 
 	//fs_out_col = vec4(ambient + diffuse + specular, 1);
-	fs_out_col = vec4(ambient, 1);
+	fs_out_col = vec4(ambient + diffuse, 1);
 
 	// felületi normális
 	//fs_out_col = vec4(vs_out_norm, 1);
