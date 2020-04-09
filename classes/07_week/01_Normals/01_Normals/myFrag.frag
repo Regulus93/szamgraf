@@ -4,7 +4,7 @@
 in vec3 vs_out_pos;
 in vec3 vs_out_norm;
 in vec2 vs_out_tex;
-in vec3 vs_out_eyePos;
+uniform vec3 eyePos;
 
 // kimenõ érték - a fragment színe
 out vec4 fs_out_col;
@@ -15,10 +15,14 @@ uniform vec3 light_dir = vec3(-1,-1,-1);
 // fénytulajdonságok: ambiens, diffúz, ...
 uniform vec3 La = vec3(0.4, 0.0, 0.0);
 uniform vec3 Ld = vec3(0.6, 0.6, 0.0);
+//fehér legyen a spekuláris fény
+uniform vec3 Ls = vec3(1, 1, 1);
 
 // anyagtulajdonságok: ambiens, diffúz, ...
 uniform vec3 Ka = vec3(1, 1, 1);
 uniform vec3 Kd = vec3(1, 1, 1);
+//fehéren reagáljon rá a felület
+uniform vec3 Ks = vec3(1, 1, 1);
 
 //uniform sampler2D texImage;
 
@@ -62,14 +66,17 @@ void main()
 		- power: http://www.opengl.org/sdk/docs/manglsl/xhtml/pow.xml 
 	*/
 
-	//vec3 specular = ;
+	vec3 c = normalize(eyePos - vs_out_pos);
+	vec3 r = reflect(l, n);
+	float si = pow(clamp(dot(r, c), 0, 1), 16);
+	vec3 specular = Ls * Ks * si;
+
 	
 	//
 	// a fragment végsõ színének meghatározása
 	//
 
-	//fs_out_col = vec4(ambient + diffuse + specular, 1);
-	fs_out_col = vec4(ambient + diffuse, 1);
+	fs_out_col = vec4(ambient + diffuse + specular, 1);
 
 	// felületi normális
 	//fs_out_col = vec4(vs_out_norm, 1);
