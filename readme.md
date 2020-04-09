@@ -28,12 +28,15 @@ Előző óra:
 	
 	
 	
-	@ szög: l és n között
+	@ szög: l (fénysugár) és n(ormál vektor) között
+	
+	(r vektor: visszaverődés)
 	
 		 ^
   -l \   | n
-	  \@ |
-	  /\-|---/
+	  \@ |   / r
+	   \@|  /
+ 	  / \|-/-/
 	 /   x  /
 	/------/
 
