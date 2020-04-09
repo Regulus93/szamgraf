@@ -406,6 +406,7 @@ void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
 			m_at += m_fw;
 			break;
 		case(SDLK_s): std::cout << "---\n|S|\n"; break;
+			//cross product -> merőleges vektor az oldalramozgáshoz
 		case(SDLK_d): std::cout << "---\n|D|\n"; break;
 		case(SDLK_a): std::cout << "---\n|A|\n"; break;
 		default: break;
