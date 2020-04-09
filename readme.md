@@ -13,6 +13,14 @@ Előző óra:
 
 	- megoldás: A forgási szög leszorítása
 		-- m_v = glm::clamp(m_v, 0.01f, 3.13f);
+		
+01_Normals:
+	- fényforrás típusok:
+		-- phong árnyalás
+		-- pontfény
+		-- nap eléggé messze van, és így kb. a sugarai eléggé párhuzamosak
+		
+		(kitekintő: softbox)
 
 ------------
 |  		   |
