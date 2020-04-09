@@ -400,7 +400,11 @@ void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
 {
 	switch (key.keysym.sym)
 	{
-		case(SDLK_w): std::cout << "---\n|W|\n"; break;
+		case(SDLK_w): 
+			std::cout << "---\n|W|\n"; 
+			m_eye += m_fw;
+			m_at += m_fw;
+			break;
 		case(SDLK_s): std::cout << "---\n|S|\n"; break;
 		case(SDLK_d): std::cout << "---\n|D|\n"; break;
 		case(SDLK_a): std::cout << "---\n|A|\n"; break;
