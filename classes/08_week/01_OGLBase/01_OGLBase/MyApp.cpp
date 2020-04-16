@@ -173,24 +173,27 @@ void CMyApp::InitSkyBox()
 
 }
 
+//3 mód shader létrehozására
 void CMyApp::InitShaders()
 {
+	// 1. lépés: felsoroljuk a különbözõ shadereket, amiket szeretnénk lefordítani
 	// a shadereket tároló program létrehozása az OpenGL-hez hasonló módon:
 	m_program.AttachShaders({
 		{ GL_VERTEX_SHADER, "myVert.vert"},
 		{ GL_FRAGMENT_SHADER, "myFrag.frag"}
 	});
 
-	// attributomok osszerendelese a VAO es shader kozt
+	// 2.lépés: attributomok (pl.: 0-as csatorna vs_in_pos) osszerendelese a VAO es shader kozt
 	m_program.BindAttribLocations({
 		{ 0, "vs_in_pos" },				// VAO 0-as csatorna menjen a vs_in_pos-ba
 		{ 1, "vs_in_norm" },			// VAO 1-es csatorna menjen a vs_in_norm-ba
 		{ 2, "vs_in_tex" },				// VAO 2-es csatorna menjen a vs_in_tex-be
 	});
 
+	//3. lépés: linkelés
 	m_program.LinkProgram();
 
-	// shader program rövid létrehozása, egyetlen függvényhívással a fenti három:
+	// 3 in 1: shader program rövid létrehozása, egyetlen függvényhívással a fenti három:
 	m_programSkybox.Init(
 		{
 			{ GL_VERTEX_SHADER, "skybox.vert" },

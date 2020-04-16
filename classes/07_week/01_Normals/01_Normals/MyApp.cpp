@@ -153,6 +153,7 @@ void CMyApp::InitSphere()
 
 }
 
+//01_OGLBase-ben ennél jóval egyszerûbb
 void CMyApp::InitShaders()
 {
 	GLuint vs_ID = loadShader(GL_VERTEX_SHADER, "myVert.vert");
