@@ -50,6 +50,8 @@ protected:
 	ProgramObject		m_program;			// mesh shader
 	ProgramObject		m_programSkybox;	// skybox shader
 
+	//Ezeknek az élettartama megegyezik a lefoglalt erõforrások élettartamával (befoglaló példány inicializálása/destruktor hívása befolyásolja)
+
 	//ez egy kocka, de nem látszik - erõforrásokkal
 	VertexArrayObject	m_CubeVao;			// VAO
 	IndexBuffer			m_CubeIndices;		// index buffer

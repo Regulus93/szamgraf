@@ -238,6 +238,7 @@ void CMyApp::Clean()
 {
 	glDeleteTextures(1, &m_skyboxTexture);
 
+	//itt viszont kell törölni a pointert
 	delete m_mesh;
 }
 
