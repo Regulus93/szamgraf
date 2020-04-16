@@ -50,19 +50,18 @@ protected:
 	ProgramObject		m_program;			// mesh shader
 	ProgramObject		m_programSkybox;	// skybox shader
 
-	//Ezeknek az élettartama megegyezik a lefoglalt erõforrások élettartamával (befoglaló példány inicializálása/destruktor hívása befolyásolja)
-
-	//ez egy kocka, de nem látszik - erõforrásokkal
 	VertexArrayObject	m_CubeVao;			// VAO
 	IndexBuffer			m_CubeIndices;		// index buffer
 	ArrayBuffer			m_CubeVertexBuffer;	// VBO
-
-	//skybox kocka - erõforrásokkal
 	VertexArrayObject	m_SkyboxVao;
-	IndexBuffer			m_SkyboxIndices;	
-	ArrayBuffer			m_SkyboxPos;		
+	IndexBuffer			m_SkyboxIndices;
+	ArrayBuffer			m_SkyboxPos;
 
-	//kameramozgatás: WASD és egér
+	//Sphere
+	VertexArrayObject	m_sphereVAO;
+	ArrayBuffer			m_spherePosVBO;
+	IndexBuffer			m_sphereIndices;
+
 	gCamera				m_camera;
 
 	Texture2D			m_woodTexture;
@@ -79,13 +78,16 @@ protected:
 	};
 
 	// mesh adatok
-	// ez tartalmazza a csimpánz fejet
-	Mesh *m_mesh;
+	Mesh* m_mesh;
+
+	glm::vec3 GetPos(float u, float v);
+	const static int N = 20;
+	const static int M = 20;
 
 	// a jobb olvashatóság kedvéért
-	// segédfüggvények
 	void InitShaders();
 	void InitCube();
 	void InitSkyBox();
+	void InitSphere();
 };
 

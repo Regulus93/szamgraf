@@ -176,6 +176,52 @@ void CMyApp::InitSkyBox()
 
 }
 
+void CMyApp::InitSphere()
+{
+	Vertex vert[(N + 1) * (M + 1)];
+	for (int i = 0; i <= N; ++i)
+		for (int j = 0; j <= M; ++j)
+		{
+			float u = i / (float)N;
+			float v = j / (float)M;
+
+			vert[i + j * (N + 1)].p = GetPos(u, v);
+			//vert[i + j * (N + 1)].n = GetNorm(u, v);
+			//vert[i + j * (N + 1)].t = GetTex(u, v);
+		}
+
+	// indexpuffer adatai: NxM négyszög = 2xNxM háromszög = háromszöglista esetén 3x2xNxM index
+	GLushort indices[3 * 2 * (N) * (M)];
+	for (int i = 0; i < N; ++i)
+		for (int j = 0; j < M; ++j)
+		{
+			indices[6 * i + j * 3 * 2 * (N)+0] = (i)+(j) * (N + 1);
+			indices[6 * i + j * 3 * 2 * (N)+1] = (i + 1) + (j) * (N + 1);
+			indices[6 * i + j * 3 * 2 * (N)+2] = (i)+(j + 1) * (N + 1);
+			indices[6 * i + j * 3 * 2 * (N)+3] = (i + 1) + (j) * (N + 1);
+			indices[6 * i + j * 3 * 2 * (N)+4] = (i + 1) + (j + 1) * (N + 1);
+			indices[6 * i + j * 3 * 2 * (N)+5] = (i)+(j + 1) * (N + 1);
+		}
+
+	m_spherePosVBO.BufferData(vert);
+
+	// és a primitíveket alkotó csúcspontok indexei (az elõzõ tömbökbõl) - triangle list-el való kirajzolásra felkészülve
+	m_sphereIndices.BufferData(indices);
+
+	// geometria VAO-ban való regisztrálása
+	m_sphereVAO.Init(
+		{
+			// 0-ás attribútum "lényegében" glm::vec3-ak sorozata és az adatok az m_CubeVertexBuffer GPU pufferben vannak
+			{ CreateAttribute<		0,						// attribútum: 0
+									glm::vec3,				// CPU oldali adattípus amit a 0-ás attribútum meghatározására használtunk <- az eljárás a glm::vec3-ból kikövetkezteti, hogy 3 darab float-ból áll a 0-ás attribútum
+									0,						// offset: az attribútum tároló elejétõl vett offset-je, byte-ban
+									sizeof(Vertex)			// stride: a következõ csúcspont ezen attribútuma hány byte-ra van az aktuálistól
+								>, m_spherePosVBO },
+		},
+		m_sphereIndices
+	);
+}
+
 //3 mód shader létrehozására
 void CMyApp::InitShaders()
 {
@@ -219,6 +265,7 @@ bool CMyApp::Init()
 	InitShaders();
 	InitCube();
 	InitSkyBox();
+	InitSphere();
 
 	// egyéb textúrák betöltése
 	m_woodTexture.FromFile("assets/wood.jpg");
@@ -267,7 +314,13 @@ void CMyApp::Render()
 	m_program.SetUniform("MVP", viewProj * suzanneWorld);
 	m_program.SetUniform("world", suzanneWorld);
 	m_program.SetUniform("worldIT", glm::inverse(glm::transpose(suzanneWorld)));
-	m_mesh->draw(); //elõször a csimpánzfejet rajzoljuk ki
+	//m_mesh->draw(); //elõször a csimpánzfejet rajzoljuk ki
+
+	m_sphereVAO.Bind();
+	glDrawElements(GL_TRIANGLES,	// primitív típus
+		3 * 2 * (N) * (M),			// hany csucspontot hasznalunk a kirajzolashoz
+		GL_UNSIGNED_SHORT,			// indexek tipusa
+		0);
 
 	// kockák
 	//m_program.Use(); nem hívjuk meg újra, hisz ugyanazt a shadert használják

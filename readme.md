@@ -2,6 +2,19 @@ Számítógépes grafika - 2019/20 - Tavaszi félév
 
 Szabó Dávid - sasasoft@inf.elte.hu
 
+
+------------
+|  		   |
+|  8. hét  |
+|		   |
+------------
+
+01_OGLBase:
+	- skybox stb.
+	- új geometriát szeretnénk áthozni (01_Normals):
+		-- VAO és VBO
+
+
 ------------
 |  		   |
 |  7. hét  |
