@@ -77,6 +77,8 @@ protected:
 		glm::vec2 t;
 	};
 
+	glm::vec3 m_spherePos = glm::vec3(0.0f);
+
 	// mesh adatok
 	Mesh* m_mesh;
 

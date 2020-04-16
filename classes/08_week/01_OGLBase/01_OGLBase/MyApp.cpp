@@ -324,7 +324,8 @@ void CMyApp::Render()
 	glm::mat4 viewProj = m_camera.GetViewProj();
 
 	//Suzanne
-	glm::mat4 suzanneWorld = glm::mat4(1.0f);
+//	glm::mat4 suzanneWorld = glm::mat4(1.0f);
+	glm::mat4 suzanneWorld = glm::translate(m_spherePos);
 	m_program.Use();
 	//alap árnyalás a myFrag.frag-ben
 	m_program.SetTexture("texImage", 0, m_suzanneTexture);
@@ -395,7 +396,9 @@ void CMyApp::Render()
 	ImGui::ShowTestWindow();
 
 	if (ImGui::Begin("myWindow")) {
-
+		ImGui::Text("myLabel");
+		//githubon található dokumentáció
+		ImGui::DragFloat3("Sphere Pos", &m_spherePos.x, 0.1f, -10.0f, 10.0f);
 	}
 	ImGui::End();
 }
