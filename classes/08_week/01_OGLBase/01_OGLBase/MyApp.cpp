@@ -262,15 +262,17 @@ void CMyApp::Render()
 	//Suzanne
 	glm::mat4 suzanneWorld = glm::mat4(1.0f);
 	m_program.Use();
+	//alap árnyalás a myFrag.frag-ben
 	m_program.SetTexture("texImage", 0, m_suzanneTexture);
 	m_program.SetUniform("MVP", viewProj * suzanneWorld);
 	m_program.SetUniform("world", suzanneWorld);
 	m_program.SetUniform("worldIT", glm::inverse(glm::transpose(suzanneWorld)));
-	m_mesh->draw();
+	m_mesh->draw(); //elõször a csimpánzfejet rajzoljuk ki
 
 	// kockák
 	//m_program.Use(); nem hívjuk meg újra, hisz ugyanazt a shadert használják
-	m_CubeVao.Bind();
+	m_CubeVao.Bind(); //VAO-t bekapcsoljuk
+	//más textúra van mint a ládákon
 	m_program.SetTexture("texImage", 0, m_woodTexture);
 	glm::mat4 cubeWorld;
 
@@ -286,6 +288,7 @@ void CMyApp::Render()
 		m_program.SetUniform("worldIT", glm::inverse(glm::transpose(cubeWorld)));
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 	}
+	//unbind
 	m_program.Unuse();
 
 	// skybox
