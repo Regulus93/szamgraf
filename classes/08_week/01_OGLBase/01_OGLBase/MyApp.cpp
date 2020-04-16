@@ -399,6 +399,9 @@ void CMyApp::Render()
 		ImGui::Text("myLabel");
 		//githubon található dokumentáció
 		ImGui::DragFloat3("Sphere Pos", &m_spherePos.x, 0.1f, -10.0f, 10.0f);
+
+		if (ImGui::Button("Reset Pos"))
+			m_spherePos = glm::vec3(0.0f);
 	}
 	ImGui::End();
 }
