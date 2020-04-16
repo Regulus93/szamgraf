@@ -154,6 +154,7 @@ void CMyApp::InitSkyBox()
 	);
 
 	// skybox texture
+	// 6 db 2 dimenziós textúra
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
 	glGenTextures(1, &m_skyboxTexture);
@@ -165,6 +166,7 @@ void CMyApp::InitSkyBox()
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
+	//textúra betöltése
 	TextureFromFileAttach("assets/xpos.png", GL_TEXTURE_CUBE_MAP_POSITIVE_X);
 	TextureFromFileAttach("assets/xneg.png", GL_TEXTURE_CUBE_MAP_NEGATIVE_X);
 	TextureFromFileAttach("assets/ypos.png", GL_TEXTURE_CUBE_MAP_POSITIVE_Y);
@@ -375,6 +377,7 @@ void CMyApp::Render()
 	// cube map textúra beállítása 0-ás mintavételezõre és annak a shaderre beállítása
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
+	// le kell küldenünk
 	glUniform1i(m_programSkybox.GetLocation("skyboxTexture"), 0);
 	// az elõzõ három sor <=> m_programSkybox.SetCubeTexture("skyboxTexture", 0, m_skyboxTexture);
 

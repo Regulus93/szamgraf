@@ -13,6 +13,13 @@ Szabó Dávid - sasasoft@inf.elte.hu
 	- skybox stb.
 	- új geometriát szeretnénk áthozni (01_Normals):
 		-- VAO és VBO
+		
+	- új grafikai modell behozása
+	
+	- skybox magyarázat:
+		-- mélységi teszt
+		-- használata:
+			--- nem csak megjelenítés, hanem tükrözödés (environment ????ing)
 
 
 ------------
