@@ -176,6 +176,19 @@ void CMyApp::InitSkyBox()
 
 }
 
+glm::vec3 CMyApp::GetPos(float u, float v)
+{
+	// origó középpontú, r sugarú gömb parametrikus alakja: http://hu.wikipedia.org/wiki/G%C3%B6mb#Egyenletek 
+	// figyeljünk:	matematikában sokszor a Z tengely mutat felfelé, de nálunk az Y, tehát a legtöbb képlethez képest nálunk
+	//				az Y és Z koordináták felcserélve szerepelnek
+	u *= float(2 * M_PI);
+	v *= float(M_PI);
+	float cu = cosf(u), su = sinf(u), cv = cosf(v), sv = sinf(v);
+	float r = 2;
+
+	return glm::vec3(r * cu * sv, r * cv, r * su * sv);
+}
+
 void CMyApp::InitSphere()
 {
 	Vertex vert[(N + 1) * (M + 1)];
