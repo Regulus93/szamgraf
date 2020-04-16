@@ -315,6 +315,8 @@ void CMyApp::Update()
 void CMyApp::Render()
 {
 	// töröljük a frampuffert (GL_COLOR_BUFFER_BIT) és a mélységi Z puffert (GL_DEPTH_BUFFER_BIT)
+	// mélység tesztet megtartjuk,
+	// de szükségünk lenne arra, hogy ahol 1 a mélységtesztünk, ott ne dobja el (egyenlõség nincs a mélységtesztnél)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glm::mat4 viewProj = m_camera.GetViewProj();
@@ -359,10 +361,11 @@ void CMyApp::Render()
 
 	// skybox
 	// mentsük el az elõzõ Z-test eredményt, azaz azt a relációt, ami alapján update-eljük a pixelt.
+	//itt kérdezzük le és tároljuk el a mélységi teszthez tartozó függvényt
 	GLint prevDepthFnc;
 	glGetIntegerv(GL_DEPTH_FUNC, &prevDepthFnc);
 
-	// most kisebb-egyenlõt használjunk, mert mindent kitolunk a távoli vágósíkokra
+	// !!most kisebb-egyenlõt használjunk, mert mindent kitolunk a távoli vágósíkokra
 	glDepthFunc(GL_LEQUAL);
 
 	m_SkyboxVao.Bind();
@@ -378,7 +381,7 @@ void CMyApp::Render()
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 	m_programSkybox.Unuse();
 
-	// végül állítsuk vissza
+	// !végül állítsuk vissza
 	glDepthFunc(prevDepthFnc);
 
 

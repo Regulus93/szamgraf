@@ -11,7 +11,11 @@ uniform mat4 MVP;
 
 void main()
 {
-	gl_Position = (MVP * vec4( vs_in_pos, 1 )).xyww;	// [x,y,w,w] => homogén osztás után [x/w, y/w, 1]
+	
+	gl_Position = (MVP * vec4( vs_in_pos, 1 )).xyww;	
+	// [x,y,w,w] => homogén osztás után [x/w, y/w, 1] 
+	// -> ez azt jelenti, hogy a z helyén a w-t w-vel osztjuk => 1 --> a lehetõ legtávolabb van a távoli vágósíkon
+	// de a mélységi teszt ez elrontja -> 
 
 	vs_out_pos = vs_in_pos;
 }
