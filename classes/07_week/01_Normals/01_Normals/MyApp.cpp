@@ -107,7 +107,7 @@ void CMyApp::InitSphere()
 			indices[6 * i + j * 3 * 2 * (N)+5] = (i)+(j + 1)*(N + 1);
 		}
 
-
+	//01_OGLBase-ben ez jóval egyszerûbb
 	// 1 db VAO foglalasa
 	glGenVertexArrays(1, &m_vaoID);
 	// a frissen generált VAO beallitasa aktívnak

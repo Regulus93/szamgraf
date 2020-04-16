@@ -81,12 +81,14 @@ void CMyApp::InitCube()
 
 	*/
 
+	//VBO-nak odaadjuk a vertexeket, adatok leküldése ennyivel történik
 	m_CubeVertexBuffer.BufferData(vertices);
 
+	//Videókártyára leküldi az indexeket
 	// és a primitíveket alkotó csúcspontok indexei (az elõzõ tömbökbõl) - triangle list-el való kirajzolásra felkészülve
 	m_CubeIndices.BufferData(indices);
 
-	// geometria VAO-ban való regisztrálása
+	// geometria VAO-ban való regisztrálása/létrehozása
 	m_CubeVao.Init(
 		{
 			// 0-ás attribútum "lényegében" glm::vec3-ak sorozata és az adatok az m_CubeVertexBuffer GPU pufferben vannak
@@ -94,11 +96,12 @@ void CMyApp::InitCube()
 									glm::vec3,				// CPU oldali adattípus amit a 0-ás attribútum meghatározására használtunk <- az eljárás a glm::vec3-ból kikövetkezteti, hogy 3 darab float-ból áll a 0-ás attribútum
 									0,						// offset: az attribútum tároló elejétõl vett offset-je, byte-ban
 									sizeof(Vertex)			// stride: a következõ csúcspont ezen attribútuma hány byte-ra van az aktuálistól
-								>, m_CubeVertexBuffer },
+								>, 
+								m_CubeVertexBuffer }, //ebben magyarázzuk el a pozíciócsatornát
 			{ CreateAttribute<1, glm::vec3, (sizeof(glm::vec3)), sizeof(Vertex)>, m_CubeVertexBuffer },
 			{ CreateAttribute<2, glm::vec2, (2 * sizeof(glm::vec3)), sizeof(Vertex)>, m_CubeVertexBuffer },
 		},
-		m_CubeIndices
+		m_CubeIndices //ha nincs index bufferünk akkor õ elhagyható
 	);
 }
 
