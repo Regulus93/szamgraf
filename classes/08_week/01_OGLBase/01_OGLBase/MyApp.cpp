@@ -391,8 +391,13 @@ void CMyApp::Render()
 	// 1. feladat: készíts egy vertex shader-fragment shader párt, ami tárolt geometria _nélkül_ kirajzol egy tetszõleges pozícióba egy XYZ tengely-hármast,
 	//			   ahol az X piros, az Y zöld a Z pedig kék!
 
-	//ImGui Testwindow
+	//ImGui Testwindow!
 	ImGui::ShowTestWindow();
+
+	if (ImGui::Begin("myWindow")) {
+
+	}
+	ImGui::End();
 }
 
 void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
