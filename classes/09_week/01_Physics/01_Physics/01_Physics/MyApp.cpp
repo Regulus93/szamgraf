@@ -167,11 +167,17 @@ void CMyApp::Update()
 	m_camera.Update(delta_time);
 
 	// frissítsük a pozíciókat
-	static const float energyRemaining = 1;	// tökéletesen rugalmas ütközés
+	static const float energyRemaining = 0.5f;	// tökéletesen rugalmas ütközés
+	static const float gravity = 9.81f * 0.01;	// tökéletesen rugalmas ütközés
 	for (int i = 0; i < m_particleCount; ++i)
 	{
+
+		m_particleVel[i].y -= gravity * delta_time;
+
+		//részecske pozíció megállapítása
 		m_particlePos[i] += m_particleVel[i] * delta_time;
 
+		//pattogás megvalósítása (ha kimenne a részecske)
 		if ( (m_particlePos[i].x >= 1 && m_particleVel[i].x > 0) || (m_particlePos[i].x <= -1 && m_particleVel[i].x < 0) )
 			m_particleVel[i].x *= -energyRemaining;
 		if ( (m_particlePos[i].y >= 1 && m_particleVel[i].y > 0) || (m_particlePos[i].y <= -1 && m_particleVel[i].y < 0))
