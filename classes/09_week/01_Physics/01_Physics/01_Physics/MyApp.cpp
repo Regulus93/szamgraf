@@ -269,10 +269,15 @@ void CMyApp::Render()
 	1. feladat: hasson a részecskékre gravitáció! Tedd fel, hogy minden részecske egységnyi tömegű. 
 	2. feladat: a részecskék ütközzenek egymással is!
 	3. feladat: rajzold ki minden egyes részecskéhez egy GL_LINES-zal a sebességvektorát!
-	4. feladat: az UI segítségével lehessen külön-külön
-		a) újragenerálni a véletlen pozíciókat
-		b) újragenerálni a véletlen sebességeket
-		c) növelni és csökkenteni a részecskék számát
+	
+	+1 pontért:
+		4. feladat: az UI segítségével lehessen külön-külön
+			a) újragenerálni a véletlen pozíciókat
+			b) újragenerálni a véletlen sebességeket
+		
+		+ 1 pontért:
+		c) növelni és csökkenteni a részecskék számát (BufferData-val lefoglalni újra -> mert amúgy 100-al inicializálunk)
+
 	5. feladat: rakd be a skybox-ot!
 	*/
 }
