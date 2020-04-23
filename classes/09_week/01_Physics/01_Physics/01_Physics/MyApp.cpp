@@ -188,6 +188,7 @@ void CMyApp::Update()
 
 	// frissítsük a puffert
 	glBindBuffer(GL_ARRAY_BUFFER, m_gpuParticleBuffer);
+	//már videókártyán lévő adatot szeretnék frissíteni
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3)*m_particlePos.size(), &(m_particlePos[0][0]));
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	// használhattuk volna simán a 
@@ -212,9 +213,12 @@ void CMyApp::Render()
 	m_axesProgram.Use();
 	m_axesProgram.SetUniform("mvp", m_camera.GetViewProj() );
 
+	//6 példányban fogja futtatni a vertex shadert
 	glDrawArrays(GL_LINES, 0, 6);
 
 	// kocka
+	// hogyan rajzoljuk ki, hogy látszódjon a hátlap?
+	// hátlapot elég vonalasra tenni (kifordított kocka úgy mint a skyboxban)
 	glPolygonMode(GL_BACK, GL_LINE);
 	m_vao.Bind();
 
@@ -223,7 +227,7 @@ void CMyApp::Render()
 
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 
-	// részecskék
+	// részecskék(!)
 	glEnable(GL_PROGRAM_POINT_SIZE);
 	m_gpuParticleVAO.Bind();
 	m_particleProgram.Use();
