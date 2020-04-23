@@ -146,10 +146,12 @@ bool CMyApp::Init()
 
 	// GPU-ra áttölteni a részecskék pozícióit
 	m_gpuParticleBuffer.BufferData(m_particlePos);	// <=>	m_gpuParticleBuffer = m_particlePos;
+	m_gpuParticleVelBuffer.BufferData(m_particleVel);	// <=>	m_gpuParticleBuffer = m_particlePos;
 
 	// és végül a VAO-t inicializálni
 	m_gpuParticleVAO.Init({
-		{CreateAttribute<0, glm::vec3, 0, sizeof(glm::vec3)>, m_gpuParticleBuffer}
+		{CreateAttribute<0, glm::vec3, 0, sizeof(glm::vec3)>, m_gpuParticleBuffer},
+		{CreateAttribute<1, glm::vec3, 0, sizeof(glm::vec3)>, m_gpuParticleVelBuffer}
 	});
 
 	return true;
@@ -185,6 +187,10 @@ void CMyApp::Update()
 		if ( (m_particlePos[i].z >= 1 && m_particleVel[i].z > 0) || (m_particlePos[i].z <= -1 && m_particleVel[i].z < 0))
 			m_particleVel[i].z *= -energyRemaining;
 	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_gpuParticleVelBuffer);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * m_particleVel.size(), &(m_particleVel[0][0]));
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// frissítsük a puffert
 	glBindBuffer(GL_ARRAY_BUFFER, m_gpuParticleBuffer);

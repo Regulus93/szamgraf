@@ -63,5 +63,6 @@ protected:
 
 	VertexArrayObject	m_gpuParticleVAO;
 	ArrayBuffer			m_gpuParticleBuffer;
+	ArrayBuffer			m_gpuParticleVelBuffer;
 };
 
