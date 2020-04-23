@@ -18,13 +18,13 @@ CMyApp::CMyApp(void)
 
 CMyApp::~CMyApp(void)
 {
-	
+
 }
 
 bool CMyApp::Init()
 {
 	// törlési szín legyen fehér
-	glClearColor(1,1,1, 1);
+	glClearColor(1, 1, 1, 1);
 
 	glEnable(GL_CULL_FACE); // kapcsoljuk be a hatrafele nezo lapok eldobasat
 	glEnable(GL_DEPTH_TEST); // mélységi teszt bekapcsolása (takarás)
@@ -44,7 +44,7 @@ bool CMyApp::Init()
 	m_program.Init({
 		{ GL_VERTEX_SHADER, "myVert.vert" },
 		{ GL_FRAGMENT_SHADER, "myFrag.frag" }
-	},
+		},
 	{
 		{ 0, "vs_in_pos" },					// VAO 0-as csatorna menjen a vs_in_pos-ba
 		{ 1, "vs_in_normal" },				// VAO 1-es csatorna menjen a vs_in_normal-ba
@@ -57,49 +57,49 @@ bool CMyApp::Init()
 
 	// vertexek pozíciói:
 	/*
-	Az m_gpuBufferPos konstruktora már létrehozott egy GPU puffer azonosítót és a most következő BufferData hívás ezt 
+	Az m_gpuBufferPos konstruktora már létrehozott egy GPU puffer azonosítót és a most következő BufferData hívás ezt
 		1. bind-olni fogja GL_ARRAY_BUFFER target-re (hiszen m_gpuBufferPos típusa ArrayBuffer) és
 		2. glBufferData segítségével áttölti a GPU-ra az argumentumban adott tároló értékeit
 
 	*/
-	m_gpuBufferPos.BufferData( 
+	m_gpuBufferPos.BufferData(
 		std::vector<glm::vec3>{
-			//		  X, Y, Z
-			glm::vec3(0,-2,-2),	// 0-ás csúcspont
-			glm::vec3(0, 2,-2), // 1-es
-			glm::vec3(0,-2, 2), // 2-es
+		//		  X, Y, Z
+		glm::vec3(0, -2, -2),	// 0-ás csúcspont
+			glm::vec3(0, 2, -2), // 1-es
+			glm::vec3(0, -2, 2), // 2-es
 			glm::vec3(0, 2, 2)  // 3-as
-		}
+	}
 	);
 
 	// normálisai
 	m_gpuBufferNormal.BufferData(
 		std::vector<glm::vec3>{
-			// normal.X,.Y,.Z
-			glm::vec3(1, 0, 0), // 0-ás csúcspont
+		// normal.X,.Y,.Z
+		glm::vec3(1, 0, 0), // 0-ás csúcspont
 			glm::vec3(1, 0, 0), // 1-es
 			glm::vec3(1, 0, 0), // 2-es
 			glm::vec3(1, 0, 0)  // 3-as
-		}
+	}
 	);
 
 	// textúrakoordinátái
 	m_gpuBufferTex.BufferData(
 		std::vector<glm::vec2>{
-			//        u, v
-			glm::vec2(0, 0), // 0-ás csúcspont
+		//        u, v
+		glm::vec2(0, 0), // 0-ás csúcspont
 			glm::vec2(1, 0), // 1-es
 			glm::vec2(0, 1), // 2-es
 			glm::vec2(1, 1)	 // 3-as
-		}
+	}
 	);
 
 	// és a primitíveket alkotó csúcspontok indexei (az előző tömbökből) - triangle list-el való kirajzolásra felkészülve
 	m_gpuBufferIndices.BufferData(
 		std::vector<int>{
-			0,1,2,	// 1. háromszög: 0-1-2 csúcspontokból
-			2,1,3	// 2. háromszög: 2-1-3 csúcspontokból
-		}
+		0, 1, 2,	// 1. háromszög: 0-1-2 csúcspontokból
+			2, 1, 3	// 2. háromszög: 2-1-3 csúcspontokból
+	}
 	);
 
 	// geometria VAO-ban való regisztrálása
@@ -147,13 +147,22 @@ void CMyApp::Render()
 	m_program.Use();
 
 	m_program.SetTexture("texImage", 0, m_textureMetal);
-	
+
 	// Suzanne 1
 	glm::mat4 suzanne1World = glm::translate(glm::vec3(-2, 0, 0));
 	m_program.SetUniform("world", suzanne1World);
 	m_program.SetUniform("worldIT", glm::transpose(glm::inverse(suzanne1World)));
-	m_program.SetUniform("MVP", m_camera.GetViewProj()*suzanne1World);
+	m_program.SetUniform("MVP", m_camera.GetViewProj() * suzanne1World);
 	m_program.SetUniform("Kd", glm::vec4(1, 0.3, 0.3, 1));
+
+	m_mesh->draw();
+
+	// Suzanne 2
+	glm::mat4 suzanne2World = glm::translate(glm::vec3(2, 0, 0));
+	m_program.SetUniform("world", suzanne2World);
+	m_program.SetUniform("worldIT", glm::transpose(glm::inverse(suzanne2World)));
+	m_program.SetUniform("MVP", m_camera.GetViewProj() * suzanne2World);
+	m_program.SetUniform("Kd", glm::vec4(0.3, 1, 0.3, 1));
 
 	m_mesh->draw();
 
@@ -166,7 +175,7 @@ void CMyApp::Render()
 	glm::mat4 wallWorld = glm::translate(glm::vec3(0, 0, 0));
 	m_program.SetUniform("world", wallWorld);
 	m_program.SetUniform("worldIT", glm::transpose(glm::inverse(wallWorld)));
-	m_program.SetUniform("MVP", m_camera.GetViewProj()*wallWorld);
+	m_program.SetUniform("MVP", m_camera.GetViewProj() * wallWorld);
 	m_program.SetUniform("Kd", m_wallColor);
 
 	m_vao.Bind();
@@ -175,15 +184,6 @@ void CMyApp::Render()
 
 	// de kapcsoljuk most vissza, mert még jön egy Suzanne
 	glEnable(GL_CULL_FACE);
-
-	// Suzanne 2
-	glm::mat4 suzanne2World = glm::translate(glm::vec3( 2, 0, 0));
-	m_program.SetUniform("world", suzanne2World);
-	m_program.SetUniform("worldIT", glm::transpose(glm::inverse(suzanne2World)));
-	m_program.SetUniform("MVP", m_camera.GetViewProj()*suzanne2World);
-	m_program.SetUniform("Kd", glm::vec4(0.3, 1, 0.3, 1));
-
-	m_mesh->draw();
 
 	// végetért a 3D színtér rajzolása
 	m_program.Unuse();
@@ -236,7 +236,7 @@ void CMyApp::MouseWheel(SDL_MouseWheelEvent& wheel)
 // a két paraméterbe az új ablakméret szélessége (_w) és magassága (_h) található
 void CMyApp::Resize(int _w, int _h)
 {
-	glViewport(0, 0, _w, _h );
+	glViewport(0, 0, _w, _h);
 
 	m_camera.Resize(_w, _h);
 }
