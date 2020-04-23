@@ -32,6 +32,8 @@ bool CMyApp::Init()
 
 	// átlátszóság engedélyezése
 	glEnable(GL_BLEND);
+	//parameter: source - destination
+	//van valami már a backbufferben, de szeretnék még rárajzolni
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // meghatározza, hogy az átlátszó objektum az adott pixelben hogyan módosítsa a korábbi fragmentekből oda lerakott színt: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBlendFunc.xhtml
 
 	//
@@ -176,13 +178,14 @@ void CMyApp::Render()
 	m_program.SetUniform("world", wallWorld);
 	m_program.SetUniform("worldIT", glm::transpose(glm::inverse(wallWorld)));
 	m_program.SetUniform("MVP", m_camera.GetViewProj() * wallWorld);
+	//blending ezt módosítja
 	m_program.SetUniform("Kd", m_wallColor);
 
 	m_vao.Bind();
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	m_vao.Unbind(); // nem feltétlen szükséges: a m_mesh->draw beállítja a saját VAO-ját
 
-	// de kapcsoljuk most vissza, mert még jön egy Suzanne
+	// de kapcsoljuk most vissza, mert még jön egy Suzanne: hatékonyság miatt
 	glEnable(GL_CULL_FACE);
 
 	// végetért a 3D színtér rajzolása
