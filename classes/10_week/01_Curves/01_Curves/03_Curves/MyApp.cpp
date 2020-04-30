@@ -30,7 +30,7 @@ bool CMyApp::Init()
 	glEnable(GL_DEPTH_TEST); // mélységi teszt bekapcsolása (takarás)
 	//glDepthMask(GL_FALSE); // kikapcsolja a z-pufferbe történő írást - https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glDepthMask.xml
 
-	glLineWidth(4.0f); // a vonalprimitívek vastagsága: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glLineWidth.xhtml
+	glLineWidth(4.0f); // !a vonalprimitívek vastagsága: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glLineWidth.xhtml
 	//glEnable(GL_LINE_SMOOTH);
 
 	// átlátszóság engedélyezése
@@ -201,7 +201,7 @@ void CMyApp::Render()
 	m_vao.Unbind(); // nem feltétlen szükséges: a m_mesh->draw beállítja a saját VAO-ját
 
 	// Suzanne 1
-	glm::mat4 suzanne1World = glm::translate( Eval(m_currentParam) );
+	glm::mat4 suzanne1World = glm::translate( Eval(m_currentParam) ); //görbe kiértékelése adott param szerint
 	m_program.SetUniform("world", suzanne1World);
 	m_program.SetUniform("worldIT", glm::transpose(glm::inverse(suzanne1World)));
 	m_program.SetUniform("MVP", m_camera.GetViewProj()*suzanne1World);
@@ -310,11 +310,14 @@ void CMyApp::Resize(int _w, int _h)
 	m_camera.Resize(_w, _h);
 }
 
+//görbe kiértékelése - lineáris interpoláció
 glm::vec3 CMyApp::Eval(float t)
 {
+	//bolondbiztos ellenőrzések (origót adjuk vissza ha üres)
 	if (m_controlPoints.size() == 0)
 		return glm::vec3(0);
 
+	//levágja a törtrészt (hányadik szakaszon tartunk)
 	int interval = (int)t;
 
 	if (interval < 0)
@@ -323,6 +326,9 @@ glm::vec3 CMyApp::Eval(float t)
 	if (interval >= m_controlPoints.size()-1)
 		return m_controlPoints[m_controlPoints.size()-1];
 
+	//hol tartunk a szakaszon
 	float localT = t - interval;
+	//lin interpolációs képlet
+	//72% - 28%
 	return (1- localT)*m_controlPoints[interval] + localT*m_controlPoints[interval+1];
 }
