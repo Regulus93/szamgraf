@@ -16,7 +16,7 @@ out vec4 fs_out_col;
 uniform vec3 eye_pos = vec3(0, 15, 15);
 
 // fénytulajdonságok
-uniform vec3 light_pos = vec3( 5, 5, 5 );
+uniform vec3 light_pos = vec3( 5, 5, 5 ); // ez árulkodó jel hogy pontfényünk van
 
 uniform vec4 La = vec4(0.1f, 0.1f, 0.1f, 1);
 uniform vec4 Ld = vec4(0.75f, 0.75f, 0.75f, 1);
@@ -46,7 +46,7 @@ void main()
 	    - clamp: http://www.opengl.org/sdk/docs/manglsl/xhtml/clamp.xml
 	*/
 	vec3 normal = normalize( vs_out_normal );
-	vec3 toLight = normalize(light_pos - vs_out_pos);
+	vec3 toLight = normalize(light_pos - vs_out_pos); // ez a bizonyíték hogy pontfény
 	float di = clamp( dot( toLight, normal), 0.0f, 1.0f );
 	vec4 diffuse = vec4(Ld.rgb*Kd.rgb*di, Kd.a);
 
