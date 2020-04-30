@@ -201,6 +201,16 @@ void CMyApp::Render()
 	m_vao.Unbind(); // nem feltétlen szükséges: a m_mesh->draw beállítja a saját VAO-ját
 
 	// Suzanne 1
+	/*
+		Class solution:
+		float controlPointCount = (m_controlPoints.size() - 1) / 2.f;
+		m_currentParam = sinf(SDL_GetTicks() / 1000.f * 2.f * M_PI / (float)m_controlPoints.size()) * controlPointCount + controlPointCount;
+
+	*/
+	if (parameterChange) {
+		m_currentParam = sin((SDL_GetTicks() / 1000.0f * 2 * float(M_PI) / 10));
+	}
+
 	glm::mat4 suzanne1World = glm::translate( Eval(m_currentParam) ); //görbe kiértékelése adott param szerint
 	m_program.SetUniform("world", suzanne1World);
 	m_program.SetUniform("worldIT", glm::transpose(glm::inverse(suzanne1World)));
@@ -208,6 +218,7 @@ void CMyApp::Render()
 	m_program.SetUniform("Kd", glm::vec4(1, 0.3, 0.3, 1));
 	
 	m_mesh->draw();
+
 
 	// végetért a 3D színtér rajzolása
 	m_program.Unuse();
@@ -265,14 +276,23 @@ void CMyApp::Render()
 		if (m_controlPoints.size() > 0)
 			ImGui::SliderFloat3("Coordinates", &(m_controlPoints[currentItem][0]), -10, 10);
 
-		ImGui::SliderFloat("Parameter", &m_currentParam, 0, (float)(m_controlPoints.size()-1));
+		ImGui::SliderFloat("Parameter", &m_currentParam, 0, (float)(m_controlPoints.size() - 1));
+
 
 		// 1. feladat: Suzanne feje mindig forduljon a menetirány felé! Először ezt elég síkban (=XZ) megoldani!
 		// 2. feladat: valósíts meg egy Animate gombot! Amíg nyomva van az m_currentParameter periodikusan változzon a [0,m_controlPoints.size()-1] intervallumon belül!
+		
+		if (ImGui::Button("Something"))
+		{
+			parameterChange = !parameterChange;
+			std::cout << parameterChange << std::endl;
+		}
+
 		// 3. feladat: egyenközű Catmull-Rom spline-nal valósítsd meg Suzanne görbéjét a mostani törött vonal helyett!
 
 	}
 	ImGui::End(); // ...de még ha le is volt, End()-et hívnunk kell
+
 }
 
 void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)

@@ -66,6 +66,8 @@ protected:
 
 	gCamera				m_camera;
 
+	bool parameterChange = false;
+
 	const int kMaxPointCount = 10;
 
 	std::vector<glm::vec3>		m_controlPoints{ {-10,0,-10}, {10,0,-10} };
