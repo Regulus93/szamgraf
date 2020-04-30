@@ -208,7 +208,8 @@ void CMyApp::Render()
 
 	*/
 	if (parameterChange) {
-		m_currentParam = sin((SDL_GetTicks() / 1000.0f * 2 * float(M_PI) / 10));
+		float controlPointCount = (m_controlPoints.size() - 1) / 2.f;
+		m_currentParam = sinf(SDL_GetTicks() / 1000.f * 2.f * M_PI / (float)m_controlPoints.size()) * controlPointCount + controlPointCount;
 	}
 
 	glm::mat4 suzanne1World = glm::translate( Eval(m_currentParam) ); //görbe kiértékelése adott param szerint
@@ -350,5 +351,18 @@ glm::vec3 CMyApp::Eval(float t)
 	float localT = t - interval;
 	//lin interpolációs képlet
 	//72% - 28%
-	return (1- localT)*m_controlPoints[interval] + localT*m_controlPoints[interval+1];
+	if ( m_controlPoints.size() > 4 || interval >= m_controlPoints.size() - 2 ) {
+		return (1 - localT) * m_controlPoints[interval] + localT * m_controlPoints[interval + 1];
+	} else {
+		//CATMULL
+		return calculateCatmull(localT, m_controlPoints[interval - 1], m_controlPoints[interval], m_controlPoints[interval + 1], m_controlPoints[interval + 2]);
+	}
+}
+
+glm::vec3 CMyApp::calculateCatmull(float t, glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3)
+{
+	return 0.5f * ((2.0f * p1) +
+		(-p0 + p2) * t +
+		(2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3) * t * t +
+		(-p0 + 3.0f * p1 - 3.0f * p2 + p3) * t * t * t);
 }

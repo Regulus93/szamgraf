@@ -47,6 +47,7 @@ public:
 protected:
 	// görbénk kiértékelése
 	glm::vec3 Eval(float);
+	glm::vec3 CMyApp::calculateCatmull(float t, glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
 	float	m_currentParam{ 0 };
 
 	// shaderekhez szükséges változók
