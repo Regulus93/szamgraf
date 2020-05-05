@@ -2,10 +2,12 @@
 
 // VBO-ból érkezõ változók
 in vec3 vs_in_pos;
+// col helyett tex
 in vec2 vs_in_tex0;
 
 // a pipeline-ban tovább adandó értékek
 out vec3 vs_out_pos;
+// col helyett tex
 out vec2 vs_out_tex0;
 
 // shader külsõ paraméterei

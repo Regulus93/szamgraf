@@ -36,6 +36,7 @@ protected:
 	struct Vertex
 	{
 		glm::vec3 p;
+		//szín helyett textúra pozíciója!
 		glm::vec2 t;
 	};
 
@@ -52,8 +53,8 @@ protected:
 	GLuint m_cube_vaoID;
 	GLuint m_cube_vboID;
 	GLuint m_cube_ibID;
-	GLuint m_generatedTextureID; // generált textúra erõforrás azonosító
-	GLuint m_loadedTextureID; // betöltött textúra erõforrás azonosító
+	GLuint m_generatedTextureID; // generált textúra erõforrás azonosító - "padló"
+	GLuint m_loadedTextureID; // betöltött textúra erõforrás azonosító - doboz
 
 	// transzformációs mátrixok
 	glm::mat4 m_matWorld;

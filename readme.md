@@ -71,7 +71,7 @@ Előző óra:
 |		   |
 ------------
 
-- új koordinátarendszer:
+- új textúrakoordinátarendszer:
 	-- origó bal alsó sarok
 
 - mipmap (mintavételezési probléma)

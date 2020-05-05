@@ -43,20 +43,21 @@ GLuint CMyApp::GenerateRandomTexture()
 	GLuint tmpID;
 
 	// generáljunk egy textúra erõforrás nevet
+	// 1 db erőforrást generáljunk, a generált erőforrás azonosítóját tmpID-ba várjuk
 	glGenTextures(1, &tmpID);
-	// aktiváljuk a most generált nevû textúrát
+	// aktiváljuk/bekapcsoljuk a most generált nevû textúrát
 	glBindTexture(GL_TEXTURE_2D, tmpID);
 
 	// töltsük fel adatokkal
-	// ez viszi le a pixeladatokat a videókártyára
+	// lefoglalja a videókártyán a memóriát, és ez viszi le a pixeladatokat a videókártyára
 	glTexImage2D(GL_TEXTURE_2D,		// melyik binding point-on van a textúra erõforrás, amihez tárolást rendelünk
-		0,					// melyik részletességi szint adatait határozzuk meg (a mipmapek közül melyik méretet szeretnénk megadni => 0 a legnagyobb)
+		0,					// 0 - a legnagyobb mipmap; melyik részletességi szint adatait határozzuk meg (a mipmapek közül melyik méretet szeretnénk megadni => 0 a legnagyobb)
 		GL_RGB,				// textúra belsõ tárolási formátuma (GPU-n)
-		W, H,			// szélesség, magasság
+		W, H,			// szélesség, magasság, előbb feltöltött array dimenziói
 		0,					// nulla kell, hogy legyen ( https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml )
 		GL_RGB,				// forrás (=CPU-n) formátuma
 		GL_UNSIGNED_BYTE,	// forrás egy pixelének egy csatornáját hogyan tároljuk
-		tex);				// forráshoz pointer
+		tex);				// forráshoz pointer, előbb feltöltött array
 
 	/*
 	Az összes olyan grafikus API-ban van olyan, hogy mipmap generálás: 
@@ -74,12 +75,16 @@ GLuint CMyApp::GenerateRandomTexture()
 		|/
 
 	*/
+
+	// kicsinyített képek legenerálása
 	glGenerateMipmap(GL_TEXTURE_2D);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	//nagyítási-kicsinyítési funkciók
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); //-> ha közelebb állunk mint a kép normális felbontása
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR); //lineáris interpoláció
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); //textúra túlindexelés esetén levágom a határán
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); 
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -131,6 +136,7 @@ void CMyApp::InitFloor()
 
 	// a második attribútumhoz pedig a VBO-ban sizeof(Vertex) ugrás után sizeof(glm::vec3)-nyit menve 2 float adatot találunk (textúrakoordináták)
 	glEnableVertexAttribArray(1);
+	//2-es van már hármas helyett szín -> textúra
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(glm::vec3)));
 
 	// index puffer létrehozása
@@ -237,7 +243,7 @@ void CMyApp::InitShaders()
 	glBindAttribLocation(m_programID,	// shaderprogram azonosítója, amibõl egy változóhoz szeretnénk hozzárendelést csinálni
 		0,				// a VAO-beli azonosító index
 		"vs_in_pos");	// a shader-beli változónév
-	glBindAttribLocation(m_programID, 1, "vs_in_tex0");
+	glBindAttribLocation(m_programID, 1, "vs_in_tex0"); //más a bemeneti változónk a vertex shaderbe
 
 	// illesszük össze a shadereket (kimenõ-bemenõ változók összerendelése stb.)
 	glLinkProgram(m_programID);
@@ -263,6 +269,7 @@ void CMyApp::InitShaders()
 void CMyApp::InitTextures()
 {
 	// fájlból betöltés
+	// GLUtils.hpp --> TextureFromFile
 	m_loadedTextureID = TextureFromFile("wood.jpg");
 	// mintavételezés beállításai
 	glBindTexture(GL_TEXTURE_2D, m_loadedTextureID);
@@ -358,20 +365,27 @@ void CMyApp::Render()
 	glUniformMatrix4fv(m_loc_mvp, 1, GL_FALSE, &(mvp[0][0]));
 	glUniformMatrix4fv(m_loc_w, 1, GL_FALSE, &(m_matWorld[0][0]));
 
-	// textúra beállítása
+	/* textúra beállítása: videókártyán van külön erőforrás rá: textúra mintavételező egység (sampler)
+
+	|--------------|                     |---------|                     |---------|
+	| textúra fájl | ------------------> | sampler | <------------------ | shader  |
+	|--------------|					 |---------|					 |---------|
+	*/
 	// aktiváljuk a 0-ás textúramintavételezőt (innenőt a gl*Texture* hívások erre vonatkoznak)
 	// ez akkor fontos, ha több textúrát akarunk egyszerre használni, ha egyszerre csak egy kell,
 	// akkor ezt elhagyva automatikusan a 0-ás mintavételező aktív
-	//0-s mintavételező bekapcsolása
+	//0-s mintavételező bekapcsolása!
 	glActiveTexture(GL_TEXTURE0);
 	// bindoljuk a zaj textúrát (az aktív 0-ás mintavételezőhöz)
-	glBindTexture(GL_TEXTURE_2D, m_generatedTextureID);
+	glBindTexture(GL_TEXTURE_2D, m_generatedTextureID); //random (padló)
 	//shadernek is el kell magyarázni melyiket használjuk
 
 
 	// beállítjuk, hogy a fragment shaderben a "texImage" nevű mintavételező a 0-ás számú legyen
 	glUniform1i(m_loc_tex, 0);
 
+
+	//doboz
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, m_loadedTextureID);
 	glUniform1i(m_loc_tex2, 1);
