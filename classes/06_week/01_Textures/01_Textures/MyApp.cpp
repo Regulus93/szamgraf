@@ -306,7 +306,7 @@ bool CMyApp::Init()
 	m_loc_w = glGetUniformLocation( m_programID, "world" );
 	m_loc_tex = glGetUniformLocation(m_programID, "texImage");
 	m_loc_tex2 = glGetUniformLocation(m_programID, "texImage2");
-	m_loc_t = glGetUniformLocation(m_programID, "texImage2");
+	m_loc_t = glGetUniformLocation(m_programID, "t");
 
 	return true;
 }
@@ -393,9 +393,6 @@ void CMyApp::Render()
 	glUniform1f(m_loc_t, sinf(SDL_GetTicks() / 2000.0f * 2.f * M_PI) * 0.5f + 0.5f);
 
 	
-	
-
-
 	// kirajzolás
 	//A draw hívásokhoz a VAO és a program bindolva kell legyenek (glUseProgram() és glBindVertexArray())
 
