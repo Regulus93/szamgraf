@@ -340,8 +340,8 @@ glm::vec3 CMyApp::ToDescartes(float u, float v) {
 void CMyApp::Update()
 {
 	// nézeti transzformáció beállítása
-	m_matView = glm::lookAt(m_eye,		// honnan nézzük a színteret
-		m_at,		// a színtér melyik pontját nézzük
+	m_matView = glm::lookAt(m_eye,  // honnan - a színtér mely pontjáról nézünk
+		m_at,						// hova	  - a színtér melyik pontját nézzük
 		glm::vec3(0, 1, 0));		// felfelé mutató irány a világban
 }
 
