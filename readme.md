@@ -36,7 +36,12 @@ Előző óra:
 		
 01_Normals:
 	- fényforrás típusok:
-		-- phong árnyalás
+		-- phong árnyalás:
+			--- fénykomponensekből áll: 
+			ambient (azt zárjuk ki hogy soha semmi ne legyen teljesen fekete) 
+			+ diffuse ()
+			+ specular ()
+			
 		-- pontfény
 		-- nap eléggé messze van, és így kb. a sugarai eléggé párhuzamosak
 		
