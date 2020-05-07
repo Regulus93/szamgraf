@@ -127,6 +127,7 @@ void CMyApp::Render()
 	m_programPostprocess.SetTexture("frameTex", 0, m_colorBuffer);
 	m_programPostprocess.SetUniform("t", m_filterWeight);
 	
+	//síklap
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 	//

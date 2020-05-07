@@ -1,11 +1,13 @@
 #version 130
 
+//teljes képernyõt lefedõ síklap
 vec4 positions[4] = vec4[4](
 	vec4(-1,-1, 0, 1),
 	vec4( 1,-1, 0, 1),
 	vec4(-1, 1, 0, 1),
 	vec4( 1, 1, 0, 1)
 );
+
 
 vec2 texCoords[4] = vec2[4](
 	vec2(0,0),

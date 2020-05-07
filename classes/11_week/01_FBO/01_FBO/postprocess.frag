@@ -17,5 +17,7 @@ void main()
 								color_matrix*originalColor.xyz, 
 								1
 							);
+
+	//szépia színeredmények összemixelése
 	fs_out_col = mix(originalColor, sepiaColored, t);
 }

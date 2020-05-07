@@ -2,6 +2,23 @@ Számítógépes grafika - 2019/20 - Tavaszi félév
 
 Szabó Dávid - sasasoft@inf.elte.hu
 
+------------
+|  		   |
+|  11. hét |
+|		   |
+------------
+
+FBO:
+	- framebufferobject -> color buffer (textúra, szín) + depthbuffer (mélységértékek)
+	- active framebuffer object-be rajzol (nem backbufferbe)
+	
+Módszer:
+	- új FBO-ba rajzolunk a render fázisban
+	- majd visszaállunk a régire (alap FBO-ra) és rajzolnuk egy teljes képernyőt lefedő színlapot
+	- majd az új FBO-ban lévő texture alapján rajzoljunk a régibe (a postprocessshader segítségével)
+	
+	
+
 
 ------------
 |  		   |
