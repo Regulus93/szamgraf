@@ -58,7 +58,7 @@ protected:
 
 	float	m_filterWeight{};
 
-	// FBO-hoz szükséges dolgok
+	// FBO-hoz szükséges dolgok (új erõforrásazonosítók)
 	bool m_frameBufferCreated{ false };
 	GLuint m_depthBuffer;
 	GLuint m_colorBuffer;

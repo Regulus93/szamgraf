@@ -94,6 +94,7 @@ void CMyApp::Render()
 	*/
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
+	//takarítás
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	m_program.Use();
@@ -121,6 +122,7 @@ void CMyApp::Render()
 
 	// álljunk vissza a default FBO-ra (=frontbuffer)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//itt is takarítás
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	m_programPostprocess.Use();
@@ -180,7 +182,7 @@ void CMyApp::Resize(int _w, int _h)
 
 	m_camera.Resize(_w, _h);
 
-	CreateFrameBuffer(_w, _h);
+	CreateFrameBuffer(_w, _h); //mindig újrageneráljuk
 }
 
 void CMyApp::CreateFrameBuffer(int width, int height)
@@ -193,18 +195,23 @@ void CMyApp::CreateFrameBuffer(int width, int height)
 		glDeleteFramebuffers(1, &m_frameBuffer);
 	}
 
+	//framebuffer létrehozása
 	glGenFramebuffers(1, &m_frameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
+
 
 	glGenTextures(1, &m_colorBuffer);
 	glBindTexture(GL_TEXTURE_2D, m_colorBuffer);
 
+	//textúra memóriaterületésnek inicializálása
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, nullptr);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
+	//színbuffer létrehozása
+	//beletesszük a textúrát a FBO-ba
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorBuffer, 0);
 	if (glGetError() != GL_NO_ERROR)
 	{
@@ -212,10 +219,16 @@ void CMyApp::CreateFrameBuffer(int width, int height)
 		exit(1);
 	}
 
+	// a videókártya használhatja, de a CPU nem, így sokkal gyorsabban éri el a memóriát
 	glGenRenderbuffers(1, &m_depthBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuffer);
+	//24 bit mélységű komponensek
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
+
+	//beletesszük a mélységet a FBO-ba
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
+
+	//létrehozás ellenőrzése
 	if (glGetError() != GL_NO_ERROR)
 	{
 		std::cout << "Error creating depth attachment" << std::endl;
