@@ -182,6 +182,12 @@ void CMyApp::Resize(int _w, int _h)
 
 	m_camera.Resize(_w, _h);
 
+	m_programPostprocess.Use();
+	m_programPostprocess.SetUniform("texel_width", 1.f / (float)_w);
+	m_programPostprocess.SetUniform("texel_height", 1.f / (float)_w);
+	m_programPostprocess.Unuse();
+	
+
 	CreateFrameBuffer(_w, _h); //mindig újrageneráljuk
 }
 
