@@ -20,4 +20,7 @@ void main()
 
 	//szépia színeredmények összemixelése
 	fs_out_col = mix(originalColor, sepiaColored, t);
+	
+	//inverted
+	//fs_out_col = vec4(1) - texture(frameTex, vs_out_tex);
 }
