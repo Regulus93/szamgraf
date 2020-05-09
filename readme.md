@@ -45,6 +45,33 @@ Módszer:
 |		   |
 ------------
 
+Óraismétlés:
+	- fényforrás típusok:
+		-- irányfényforrás: minden sugár ugyanazzal az irányvektorral rendelkezik (párhuzamosak egymásra) - valóságban nincs jó példa
+		-- pontfény: pl. egy villanykörte (van egy pozíció, ahonnan a világ minden irányába szórja a fényt)
+		-- spot:
+			--- van iránya
+			--- van egy pozíciója
+			--- van nyílásszöge
+
+	- olyan messze vagyunk a naptól, hogy párhuzamosnak érzékeljük a napot, és ezért irányfényforrással fogjuk szimulálni a Napot, 
+	nem érdekel minket, hogy hol van a Nap pozíciója
+	
+	- diffúz intenzitás kiszámítása:
+		-- vektor skaláris szorzás 
+			--> ha teljesen párhuzamos a felületi normális és a becsapodófény irányvektora (100% megvilágítottság)
+			--> ha a fénysugár egyre merőlegesebb lesz akkor egyre kisebb a megvilágítottság
+			
+			számítása: 
+				- a fénysugárnak kell venni (-1) - szeresét
+				- felületi normális számításához pedig kell a világtranszformáció inverz transzponáltja
+				
+	- spekuláris komponens számítása:
+		-- valójában egy r(eflect) irányvektor felületi pontból (fragmensből) a kamerába/kamera felé mutat
+			
+
+--------
+
 Előző óra:
 - körbefordulást meggátolni:
 

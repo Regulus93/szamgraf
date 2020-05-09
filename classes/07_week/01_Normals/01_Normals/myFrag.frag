@@ -45,15 +45,15 @@ void main()
 	    - clamp: http://www.opengl.org/sdk/docs/manglsl/xhtml/clamp.xml
 	*/
 
-	vec3 n = normalize(vs_out_norm);
-	vec3 toLight = -l;
+	vec3 n = normalize(vs_out_norm); //normalizáljuk hogy egységhosszú legyen a normálvektor
+	vec3 toLight = -l; //fény felé mutató irányvektor
 	float di = clamp(dot(n, toLight), 
-		0, //minimum 
-		1  //maximum
+		0, //minimum -> ne lehessen negatív fény
+		1  //maximum -> párhuzamosak, annál nagyobb intenzitás nem lehetséges
 		);
 	vec3 diffuse = 
-		Ld *
-		Kd *
+		Ld * //diffúz fényszínünk
+		Kd * //diffúz fényirány
 		di //diffúz intenzitás
 
 	;
@@ -66,8 +66,23 @@ void main()
 		- power: http://www.opengl.org/sdk/docs/manglsl/xhtml/pow.xml 
 	*/
 
+	// kamerába mutató irányvektor
 	vec3 c = normalize(eyePos - vs_out_pos);
+	
+	/*
+	reflect:
+		- l: beérkező fény
+		- n: felületi normálvektor
+	*/
 	vec3 r = reflect(l, n);
+	
+	/*
+	spekuláris intenzitás:
+		dot(r, c) --> hogy a c és az r között mekkora a nyílásszög
+		clamp(dot(r, c), 0, 1) --> ne legyen negatív fény
+		pow(clamp(dot(r, c), 0, 1), 16) --> pow kell mert enyhíteni lehet a becsillanás mértékét (hajlítani a spekuláris intenzitás függvényt)
+			
+	*/
 	float si = pow(clamp(dot(r, c), 0, 1), 16);
 	vec3 specular = Ls * Ks * si;
 

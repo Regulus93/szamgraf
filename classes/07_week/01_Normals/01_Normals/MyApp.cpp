@@ -39,8 +39,8 @@ glm::vec3 CMyApp::GetPos(float u, float v)
 }
 //
 // egy parametrikus felület (u,v) paraméterértékekhez tartozó normálvektorának
-// kiszámítását végzõ függvény
-//
+// kiszámítását végzõ függvény!
+// gömb az egyetlen parametrikus felület, aminek a normálvektoros egyenlete megegyezik a parametrikussal
 glm::vec3 CMyApp::GetNorm(float u, float v)
 {
 	// Képlettel
@@ -54,7 +54,22 @@ glm::vec3 CMyApp::GetNorm(float u, float v)
 	glm::vec3 du = GetPos(u+0.01, v)-GetPos(u-0.01, v);
 	glm::vec3 dv = GetPos(u, v+0.01)-GetPos(u, v-0.01);
 
-	return glm::normalize(glm::cross(du, dv));*/
+	       ^
+	       |
+	       | glm::cross(du, dv)
+	       |
+	       |
+	       |
+	       o
+		  / \
+	u	 /   \    v
+		/     \
+	   /       \
+	  v        v
+
+	  + normalizálás
+	return glm::normalize(glm::cross(du, dv));
+	*/
 }
 
 glm::vec2 CMyApp::GetTex(float u, float v)
@@ -73,7 +88,7 @@ void CMyApp::InitSphere()
 			float v = j / (float)M;
 
 			vert[i + j * (N + 1)].p = GetPos(u, v);
-			vert[i + j * (N + 1)].n = GetNorm(u, v);
+			vert[i + j * (N + 1)].n = GetNorm(u, v); //normálvektorok kiszámítása
 			vert[i + j * (N + 1)].t = GetTex(u, v);
 		}
 
@@ -228,8 +243,10 @@ bool CMyApp::Init()
 	
 	// shaderbeli uniform változók helyének lekérdezése
 	m_loc_mvp = glGetUniformLocation(m_programID, "MVP");
+	//vs_out_pos kiszámításához kell -> kamera pozíció kiszámításához használtuk, nekünk a kamera világbeli transzformációja/pozíciója szükséges
 	m_loc_world = glGetUniformLocation(m_programID, "world");
 	m_loc_worldIT = glGetUniformLocation(m_programID, "worldIT");
+	//kamerapozíció memóriahelye
 	m_loc_eyePos = glGetUniformLocation(m_programID, "eyePos");
 	//m_loc_tex = glGetUniformLocation(m_programID, "texImage");
 	
@@ -262,7 +279,7 @@ void CMyApp::Render()
 	// töröljük a frampuffert (GL_COLOR_BUFFER_BIT) és a mélységi Z puffert (GL_DEPTH_BUFFER_BIT)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// shader bekapcsolasa
+	// shader bekapcsolasa: csak ha ez be van kapcsolva akkor lehet a shaderbe leküldeni uniform változót
 	glUseProgram(m_programID);
 
 	//
@@ -277,6 +294,7 @@ void CMyApp::Render()
 	glUniformMatrix4fv(m_loc_mvp, 1, GL_FALSE, &mvp[0][0]);
 	glUniformMatrix4fv(m_loc_world, 1, GL_FALSE, &world[0][0]);
 	glUniformMatrix4fv(m_loc_worldIT, 1, GL_FALSE, &wolrdIT[0][0]);
+	//kamerapozíció leküldése fragment shaderb
 	glUniform3fv(m_loc_eyePos, 1, &m_camera.GetEye()[0]);
 
 	// feladat - textúra

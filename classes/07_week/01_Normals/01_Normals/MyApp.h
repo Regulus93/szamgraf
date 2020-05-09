@@ -37,7 +37,9 @@ protected:
 	struct Vertex
 	{
 		glm::vec3 p;
+		//normálvektor
 		glm::vec3 n;
+		//textúra
 		glm::vec2 t;
 	};
 
@@ -62,6 +64,7 @@ protected:
 	GLuint m_loc_mvp;
 	GLuint m_loc_world;
 	GLuint m_loc_worldIT;
+	//kamerapozíció leküldéséhez szükséges
 	GLuint m_loc_eyePos;
 	//GLuint m_loc_tex;
 
