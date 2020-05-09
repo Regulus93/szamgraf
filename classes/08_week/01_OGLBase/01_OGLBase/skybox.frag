@@ -10,7 +10,7 @@ uniform samplerCube skyboxTexture;
 void main()
 {
 	//fs_out_col = vec4( normalize(vs_out_pos), 1);
-	//itt vs_out_pos egy irányvektor
+	//itt vs_out_pos egy irányvektor => ahol "érintjük" a skybox oldalát, arra az oldalra szeretnénk mintavételezni
 	fs_out_col = texture( skyboxTexture, (vs_out_pos) );
 
 	/*

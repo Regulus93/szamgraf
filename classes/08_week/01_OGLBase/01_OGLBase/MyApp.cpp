@@ -98,8 +98,8 @@ void CMyApp::InitCube()
 									sizeof(Vertex)			// stride: a következõ csúcspont ezen attribútuma hány byte-ra van az aktuálistól
 								>, 
 								m_CubeVertexBuffer }, //ebben magyarázzuk el a pozíciócsatornát
-			{ CreateAttribute<1, glm::vec3, (sizeof(glm::vec3)), sizeof(Vertex)>, m_CubeVertexBuffer },
-			{ CreateAttribute<2, glm::vec2, (2 * sizeof(glm::vec3)), sizeof(Vertex)>, m_CubeVertexBuffer },
+			{ CreateAttribute<1, glm::vec3, (sizeof(glm::vec3)), sizeof(Vertex)>, m_CubeVertexBuffer }, //normálvektorok
+			{ CreateAttribute<2, glm::vec2, (2 * sizeof(glm::vec3)), sizeof(Vertex)>, m_CubeVertexBuffer }, //textúra
 		},
 		m_CubeIndices //ha nincs index bufferünk akkor õ elhagyható
 	);
@@ -160,6 +160,8 @@ void CMyApp::InitSkyBox()
 	glGenTextures(1, &m_skyboxTexture);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
 
+	// GL_TEXTURE_CUBE_MAP - textúra típusa ( 6 db kettõdimenziós textúra (GL_TEXTURE_CUBE_MAP))
+	// GL_TEXTURE_MAG_FILTER - interpoláció típusa
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -167,6 +169,7 @@ void CMyApp::InitSkyBox()
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	//textúra betöltése
+	//GL_TEXTURE_CUBE_MAP_NEGATIVE_X - role
 	TextureFromFileAttach("assets/xpos.png", GL_TEXTURE_CUBE_MAP_POSITIVE_X);
 	TextureFromFileAttach("assets/xneg.png", GL_TEXTURE_CUBE_MAP_NEGATIVE_X);
 	TextureFromFileAttach("assets/ypos.png", GL_TEXTURE_CUBE_MAP_POSITIVE_Y);
@@ -291,7 +294,8 @@ bool CMyApp::Init()
 	m_mesh->initBuffers();
 	
 	// kamera
-	m_camera.SetProj(45.0f, 640.0f / 480.0f, 0.01f, 1000.0f);
+	m_camera.SetProj(45.0f, 640.0f / 480.0f, 0.01f, 
+		1000.0f); //távoli vágósík
 
 	return true;
 }
@@ -326,7 +330,7 @@ void CMyApp::Render()
 	//Suzanne
 //	glm::mat4 suzanneWorld = glm::mat4(1.0f);
 	glm::mat4 suzanneWorld = glm::translate(m_spherePos);
-	m_program.Use();
+	m_program.Use(); //shader bekapcs
 	//alap árnyalás a myFrag.frag-ben
 	m_program.SetTexture("texImage", 0, m_suzanneTexture);
 	m_program.SetUniform("MVP", viewProj * suzanneWorld);

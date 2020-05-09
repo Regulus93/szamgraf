@@ -47,12 +47,15 @@ public:
 
 protected:
 	// shaderekhez szükséges változók
-	ProgramObject		m_program;			// mesh shader
+	ProgramObject		m_program;			// mesh shader (doboz és Suzanne)
 	ProgramObject		m_programSkybox;	// skybox shader
 
+	//kocka
 	VertexArrayObject	m_CubeVao;			// VAO
 	IndexBuffer			m_CubeIndices;		// index buffer
 	ArrayBuffer			m_CubeVertexBuffer;	// VBO
+
+
 	VertexArrayObject	m_SkyboxVao;
 	IndexBuffer			m_SkyboxIndices;
 	ArrayBuffer			m_SkyboxPos;
@@ -79,7 +82,7 @@ protected:
 
 	glm::vec3 m_spherePos = glm::vec3(0.0f);
 
-	// mesh adatok
+	// mesh adatok (Suzanne)
 	Mesh* m_mesh;
 
 	glm::vec3 GetPos(float u, float v);

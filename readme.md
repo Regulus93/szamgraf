@@ -34,9 +34,10 @@ Módszer:
 	- új grafikai modell behozása
 	
 	- skybox magyarázat:
+		-- kirajzolni oda, ahova még rajzolhatunk ki (távoli vágósík)
 		-- mélységi teszt
 		-- használata:
-			--- nem csak megjelenítés, hanem tükrözödés (environment ????ing)
+			--- nem csak megjelenítés, hanem tükrözödés (environment mapping)
 
 
 ------------
