@@ -175,7 +175,7 @@ void CMyApp::Render()
 	m_pointProgram.Use();
 	
 	m_pointProgram.SetUniform("mvp", m_camera.GetViewProj());
-	m_pointProgram.SetUniform("points", m_controlPoints);
+	m_pointProgram.SetUniform("points", m_controlPoints); //vector-t küld le a shaderbe, ahol valami template mágia eredményeképpen tömb lesz belőle, hasznos a SetUniform-ot használni
 	m_pointProgram.SetUniform("color", glm::vec4(1,0,1,1));
 
 	glDrawArrays(GL_POINTS, 0, (GLsizei)m_controlPoints.size());
@@ -208,8 +208,11 @@ void CMyApp::Render()
 
 	*/
 	if (parameterChange) {
+
 		float controlPointCount = (m_controlPoints.size() - 1) / 2.f;
-		m_currentParam = sinf(SDL_GetTicks() / 1000.f * 2.f * M_PI / (float)m_controlPoints.size()) * controlPointCount + controlPointCount;
+
+		m_currentParam = sinf(SDL_GetTicks() / 1000.f * 2.f * M_PI / (float)m_controlPoints.size()) * controlPointCount //controlpontok fele
+			+ controlPointCount; //controlpontok második fele
 	}
 
 	glm::mat4 suzanne1World = glm::translate( Eval(m_currentParam) ); //görbe kiértékelése adott param szerint
