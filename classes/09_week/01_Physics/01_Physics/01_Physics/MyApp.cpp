@@ -34,8 +34,8 @@ bool CMyApp::Init()
 
 	glEnable(GL_DEPTH_TEST); // mélységi teszt bekapcsolása (takarás)
 
-	glLineWidth(4.0f); // a vonalprimitívek vastagsága: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glLineWidth.xhtml
-	glPointSize(15.0f); // a raszterizált pontprimitívek mérete
+	glLineWidth(40.0f); // a vonalprimitívek vastagsága: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glLineWidth.xhtml
+	glPointSize(10.0f); // a raszterizált pontprimitívek mérete
 
 	//
 	// shaderek betöltése
@@ -128,16 +128,16 @@ bool CMyApp::Init()
 	// kamera
 	m_camera.SetProj(45.0f, 640.0f / 480.0f, 0.01f, 1000.0f);
 
-	// részecskék inicializálása
+	// részecskék inicializálása: helyek lefoglalása
 	m_particlePos.reserve(m_particleCount);
 	m_particleVel.reserve(m_particleCount);
 
 	// véletlenszám generátor inicializálása
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<> rnd(-1,1);
+	std::random_device rd; //randomszám generátor eszköz
+	std::mt19937 gen(rd()); //randomszám generátor algoritmus
+	std::uniform_real_distribution<> rnd(-1,1); //értékkészlet megadása
 
-	// CPU oldali részecsketömbök feltöltése
+	// CPU oldali részecsketömbök feltöltése: pozíciók és sebességek
 	for (int i = 0; i < m_particleCount; ++i)
 	{
 		m_particlePos.push_back( glm::vec3(rnd(gen), rnd(gen), rnd(gen)) );
@@ -146,7 +146,7 @@ bool CMyApp::Init()
 
 	// GPU-ra áttölteni a részecskék pozícióit
 	m_gpuParticleBuffer.BufferData(m_particlePos);	// <=>	m_gpuParticleBuffer = m_particlePos;
-	m_gpuParticleVelBuffer.BufferData(m_particleVel);	// <=>	m_gpuParticleBuffer = m_particlePos;
+	m_gpuParticleVelBuffer.BufferData(m_particleVel);
 
 	// és végül a VAO-t inicializálni
 	m_gpuParticleVAO.Init({
@@ -180,21 +180,25 @@ void CMyApp::Update()
 		m_particlePos[i] += m_particleVel[i] * delta_time;
 
 		//pattogás megvalósítása (ha kimenne a részecske)
+		/// pozitív irányba ki akar menni és pozitív a sebessége VAGY negatív irányba ki akar menni és negatív a sebessége
 		if ( (m_particlePos[i].x >= 1 && m_particleVel[i].x > 0) || (m_particlePos[i].x <= -1 && m_particleVel[i].x < 0) )
-			m_particleVel[i].x *= -energyRemaining;
+			m_particleVel[i].x *= -energyRemaining; //akkor a sebességet -1-el megfordítjuk/szorozzuk
 		if ( (m_particlePos[i].y >= 1 && m_particleVel[i].y > 0) || (m_particlePos[i].y <= -1 && m_particleVel[i].y < 0))
 			m_particleVel[i].y *= -energyRemaining;
 		if ( (m_particlePos[i].z >= 1 && m_particleVel[i].z > 0) || (m_particlePos[i].z <= -1 && m_particleVel[i].z < 0))
 			m_particleVel[i].z *= -energyRemaining;
 	}
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_gpuParticleVelBuffer);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * m_particleVel.size(), &(m_particleVel[0][0]));
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindBuffer(GL_ARRAY_BUFFER, m_gpuParticleVelBuffer);
+	//glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * m_particleVel.size(), &(m_particleVel[0][0]));
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//alternatíva: 
+	m_gpuParticleVelBuffer.BufferSubData(0, sizeof(glm::vec3) * m_particleVel.size(), &(m_particleVel[0][0]));
 
 	// frissítsük a puffert
 	glBindBuffer(GL_ARRAY_BUFFER, m_gpuParticleBuffer);
-	//már videókártyán lévő adatot szeretnék frissíteni
+	//már videókártyán lévő adatot szeretnék frissíteni: az összes részecskeadatot leküldjük: első particle x-ével kezdve olvassa ki a videókártya
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3)*m_particlePos.size(), &(m_particlePos[0][0]));
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	// használhattuk volna simán a 
@@ -220,7 +224,7 @@ void CMyApp::Render()
 	m_axesProgram.SetUniform("mvp", m_camera.GetViewProj() );
 
 	//6 példányban fogja futtatni a vertex shadert
-	glDrawArrays(GL_LINES, 0, 6);
+	glDrawArrays(GL_LINES, 0, 6); //vertexben vannak a pozíció és színadatok
 
 	// kocka
 	// hogyan rajzoljuk ki, hogy látszódjon a hátlap?

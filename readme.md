@@ -25,7 +25,11 @@ Módszer:
 ------------
 
 Pyshics:
-	- 
+	- részecskerendszer:
+		-- pici entitásokból:
+			--- sebesség
+			--- pozíció
+			--- de lehet geometriája, forgása 
 
 Transparency:
 	- kirajzoljuk barna suzanne-t, a falat, majd a zöld suzanne-t 

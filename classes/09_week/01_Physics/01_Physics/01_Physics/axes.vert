@@ -26,7 +26,7 @@ void main()
 {
 	//gl_VertexID - minden példányban egyedi
 	gl_Position = mvp * positions[gl_VertexID];
-	vs_out_color = colors[gl_VertexID/2];
+	vs_out_color = colors[gl_VertexID/2]; //spórolás a színékkel: 0-1-es vertex a 0-ás pozíción lévõ színt, 2-3-as az 1-est, 4-5-ös a 2-eset
 }
 
 // 1. feladat: hogyan lehetne a positions tömb méretét lecsökkenteni 4-re? 
