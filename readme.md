@@ -18,7 +18,42 @@ Módszer:
 	- majd az új FBO-ban lévő texture alapján rajzoljunk a régibe (a postprocessshader segítségével)
 	
 	
+------------
+|  		   |
+|  9. hét  |
+|		   |
+------------
 
+Pyshics:
+	- 
+
+Transparency:
+	- kirajzoljuk barna suzanne-t, a falat, majd a zöld suzanne-t 
+	- barna Suzanne bekerül a mélység bufferbe, majd az áttetsző falé is, majd a zöldé
+	
+	- másik irányból: barna Suzanne-t először, majd a falat (barna Suzanne néhány fragmensnél kitakarja a falat) 
+	
+	- megoldás: rajzoljuk ki a nem áttetsző objektumokat, majd az áttetszőket:
+		-- a fal kódját a két suzanne rajzolása után tesszük
+		
+	- kamera szerint sorrendbe: tenni az áttetszőket
+	
+
+	- ezen kívül, amire szükség van az áttetszőség működéséhez (3 lépés): 
+		!! glEnable(GL_BLEND);
+			(itt a projektben az initben van, de közvetlenül a rajzoláskor sokkal szebb lenne)
+			--- mikor bekapcsoljuk a blendinget, minden fragmensre számítást fog végezni a rendszer a háttérben:
+				---- a source (fragmens shader által előállított eredmény)-t hogyan írjuk be a már kirajzolt fragmensek közé
+		
+==> 	!!glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  => lineáris interpoláció		
+			fragmens shader után új szerelőszalag rész fog bekapcsolni: blend merge (az újonnan kirajzolandó fragmenseket mossa össze a jelenleg backbufferben lévő fragmensekkel) 
+		
+			// GL_SRC_ALPHA => faktor annak amit a fragmens shader előállít
+			// GL_ONE_MINUS_SRC_ALPHA => faktor annak ami már benne van a backbufferben
+		
+		!! fal kirajzolásakor: kikapcsolni a hátlapeldobást, majd az áttetsző objektumok kirajzolása után visszakapcsolása
+		
+	
 
 ------------
 |  		   |
