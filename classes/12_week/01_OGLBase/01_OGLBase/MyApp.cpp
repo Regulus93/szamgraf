@@ -1,4 +1,4 @@
-#include "MyApp.h"
+ï»¿#include "MyApp.h"
 
 #include <math.h>
 #include <vector>
@@ -24,7 +24,7 @@ void CMyApp::InitCube()
 {
 	//struct Vertex{ glm::vec3 position; glm::vec3 normals; glm::vec2 texture; };
 	std::vector<Vertex>vertices;
-	
+
 	//front									 
 	vertices.push_back({ glm::vec3(-0.5, -0.5, +0.5), glm::vec3(0, 0, 1), glm::vec2(0, 0) });
 	vertices.push_back({ glm::vec3(+0.5, -0.5, +0.5), glm::vec3(0, 0, 1), glm::vec2(1, 0) });
@@ -70,30 +70,30 @@ void CMyApp::InitCube()
 	}
 
 	//
-	// geometria definiálása (std::vector<...>) és GPU pufferekbe való feltöltése BufferData-val
+	// geometria definiÃ¡lÃ¡sa (std::vector<...>) Ã©s GPU pufferekbe valÃ³ feltÃ¶ltÃ©se BufferData-val
 	//
 
-	// vertexek pozíciói:
+	// vertexek pozÃ­ciÃ³i:
 	/*
-	Az m_CubeVertexBuffer konstruktora már létrehozott egy GPU puffer azonosítót és a most következõ BufferData hívás ezt
-	1. bind-olni fogja GL_ARRAY_BUFFER target-re (hiszen m_CubeVertexBuffer típusa ArrayBuffer) és
-	2. glBufferData segítségével áttölti a GPU-ra az argumentumban adott tároló értékeit
+	Az m_CubeVertexBuffer konstruktora mÃ¡r lÃ©trehozott egy GPU puffer azonosÃ­tÃ³t Ã©s a most kÃ¶vetkezÅ‘ BufferData hÃ­vÃ¡s ezt
+	1. bind-olni fogja GL_ARRAY_BUFFER target-re (hiszen m_CubeVertexBuffer tÃ­pusa ArrayBuffer) Ã©s
+	2. glBufferData segÃ­tsÃ©gÃ©vel Ã¡ttÃ¶lti a GPU-ra az argumentumban adott tÃ¡rolÃ³ Ã©rtÃ©keit
 
 	*/
 
 	m_CubeVertexBuffer.BufferData(vertices);
 
-	// és a primitíveket alkotó csúcspontok indexei (az elõzõ tömbökbõl) - triangle list-el való kirajzolásra felkészülve
+	// Ã©s a primitÃ­veket alkotÃ³ csÃºcspontok indexei (az elÅ‘zÅ‘ tÃ¶mbÃ¶kbÅ‘l) - triangle list-el valÃ³ kirajzolÃ¡sra felkÃ©szÃ¼lve
 	m_CubeIndices.BufferData(indices);
 
-	// geometria VAO-ban való regisztrálása
+	// geometria VAO-ban valÃ³ regisztrÃ¡lÃ¡sa
 	m_CubeVao.Init(
 		{
-			// 0-ás attribútum "lényegében" glm::vec3-ak sorozata és az adatok az m_CubeVertexBuffer GPU pufferben vannak
-			{ CreateAttribute<		0,						// attribútum: 0
-									glm::vec3,				// CPU oldali adattípus amit a 0-ás attribútum meghatározására használtunk <- az eljárás a glm::vec3-ból kikövetkezteti, hogy 3 darab float-ból áll a 0-ás attribútum
-									0,						// offset: az attribútum tároló elejétõl vett offset-je, byte-ban
-									sizeof(Vertex)			// stride: a következõ csúcspont ezen attribútuma hány byte-ra van az aktuálistól
+			// 0-Ã¡s attribÃºtum "lÃ©nyegÃ©ben" glm::vec3-ak sorozata Ã©s az adatok az m_CubeVertexBuffer GPU pufferben vannak
+			{ CreateAttribute<		0,						// attribÃºtum: 0
+									glm::vec3,				// CPU oldali adattÃ­pus amit a 0-Ã¡s attribÃºtum meghatÃ¡rozÃ¡sÃ¡ra hasznÃ¡ltunk <- az eljÃ¡rÃ¡s a glm::vec3-bÃ³l kikÃ¶vetkezteti, hogy 3 darab float-bÃ³l Ã¡ll a 0-Ã¡s attribÃºtum
+									0,						// offset: az attribÃºtum tÃ¡rolÃ³ elejÃ©tÅ‘l vett offset-je, byte-ban
+									sizeof(Vertex)			// stride: a kÃ¶vetkezÅ‘ csÃºcspont ezen attribÃºtuma hÃ¡ny byte-ra van az aktuÃ¡listÃ³l
 								>, m_CubeVertexBuffer },
 			{ CreateAttribute<1, glm::vec3, (sizeof(glm::vec3)), sizeof(Vertex)>, m_CubeVertexBuffer },
 			{ CreateAttribute<2, glm::vec2, (2 * sizeof(glm::vec3)), sizeof(Vertex)>, m_CubeVertexBuffer },
@@ -106,26 +106,26 @@ void CMyApp::InitSkyBox()
 {
 	m_SkyboxPos.BufferData(
 		std::vector<glm::vec3>{
-		// hátsó lap
+		// hÃ¡tsÃ³ lap
 		glm::vec3(-1, -1, -1),
-		glm::vec3(1, -1, -1),
-		glm::vec3(1, 1, -1),
-		glm::vec3(-1, 1, -1),
-		// elülsõ lap
-		glm::vec3(-1, -1, 1),
-		glm::vec3(1, -1, 1),
-		glm::vec3(1, 1, 1),
-		glm::vec3(-1, 1, 1),
+			glm::vec3(1, -1, -1),
+			glm::vec3(1, 1, -1),
+			glm::vec3(-1, 1, -1),
+			// elÃ¼lsÅ‘ lap
+			glm::vec3(-1, -1, 1),
+			glm::vec3(1, -1, 1),
+			glm::vec3(1, 1, 1),
+			glm::vec3(-1, 1, 1),
 	}
 	);
 
-	// és a primitíveket alkotó csúcspontok indexei (az elõzõ tömbökbõl) - triangle list-el való kirajzolásra felkészülve
+	// Ã©s a primitÃ­veket alkotÃ³ csÃºcspontok indexei (az elÅ‘zÅ‘ tÃ¶mbÃ¶kbÅ‘l) - triangle list-el valÃ³ kirajzolÃ¡sra felkÃ©szÃ¼lve
 	m_SkyboxIndices.BufferData(
 		std::vector<int>{
-			// hátsó lap
-			0, 1, 2,
+		// hÃ¡tsÃ³ lap
+		0, 1, 2,
 			2, 3, 0,
-			// elülsõ lap
+			// elÃ¼lsÅ‘ lap
 			4, 6, 5,
 			6, 4, 7,
 			// bal
@@ -134,21 +134,21 @@ void CMyApp::InitSkyBox()
 			// jobb
 			1, 5, 2,
 			5, 6, 2,
-			// alsó
+			// alsÃ³
 			1, 0, 4,
 			1, 4, 5,
-			// felsõ
+			// felsÅ‘
 			3, 2, 6,
 			3, 6, 7,
 	}
 	);
 
-	// geometria VAO-ban való regisztrálása
+	// geometria VAO-ban valÃ³ regisztrÃ¡lÃ¡sa
 	m_SkyboxVao.Init(
 		{
 			{ CreateAttribute<0, glm::vec3, 0, sizeof(glm::vec3)>, m_SkyboxPos },
 		}, m_SkyboxIndices
-	);
+		);
 
 	// skybox texture
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
@@ -175,15 +175,33 @@ void CMyApp::InitSkyBox()
 
 glm::vec3 CMyApp::GetPos(float u, float v)
 {
-	// origó középpontú, r sugarú gömb parametrikus alakja: http://hu.wikipedia.org/wiki/G%C3%B6mb#Egyenletek 
-	// figyeljünk:	matematikában sokszor a Z tengely mutat felfelé, de nálunk az Y, tehát a legtöbb képlethez képest nálunk
-	//				az Y és Z koordináták felcserélve szerepelnek
+	// origÃ³ kÃ¶zÃ©ppontÃº, r sugarÃº gÃ¶mb parametrikus alakja: http://hu.wikipedia.org/wiki/G%C3%B6mb#Egyenletek 
+	// figyeljÃ¼nk:	matematikÃ¡ban sokszor a Z tengely mutat felfelÃ©, de nÃ¡lunk az Y, tehÃ¡t a legtÃ¶bb kÃ©plethez kÃ©pest nÃ¡lunk
+	//				az Y Ã©s Z koordinÃ¡tÃ¡k felcserÃ©lve szerepelnek
 	u *= float(2 * M_PI);
 	v *= float(M_PI);
 	float cu = cosf(u), su = sinf(u), cv = cosf(v), sv = sinf(v);
 	float r = 2;
 
 	return glm::vec3(r * cu * sv, r * cv, r * su * sv);
+}
+glm::vec3 CMyApp::GetNorm(float u, float v)
+{
+	u *= float(2 * M_PI);
+	v *= float(M_PI);
+	float cu = cosf(u), su = sinf(u), cv = cosf(v), sv = sinf(v);
+	return glm::vec3(cu * sv, cv, su * sv);
+
+	// Numerikusan (nem kell ismerni a kï¿½pletet, elï¿½g a pozï¿½ciï¿½ï¿½t)
+	/*
+	glm::vec3 du = GetPos(u+0.01, v)-GetPos(u-0.01, v);
+	glm::vec3 dv = GetPos(u, v+0.01)-GetPos(u, v-0.01);
+
+	return glm::normalize(glm::cross(du, dv));*/
+}
+glm::vec2 CMyApp::GetTex(float u, float v)
+{
+	return glm::vec2(1 - u, 1 - v);
 }
 void CMyApp::InitSphere()
 {
@@ -195,11 +213,11 @@ void CMyApp::InitSphere()
 			float v = j / (float)M;
 
 			vert[i + j * (N + 1)].p = GetPos(u, v);
-			//vert[i + j * (N + 1)].n = GetNorm(u, v);
-			//vert[i + j * (N + 1)].t = GetTex(u, v);
+			vert[i + j * (N + 1)].n = GetNorm(u, v);
+			vert[i + j * (N + 1)].t = GetTex(u, v);
 		}
 
-	// indexpuffer adatai: NxM négyszög = 2xNxM háromszög = háromszöglista esetén 3x2xNxM index
+	// indexpuffer adatai: NxM nÃ©gyszÃ¶g = 2xNxM hÃ¡romszÃ¶g = hÃ¡romszÃ¶glista esetÃ©n 3x2xNxM index
 	GLushort indices[3 * 2 * (N) * (M)];
 	for (int i = 0; i < N; ++i)
 		for (int j = 0; j < M; ++j)
@@ -211,44 +229,46 @@ void CMyApp::InitSphere()
 			indices[6 * i + j * 3 * 2 * (N)+4] = (i + 1) + (j + 1) * (N + 1);
 			indices[6 * i + j * 3 * 2 * (N)+5] = (i)+(j + 1) * (N + 1);
 		}
-	
+
 	m_spherePosVBO.BufferData(vert);
 
-	// és a primitíveket alkotó csúcspontok indexei (az elõzõ tömbökbõl) - triangle list-el való kirajzolásra felkészülve
+	// Ã©s a primitÃ­veket alkotÃ³ csÃºcspontok indexei (az elÅ‘zÅ‘ tÃ¶mbÃ¶kbÅ‘l) - triangle list-el valÃ³ kirajzolÃ¡sra felkÃ©szÃ¼lve
 	m_sphereIndices.BufferData(indices);
 
-	// geometria VAO-ban való regisztrálása
+	// geometria VAO-ban valÃ³ regisztrÃ¡lÃ¡sa
 	m_sphereVAO.Init(
 		{
-			// 0-ás attribútum "lényegében" glm::vec3-ak sorozata és az adatok az m_CubeVertexBuffer GPU pufferben vannak
-			{ CreateAttribute<		0,						// attribútum: 0
-									glm::vec3,				// CPU oldali adattípus amit a 0-ás attribútum meghatározására használtunk <- az eljárás a glm::vec3-ból kikövetkezteti, hogy 3 darab float-ból áll a 0-ás attribútum
-									0,						// offset: az attribútum tároló elejétõl vett offset-je, byte-ban
-									sizeof(Vertex)			// stride: a következõ csúcspont ezen attribútuma hány byte-ra van az aktuálistól
+			// 0-Ã¡s attribÃºtum "lÃ©nyegÃ©ben" glm::vec3-ak sorozata Ã©s az adatok az m_CubeVertexBuffer GPU pufferben vannak
+			{ CreateAttribute<		0,						// attribÃºtum: 0
+									glm::vec3,				// CPU oldali adattÃ­pus amit a 0-Ã¡s attribÃºtum meghatÃ¡rozÃ¡sÃ¡ra hasznÃ¡ltunk <- az eljÃ¡rÃ¡s a glm::vec3-bÃ³l kikÃ¶vetkezteti, hogy 3 darab float-bÃ³l Ã¡ll a 0-Ã¡s attribÃºtum
+									0,						// offset: az attribÃºtum tÃ¡rolÃ³ elejÃ©tÅ‘l vett offset-je, byte-ban
+									sizeof(Vertex)			// stride: a kÃ¶vetkezÅ‘ csÃºcspont ezen attribÃºtuma hÃ¡ny byte-ra van az aktuÃ¡listÃ³l
 								>, m_spherePosVBO },
+			{ CreateAttribute<1, glm::vec3, sizeof(glm::vec3), sizeof(Vertex)>, m_spherePosVBO },
+			{ CreateAttribute<2, glm::vec2, sizeof(glm::vec3) * 2, sizeof(Vertex)>, m_spherePosVBO }
 		},
 		m_sphereIndices
-	);
+			);
 }
 
 void CMyApp::InitShaders()
 {
-	// a shadereket tároló program létrehozása az OpenGL-hez hasonló módon:
+	// a shadereket tÃ¡rolÃ³ program lÃ©trehozÃ¡sa az OpenGL-hez hasonlÃ³ mÃ³don:
 	m_program.AttachShaders({
 		{ GL_VERTEX_SHADER, "myVert.vert"},
 		{ GL_FRAGMENT_SHADER, "myFrag.frag"}
-	});
+		});
 
 	// attributomok osszerendelese a VAO es shader kozt
 	m_program.BindAttribLocations({
 		{ 0, "vs_in_pos" },				// VAO 0-as csatorna menjen a vs_in_pos-ba
 		{ 1, "vs_in_norm" },			// VAO 1-es csatorna menjen a vs_in_norm-ba
 		{ 2, "vs_in_tex" },				// VAO 2-es csatorna menjen a vs_in_tex-be
-	});
+		});
 
 	m_program.LinkProgram();
 
-	// shader program rövid létrehozása, egyetlen függvényhívással a fenti három:
+	// shader program rÃ¶vid lÃ©trehozÃ¡sa, egyetlen fÃ¼ggvÃ©nyhÃ­vÃ¡ssal a fenti hÃ¡rom:
 	m_programSkybox.Init(
 		{
 			{ GL_VERTEX_SHADER, "skybox.vert" },
@@ -257,30 +277,30 @@ void CMyApp::InitShaders()
 		{
 			{ 0, "vs_in_pos" },				// VAO 0-as csatorna menjen a vs_in_pos-ba
 		}
-	);
+		);
 }
 
 bool CMyApp::Init()
 {
-	// törlési szín legyen kékes
+	// tÃ¶rlÃ©si szÃ­n legyen kÃ©kes
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
 
 	glEnable(GL_CULL_FACE); // kapcsoljuk be a hatrafele nezo lapok eldobasat
-	glEnable(GL_DEPTH_TEST); // mélységi teszt bekapcsolása (takarás)
+	glEnable(GL_DEPTH_TEST); // mÃ©lysÃ©gi teszt bekapcsolÃ¡sa (takarÃ¡s)
 
 	InitShaders();
 	InitCube();
 	InitSkyBox();
 	InitSphere();
 
-	// egyéb textúrák betöltése
+	// egyÃ©b textÃºrÃ¡k betÃ¶ltÃ©se
 	m_woodTexture.FromFile("assets/wood.jpg");
 	m_suzanneTexture.FromFile("assets/marron.jpg");
 
 	// mesh betoltese
 	m_mesh = ObjParser::parse("assets/Suzanne.obj");
 	m_mesh->initBuffers();
-	
+
 	// kamera
 	m_camera.SetProj(45.0f, 640.0f / 480.0f, 0.01f, 1000.0f);
 
@@ -304,75 +324,66 @@ void CMyApp::Update()
 	last_time = SDL_GetTicks();
 }
 
+void CMyApp::RenderSphere(glm::mat4 world)
+{
+	glm::mat4 viewProj = m_camera.GetViewProj();
+
+	m_program.Use();
+	m_program.SetTexture("texImage", 0, m_suzanneTexture);
+	m_program.SetUniform("MVP", viewProj * world);
+	m_program.SetUniform("world", world);
+	m_program.SetUniform("worldIT", glm::inverse(glm::transpose(world)));
+
+	m_sphereVAO.Bind();
+	glDrawElements(GL_TRIANGLES,	// primitÃ­v tÃ­pus
+		3 * 2 * (N) * (M),			// hany csucspontot hasznalunk a kirajzolashoz
+		GL_UNSIGNED_SHORT,			// indexek tipusa
+		0);							// indexek eltolÃ¡sa
+
+}
+
 void CMyApp::Render()
 {
-	// töröljük a frampuffert (GL_COLOR_BUFFER_BIT) és a mélységi Z puffert (GL_DEPTH_BUFFER_BIT)
+	// tÃ¶rÃ¶ljÃ¼k a frampuffert (GL_COLOR_BUFFER_BIT) Ã©s a mÃ©lysÃ©gi Z puffert (GL_DEPTH_BUFFER_BIT)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glm::mat4 viewProj = m_camera.GetViewProj();
 
-	//Suzanne
-	glm::mat4 suzanneWorld = glm::translate(m_spherePos);
-	m_program.Use();
-	m_program.SetTexture("texImage", 0, m_suzanneTexture);
-	m_program.SetUniform("MVP", viewProj * suzanneWorld);
-	m_program.SetUniform("world", suzanneWorld);
-	m_program.SetUniform("worldIT", glm::inverse(glm::transpose(suzanneWorld)));
-	//m_mesh->draw();
-	m_sphereVAO.Bind();
-	glDrawElements(GL_TRIANGLES,	// primitív típus
-		3 * 2 * (N) * (M),			// hany csucspontot hasznalunk a kirajzolashoz
-		GL_UNSIGNED_SHORT,			// indexek tipusa
-		0);							// indexek eltolása
+	RenderSphere(glm::mat4(1.0f));
+	RenderSphere(glm::translate(glm::vec3(2.0f, 2.0f, 2.0f)));
+	RenderSphere(glm::translate(glm::vec3(4.0f, 2.0f, 2.0f)));
+	RenderSphere(glm::translate(glm::vec3(2.0f, 7.0f, 2.0f)));
+	RenderSphere(glm::translate(glm::vec3(2.0f, 32.0f, 21.0f)));
 
 
-	// kockák
-	//m_program.Use(); nem hívjuk meg újra, hisz ugyanazt a shadert használják
-	m_CubeVao.Bind();
-	m_program.SetTexture("texImage", 0, m_woodTexture);
-	glm::mat4 cubeWorld;
-
-	float time = SDL_GetTicks() / 1000.0f * 2 * float(M_PI) / 10;
-	for (int i = 0; i < 10; ++i)
-	{
-		cubeWorld =
-			glm::rotate(time + 2 * glm::pi<float>() / 10 * i, glm::vec3(0, 1, 0))*
-			glm::translate(glm::vec3(10 + 5 * sin(time), 0, 0))*
-			glm::rotate((i + 1)*time, glm::vec3(0, 1, 0));
-		m_program.SetUniform("MVP", viewProj * cubeWorld);
-		m_program.SetUniform("world", cubeWorld);
-		m_program.SetUniform("worldIT", glm::inverse(glm::transpose(cubeWorld)));
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
-	}
-	m_program.Unuse();
 
 	// skybox
-	// mentsük el az elõzõ Z-test eredményt, azaz azt a relációt, ami alapján update-eljük a pixelt.
+	// mentsÃ¼k el az elÅ‘zÅ‘ Z-test eredmÃ©nyt, azaz azt a relÃ¡ciÃ³t, ami alapjÃ¡n update-eljÃ¼k a pixelt.
 	GLint prevDepthFnc;
 	glGetIntegerv(GL_DEPTH_FUNC, &prevDepthFnc);
 
-	// most kisebb-egyenlõt használjunk, mert mindent kitolunk a távoli vágósíkokra
+	// most kisebb-egyenlÅ‘t hasznÃ¡ljunk, mert mindent kitolunk a tÃ¡voli vÃ¡gÃ³sÃ­kokra
 	glDepthFunc(GL_LEQUAL);
 
 	m_SkyboxVao.Bind();
 	m_programSkybox.Use();
-	m_programSkybox.SetUniform("MVP", viewProj * glm::translate( m_camera.GetEye()) );
-	
-	// cube map textúra beállítása 0-ás mintavételezõre és annak a shaderre beállítása
+	m_programSkybox.SetUniform("MVP", viewProj * glm::translate(m_camera.GetEye()));
+
+	// cube map textÃºra beÃ¡llÃ­tÃ¡sa 0-Ã¡s mintavÃ©telezÅ‘re Ã©s annak a shaderre beÃ¡llÃ­tÃ¡sa
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
 	glUniform1i(m_programSkybox.GetLocation("skyboxTexture"), 0);
-	// az elõzõ három sor <=> m_programSkybox.SetCubeTexture("skyboxTexture", 0, m_skyboxTexture);
+	// az elÅ‘zÅ‘ hÃ¡rom sor <=> m_programSkybox.SetCubeTexture("skyboxTexture", 0, m_skyboxTexture);
 
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 	m_programSkybox.Unuse();
 
-	// végül állítsuk vissza
+	// vÃ©gÃ¼l Ã¡llÃ­tsuk vissza
 	glDepthFunc(prevDepthFnc);
 
 
-	// 1. feladat: készíts egy vertex shader-fragment shader párt, ami tárolt geometria _nélkül_ kirajzol egy tetszõleges pozícióba egy XYZ tengely-hármast,
-	//			   ahol az X piros, az Y zöld a Z pedig kék!
+	// 1. feladat: kÃ©szÃ­ts egy vertex shader-fragment shader pÃ¡rt, ami tÃ¡rolt geometria _nÃ©lkÃ¼l_ kirajzol egy tetszÅ‘leges pozÃ­ciÃ³ba egy XYZ tengely-hÃ¡rmast,
+	//			   ahol az X piros, az Y zÃ¶ld a Z pedig kÃ©k!
 
 	//ImGui Testwindow
 	ImGui::ShowTestWindow();
@@ -415,10 +426,10 @@ void CMyApp::MouseWheel(SDL_MouseWheelEvent& wheel)
 {
 }
 
-// a két paraméterbe az új ablakméret szélessége (_w) és magassága (_h) található
+// a kÃ©t paramÃ©terbe az Ãºj ablakmÃ©ret szÃ©lessÃ©ge (_w) Ã©s magassÃ¡ga (_h) talÃ¡lhatÃ³
 void CMyApp::Resize(int _w, int _h)
 {
-	glViewport(0, 0, _w, _h );
+	glViewport(0, 0, _w, _h);
 
 	m_camera.Resize(_w, _h);
 }

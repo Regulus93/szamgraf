@@ -1,9 +1,9 @@
 #version 330 core
 
 // VBO-ból érkezõ változók
-in vec3 vs_in_pos;
-in vec3 vs_in_norm;
-in vec2 vs_in_tex;
+in vec3 vs_in_pos; //1
+in vec3 vs_in_norm; //2
+in vec2 vs_in_tex; //3
 
 // a pipeline-ban tovább adandó értékek
 out vec3 vs_out_pos;

@@ -54,8 +54,8 @@ protected:
 	IndexBuffer			m_CubeIndices;		// index buffer
 	ArrayBuffer			m_CubeVertexBuffer;	// VBO
 	VertexArrayObject	m_SkyboxVao;
-	IndexBuffer			m_SkyboxIndices;	
-	ArrayBuffer			m_SkyboxPos;		
+	IndexBuffer			m_SkyboxIndices;
+	ArrayBuffer			m_SkyboxPos;
 
 	//Sphere
 	VertexArrayObject	m_sphereVAO;
@@ -80,9 +80,11 @@ protected:
 	glm::vec3 m_spherePos = glm::vec3(0.0f);
 
 	// mesh adatok
-	Mesh *m_mesh;
+	Mesh* m_mesh;
 
 	glm::vec3 GetPos(float u, float v);
+	glm::vec3 GetNorm(float u, float v);
+	glm::vec2 GetTex(float u, float v);
 	const static int N = 20;
 	const static int M = 20;
 
@@ -91,5 +93,7 @@ protected:
 	void InitCube();
 	void InitSkyBox();
 	void InitSphere();
+
+	void RenderSphere(glm::mat4 world);
 };
 
