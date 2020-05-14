@@ -181,7 +181,7 @@ glm::vec3 CMyApp::GetPos(float u, float v)
 	u *= float(2 * M_PI);
 	v *= float(M_PI);
 	float cu = cosf(u), su = sinf(u), cv = cosf(v), sv = sinf(v);
-	float r = 2;
+	float r = 1;
 
 	return glm::vec3(r * cu * sv, r * cv, r * su * sv);
 }
