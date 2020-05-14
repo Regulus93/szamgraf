@@ -282,7 +282,10 @@ void CMyApp::InitShaders()
 
 glm::vec3 CMyApp::GetGroundPos(float u, float v)
 {
-	return glm::vec3(-u, 0.0f, v);
+	return glm::vec3(-u * 20.0f + 10.0f,  //-u miatt kell a +
+		0.0f,
+		v * 20.0f - 10.0f
+	);
 }
 
 void CMyApp::InitGround()
