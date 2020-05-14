@@ -71,6 +71,7 @@ protected:
 	Texture2D			m_woodTexture;
 	Texture2D			m_suzanneTexture;
 	Texture2D			m_leavesTexture;
+	Texture2D			m_grassTexture;
 
 	// nyers OGL azonosítók
 	GLuint				m_skyboxTexture;

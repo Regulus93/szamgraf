@@ -286,7 +286,6 @@ glm::vec3 CMyApp::GetGroundPos(float u, float v)
 }
 glm::vec3 CMyApp::GetGroundNorm(float u, float v)
 {
-	// Numerikusan (nem kell ismerni a k�pletet, el�g a poz�ci��t)
 	glm::vec3 du = GetGroundPos(u + 0.01, v) - GetGroundPos(u - 0.01, v);
 	glm::vec3 dv = GetGroundPos(u, v + 0.01) - GetGroundPos(u, v - 0.01);
 
@@ -359,6 +358,7 @@ bool CMyApp::Init()
 	m_woodTexture.FromFile("assets/wood.jpg");
 	m_suzanneTexture.FromFile("assets/marron.jpg");
 	m_leavesTexture.FromFile("assets/leaves.jpg");
+	m_grassTexture.FromFile("assets/grass.jpg");
 
 	// mesh betoltese
 	m_mesh = ObjParser::parse("assets/Suzanne.obj");
@@ -409,7 +409,7 @@ void CMyApp::RenderGround()
 	glm::mat4 viewProj = m_camera.GetViewProj();
 
 	m_program.Use();
-	m_program.SetTexture("texImage", 0, m_leavesTexture);
+	m_program.SetTexture("texImage", 0, m_grassTexture);
 	m_program.SetUniform("MVP", viewProj);
 	m_program.SetUniform("world", glm::mat4(1.0f));
 	m_program.SetUniform("worldIT", glm::inverse(glm::transpose(glm::mat4(1.0f))));
