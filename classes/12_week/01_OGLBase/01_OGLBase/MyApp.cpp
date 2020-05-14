@@ -283,7 +283,7 @@ void CMyApp::InitShaders()
 glm::vec3 CMyApp::GetGroundPos(float u, float v)
 {
 	return glm::vec3(-u * 20.0f + 10.0f,  //-u miatt kell a +
-		0.0f,
+		sinf(u * 20.0f) * 0.5f, //u * 20.0f => periódus ideje 
 		v * 20.0f - 10.0f
 	);
 }
