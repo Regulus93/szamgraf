@@ -439,8 +439,8 @@ void CMyApp::RenderGround()
 void CMyApp::RenderTree(float u, float v) {
 	glm::mat4 world = glm::translate(GetGroundPos(u, v));
 
-	RenderCylinder(world);
-	RenderSphere(world);
+	RenderCylinder(world * glm::translate(glm::vec3(0.0f, 2.0f, 0.0f)));
+	RenderSphere(world * glm::translate(glm::vec3(0.0f, 4.0f, 0.0f)));
 }
 
 void CMyApp::Render()
@@ -450,14 +450,8 @@ void CMyApp::Render()
 
 	glm::mat4 viewProj = m_camera.GetViewProj();
 
-	/*RenderSphere(glm::mat4(1.0f));
-	RenderSphere(glm::translate(glm::vec3(2.0f, 2.0f, 2.0f)));
-	RenderSphere(glm::translate(glm::vec3(4.0f, 2.0f, 2.0f)));
-	RenderSphere(glm::translate(glm::vec3(2.0f, 7.0f, 2.0f)));
-	RenderSphere(glm::translate(glm::vec3(2.0f, 32.0f, 21.0f)));*/
 
-	//RenderGround();
-	//RenderCylinder(glm::mat4(1.0f));
+	RenderGround();
 
 	RenderTree(0.1f, 0.6f);
 	RenderTree(0.3f, 0.8f);
