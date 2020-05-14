@@ -93,6 +93,7 @@ protected:
 	const static int N = 20;
 	const static int M = 20;
 	glm::vec3 GetGroundPos(float u, float v);
+	glm::vec3 GetGroundNorm(float u, float v);
 
 	// a jobb olvashatóság kedvéért
 	void InitShaders();

@@ -282,10 +282,15 @@ void CMyApp::InitShaders()
 
 glm::vec3 CMyApp::GetGroundPos(float u, float v)
 {
-	return glm::vec3(-u * 20.0f + 10.0f,  //-u miatt kell a +
-		sinf(u * 20.0f) * 0.5f, //u * 20.0f => periódus ideje 
-		v * 20.0f - 10.0f
-	);
+	return glm::vec3(-u * 20.0f + 10.0f, sinf(u * 20.0f) * 0.5f, v * 20.0f - 10.0f);
+}
+glm::vec3 CMyApp::GetGroundNorm(float u, float v)
+{
+	// Numerikusan (nem kell ismerni a k�pletet, el�g a poz�ci��t)
+	glm::vec3 du = GetGroundPos(u + 0.01, v) - GetGroundPos(u - 0.01, v);
+	glm::vec3 dv = GetGroundPos(u, v + 0.01) - GetGroundPos(u, v - 0.01);
+
+	return glm::normalize(glm::cross(du, dv));
 }
 
 void CMyApp::InitGround()
@@ -298,8 +303,8 @@ void CMyApp::InitGround()
 			float v = j / (float)M;
 
 			vert[i + j * (N + 1)].p = GetGroundPos(u, v);
-			//vert[i + j * (N + 1)].n = GetNorm(u, v);
-			//vert[i + j * (N + 1)].t = GetTex(u, v);
+			vert[i + j * (N + 1)].n = GetGroundNorm(u, v);
+			vert[i + j * (N + 1)].t = GetTex(u, v);
 		}
 
 	// indexpuffer adatai: NxM négyszög = 2xNxM háromszög = háromszöglista esetén 3x2xNxM index
