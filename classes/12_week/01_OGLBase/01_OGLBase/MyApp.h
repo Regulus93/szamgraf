@@ -72,6 +72,7 @@ protected:
 	Texture2D			m_suzanneTexture;
 	Texture2D			m_leavesTexture;
 	Texture2D			m_grassTexture;
+	Texture2D			m_barkTexture;
 
 	// nyers OGL azonosítók
 	GLuint				m_skyboxTexture;
@@ -105,5 +106,6 @@ protected:
 
 	void RenderSphere(glm::mat4 world);
 	void RenderGround();
+	void RenderCylinder(glm::mat4 world);
 };
 

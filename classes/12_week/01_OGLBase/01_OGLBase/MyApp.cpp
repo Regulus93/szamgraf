@@ -359,9 +359,10 @@ bool CMyApp::Init()
 	m_suzanneTexture.FromFile("assets/marron.jpg");
 	m_leavesTexture.FromFile("assets/leaves.jpg");
 	m_grassTexture.FromFile("assets/grass.jpg");
+	m_barkTexture.FromFile("assets/bark.jpg");
 
 	// mesh betoltese
-	m_mesh = ObjParser::parse("assets/Suzanne.obj");
+	m_mesh = ObjParser::parse("assets/henger.obj");
 	m_mesh->initBuffers();
 
 	// kamera
@@ -404,6 +405,20 @@ void CMyApp::RenderSphere(glm::mat4 world)
 		0);							// indexek eltolása
 }
 
+void CMyApp::RenderCylinder(glm::mat4 world)
+{
+	glm::mat4 viewProj = m_camera.GetViewProj();
+
+	m_program.Use();
+	m_program.SetTexture("texImage", 0, m_barkTexture);
+	m_program.SetUniform("MVP", viewProj * world);
+	m_program.SetUniform("world", world);
+	m_program.SetUniform("worldIT", glm::inverse(glm::transpose(world)));
+
+	m_mesh->draw();
+	
+}
+
 void CMyApp::RenderGround()
 {
 	glm::mat4 viewProj = m_camera.GetViewProj();
@@ -435,6 +450,7 @@ void CMyApp::Render()
 	RenderSphere(glm::translate(glm::vec3(2.0f, 32.0f, 21.0f)));*/
 
 	RenderGround();
+	RenderCylinder(glm::mat4(1.0f));
 
 	// skybox
 	// mentsük el az előző Z-test eredményt, azaz azt a relációt, ami alapján update-eljük a pixelt.
