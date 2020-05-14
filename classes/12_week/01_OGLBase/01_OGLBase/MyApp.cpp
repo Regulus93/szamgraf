@@ -436,6 +436,13 @@ void CMyApp::RenderGround()
 		0);							// indexek eltolása
 }
 
+void CMyApp::RenderTree(float u, float v) {
+	glm::mat4 world = glm::translate(GetGroundPos(u, v));
+
+	RenderCylinder(world);
+	RenderSphere(world);
+}
+
 void CMyApp::Render()
 {
 	// töröljük a frampuffert (GL_COLOR_BUFFER_BIT) és a mélységi Z puffert (GL_DEPTH_BUFFER_BIT)
@@ -449,8 +456,11 @@ void CMyApp::Render()
 	RenderSphere(glm::translate(glm::vec3(2.0f, 7.0f, 2.0f)));
 	RenderSphere(glm::translate(glm::vec3(2.0f, 32.0f, 21.0f)));*/
 
-	RenderGround();
-	RenderCylinder(glm::mat4(1.0f));
+	//RenderGround();
+	//RenderCylinder(glm::mat4(1.0f));
+
+	RenderTree(0.1f, 0.6f);
+	RenderTree(0.3f, 0.8f);
 
 	// skybox
 	// mentsük el az előző Z-test eredményt, azaz azt a relációt, ami alapján update-eljük a pixelt.

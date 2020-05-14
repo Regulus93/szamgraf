@@ -107,5 +107,6 @@ protected:
 	void RenderSphere(glm::mat4 world);
 	void RenderGround();
 	void RenderCylinder(glm::mat4 world);
+	void RenderTree(float u, float v);
 };
 
