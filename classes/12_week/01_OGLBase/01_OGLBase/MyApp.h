@@ -62,6 +62,10 @@ protected:
 	ArrayBuffer			m_spherePosVBO;
 	IndexBuffer			m_sphereIndices;
 
+	VertexArrayObject	m_groundVAO;
+	ArrayBuffer			m_groundVBO;
+	IndexBuffer			m_groundIndices;
+
 	gCamera				m_camera;
 
 	Texture2D			m_woodTexture;
@@ -88,13 +92,16 @@ protected:
 	glm::vec2 GetTex(float u, float v);
 	const static int N = 20;
 	const static int M = 20;
+	glm::vec3 GetGroundPos(float u, float v);
 
 	// a jobb olvashatóság kedvéért
 	void InitShaders();
 	void InitCube();
 	void InitSkyBox();
 	void InitSphere();
+	void InitGround();
 
 	void RenderSphere(glm::mat4 world);
+	void RenderGround();
 };
 

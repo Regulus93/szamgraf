@@ -280,6 +280,59 @@ void CMyApp::InitShaders()
 		);
 }
 
+glm::vec3 CMyApp::GetGroundPos(float u, float v)
+{
+	return glm::vec3(-u, 0.0f, v);
+}
+
+void CMyApp::InitGround()
+{
+	Vertex vert[(N + 1) * (M + 1)];
+	for (int i = 0; i <= N; ++i)
+		for (int j = 0; j <= M; ++j)
+		{
+			float u = i / (float)N;
+			float v = j / (float)M;
+
+			vert[i + j * (N + 1)].p = GetGroundPos(u, v);
+			//vert[i + j * (N + 1)].n = GetNorm(u, v);
+			//vert[i + j * (N + 1)].t = GetTex(u, v);
+		}
+
+	// indexpuffer adatai: NxM négyszög = 2xNxM háromszög = háromszöglista esetén 3x2xNxM index
+	GLushort indices[3 * 2 * (N) * (M)];
+	for (int i = 0; i < N; ++i)
+		for (int j = 0; j < M; ++j)
+		{
+			indices[6 * i + j * 3 * 2 * (N)+0] = (i)+(j) * (N + 1);
+			indices[6 * i + j * 3 * 2 * (N)+1] = (i + 1) + (j) * (N + 1);
+			indices[6 * i + j * 3 * 2 * (N)+2] = (i)+(j + 1) * (N + 1);
+			indices[6 * i + j * 3 * 2 * (N)+3] = (i + 1) + (j) * (N + 1);
+			indices[6 * i + j * 3 * 2 * (N)+4] = (i + 1) + (j + 1) * (N + 1);
+			indices[6 * i + j * 3 * 2 * (N)+5] = (i)+(j + 1) * (N + 1);
+		}
+
+	m_groundVBO.BufferData(vert);
+
+	// és a primitíveket alkotó csúcspontok indexei (az előző tömbökből) - triangle list-el való kirajzolásra felkészülve
+	m_groundIndices.BufferData(indices);
+
+	// geometria VAO-ban való regisztrálása
+	m_groundVAO.Init(
+		{
+			// 0-ás attribútum "lényegében" glm::vec3-ak sorozata és az adatok az m_CubeVertexBuffer GPU pufferben vannak
+			{ CreateAttribute<		0,						// attribútum: 0
+									glm::vec3,				// CPU oldali adattípus amit a 0-ás attribútum meghatározására használtunk <- az eljárás a glm::vec3-ból kikövetkezteti, hogy 3 darab float-ból áll a 0-ás attribútum
+									0,						// offset: az attribútum tároló elejétől vett offset-je, byte-ban
+									sizeof(Vertex)			// stride: a következő csúcspont ezen attribútuma hány byte-ra van az aktuálistól
+								>, m_groundVBO },
+			{ CreateAttribute<1, glm::vec3, sizeof(glm::vec3), sizeof(Vertex)>, m_groundVBO },
+			{ CreateAttribute<2, glm::vec2, sizeof(glm::vec3) * 2, sizeof(Vertex)>, m_groundVBO }
+		},
+		m_groundIndices
+	);
+}
+
 bool CMyApp::Init()
 {
 	// törlési szín legyen kékes
@@ -292,6 +345,7 @@ bool CMyApp::Init()
 	InitCube();
 	InitSkyBox();
 	InitSphere();
+	InitGround();
 
 	// egyéb textúrák betöltése
 	m_woodTexture.FromFile("assets/wood.jpg");
@@ -342,6 +396,23 @@ void CMyApp::RenderSphere(glm::mat4 world)
 		0);							// indexek eltolása
 }
 
+void CMyApp::RenderGround()
+{
+	glm::mat4 viewProj = m_camera.GetViewProj();
+
+	m_program.Use();
+	m_program.SetTexture("texImage", 0, m_leavesTexture);
+	m_program.SetUniform("MVP", viewProj);
+	m_program.SetUniform("world", glm::mat4(1.0f));
+	m_program.SetUniform("worldIT", glm::inverse(glm::transpose(glm::mat4(1.0f))));
+
+	m_groundVAO.Bind();
+	glDrawElements(GL_TRIANGLES,	// primitív típus
+		3 * 2 * (N) * (M),			// hany csucspontot hasznalunk a kirajzolashoz
+		GL_UNSIGNED_SHORT,			// indexek tipusa
+		0);							// indexek eltolása
+}
+
 void CMyApp::Render()
 {
 	// töröljük a frampuffert (GL_COLOR_BUFFER_BIT) és a mélységi Z puffert (GL_DEPTH_BUFFER_BIT)
@@ -349,13 +420,13 @@ void CMyApp::Render()
 
 	glm::mat4 viewProj = m_camera.GetViewProj();
 
-	RenderSphere(glm::mat4(1.0f));
+	/*RenderSphere(glm::mat4(1.0f));
 	RenderSphere(glm::translate(glm::vec3(2.0f, 2.0f, 2.0f)));
 	RenderSphere(glm::translate(glm::vec3(4.0f, 2.0f, 2.0f)));
 	RenderSphere(glm::translate(glm::vec3(2.0f, 7.0f, 2.0f)));
-	RenderSphere(glm::translate(glm::vec3(2.0f, 32.0f, 21.0f)));
+	RenderSphere(glm::translate(glm::vec3(2.0f, 32.0f, 21.0f)));*/
 
-
+	RenderGround();
 
 	// skybox
 	// mentsük el az előző Z-test eredményt, azaz azt a relációt, ami alapján update-eljük a pixelt.
