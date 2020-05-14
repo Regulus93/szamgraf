@@ -97,6 +97,9 @@ protected:
 	glm::vec3 GetGroundPos(float u, float v);
 	glm::vec3 GetGroundNorm(float u, float v);
 
+	//ha nulla akkor nincs fa, ha nagyobb mint nulla akkor úgy transzformálom
+	float m_trees[N][M];
+
 	// a jobb olvashatóság kedvéért
 	void InitShaders();
 	void InitCube();

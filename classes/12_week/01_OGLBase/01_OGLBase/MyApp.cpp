@@ -7,6 +7,7 @@
 #include <list>
 #include <tuple>
 #include <imgui/imgui.h>
+#include <random>
 #include "includes/GLUtils.hpp"
 
 CMyApp::CMyApp(void)
@@ -338,6 +339,28 @@ void CMyApp::InitGround()
 		},
 		m_groundIndices
 	);
+
+	// véletlenszám generátor inicializálása
+	std::random_device rd; //randomszám generátor eszköz
+	std::mt19937 gen(rd()); //randomszám generátor algoritmus
+	std::uniform_real_distribution<> rnd(-1, 1); //értékkészlet megadása
+
+	
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			if (rnd(gen) > 0.8f) {
+				m_trees[i][j] = rnd(gen);
+			} else {
+				RenderTree(u, v,);
+			}
+		}
+	}
+	for (int i = 0; i < N; ++i)
+	{
+		m_particlePos.push_back(glm::vec3(rnd(gen), rnd(gen), rnd(gen)));
+		m_particleVel.push_back(glm::vec3(2 * rnd(gen), 2 * rnd(gen), 2 * rnd(gen)));
+	}
 }
 
 bool CMyApp::Init()
