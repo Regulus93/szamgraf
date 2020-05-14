@@ -248,7 +248,7 @@ void CMyApp::InitSphere()
 			{ CreateAttribute<2, glm::vec2, sizeof(glm::vec3) * 2, sizeof(Vertex)>, m_spherePosVBO }
 		},
 		m_sphereIndices
-			);
+	);
 }
 
 void CMyApp::InitShaders()
@@ -296,6 +296,7 @@ bool CMyApp::Init()
 	// egyéb textúrák betöltése
 	m_woodTexture.FromFile("assets/wood.jpg");
 	m_suzanneTexture.FromFile("assets/marron.jpg");
+	m_leavesTexture.FromFile("assets/leaves.jpg");
 
 	// mesh betoltese
 	m_mesh = ObjParser::parse("assets/Suzanne.obj");
@@ -329,7 +330,7 @@ void CMyApp::RenderSphere(glm::mat4 world)
 	glm::mat4 viewProj = m_camera.GetViewProj();
 
 	m_program.Use();
-	m_program.SetTexture("texImage", 0, m_suzanneTexture);
+	m_program.SetTexture("texImage", 0, m_leavesTexture);
 	m_program.SetUniform("MVP", viewProj * world);
 	m_program.SetUniform("world", world);
 	m_program.SetUniform("worldIT", glm::inverse(glm::transpose(world)));
@@ -339,7 +340,6 @@ void CMyApp::RenderSphere(glm::mat4 world)
 		3 * 2 * (N) * (M),			// hany csucspontot hasznalunk a kirajzolashoz
 		GL_UNSIGNED_SHORT,			// indexek tipusa
 		0);							// indexek eltolása
-
 }
 
 void CMyApp::Render()
