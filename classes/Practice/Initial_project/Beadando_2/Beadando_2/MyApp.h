@@ -47,20 +47,13 @@ public:
 
 protected:
 	// shaderekhez szükséges változók
-	ProgramObject		m_program;			// mesh shader
 	ProgramObject		m_programSkybox;	// skybox shader
 
-	VertexArrayObject	m_CubeVao;			// VAO
-	IndexBuffer			m_CubeIndices;		// index buffer
-	ArrayBuffer			m_CubeVertexBuffer;	// VBO
 	VertexArrayObject	m_SkyboxVao;
 	IndexBuffer			m_SkyboxIndices;	
 	ArrayBuffer			m_SkyboxPos;		
 
 	gCamera				m_camera;
-
-	Texture2D			m_woodTexture;
-	Texture2D			m_suzanneTexture;
 
 	// nyers OGL azonosítók
 	GLuint				m_skyboxTexture;
@@ -71,9 +64,6 @@ protected:
 		glm::vec3 n;
 		glm::vec2 t;
 	};
-
-	// mesh adatok
-	Mesh *m_mesh;
 
 	// a jobb olvashatóság kedvéért
 	void InitShaders();

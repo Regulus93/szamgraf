@@ -92,16 +92,6 @@ void CMyApp::InitSkyBox()
 void CMyApp::InitShaders()
 {
 
-	m_programSkybox.Init(
-		{
-			{ GL_VERTEX_SHADER, "myVert.vert"},
-			{ GL_FRAGMENT_SHADER, "myFrag.frag"}
-		},
-		{
-			{ 0, "vs_in_pos" }				// VAO 0-as csatorna menjen a vs_in_pos-ba
-		}
-	);
-
 	// shader program rövid létrehozása, egyetlen függvényhívással a fenti három:
 	m_programSkybox.Init(
 		{
@@ -151,10 +141,6 @@ void CMyApp::Render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glm::mat4 viewProj = m_camera.GetViewProj();
-
-	m_program.Use();
-
-	m_program.Unuse();
 
 	// skybox
 	GLint prevDepthFnc;
