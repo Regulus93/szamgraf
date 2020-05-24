@@ -1,0 +1,634 @@
+ImGui:
+
+	//
+	// UI
+	//
+	// A következő parancs megnyit egy ImGui tesztablakot és így látszik mit tud az ImGui.
+	ImGui::ShowTestWindow();
+	// A ImGui::ShowTestWindow implementációja az imgui_demo.cpp-ben található
+	// Érdemes még az imgui.h-t böngészni, valamint az imgui.cpp elején a FAQ-ot elolvasni.
+	// Rendes dokumentáció nincs, de a fentiek elegendőek kell legyenek.
+
+	
+	//Transparency projektből - A fal áttetszősége változik a csúszka által
+	
+		ImGui::SetNextWindowPos(ImVec2(300, 400), ImGuiSetCond_FirstUseEver);
+		if (ImGui::Begin("Tesztablak"))
+		{
+			ImGui::Text("Fal (RGBA)");
+			ImGui::SliderFloat4("Fal kd", &(m_wallColor[0]), 0, 1);
+		}
+		ImGui::End();
+
+
+
+	//OGLbase projektből - Gombra kattintás hatására reseteljen egy változót:
+	
+		if (ImGui::Button("Reset Pos"))
+			m_spherePos = glm::vec3(0.0f);
+			
+			
+	//Curves projektből az egész imgui ablak
+			
+		ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiSetCond_FirstUseEver);
+		// csak akkor lépjünk be, hogy ha az ablak nincs csíkká lekicsinyítve...
+		if (ImGui::Begin("Curve designer"))	
+		{
+			static size_t currentItem = 0;
+	
+			ImGui::ListBoxHeader("List", 4);
+			for (size_t i = 0; i < m_pointName.size(); ++i)
+			{
+				if (ImGui::Selectable(m_pointName[i].c_str(), (i==currentItem))  )
+					currentItem = i;
+			}
+			ImGui::ListBoxFooter();
+	
+			if (ImGui::Button("Add") && m_pointName.size() < kMaxPointCount)
+			{
+				m_pointName.push_back("Point " + std::to_string(m_pointName.size()+1));
+				m_controlPoints.push_back({ 0,0,0 });
+				currentItem = m_pointName.size() - 1;
+			}
+	
+			ImGui::SameLine();
+	
+			if (ImGui::Button("Delete") && m_pointName.size() > 0 && currentItem < m_pointName.size() )
+			{
+				m_pointName.erase(m_pointName.begin() + currentItem);
+				m_controlPoints.erase(m_controlPoints.begin() + currentItem);
+	
+				size_t number = currentItem+1;
+				for (auto& it = m_pointName.begin()+ currentItem; it != m_pointName.end(); ++it)
+				{
+					*it = "Point " + std::to_string(number);
+					++number;
+				}
+				if (m_pointName.size() == 0)
+					currentItem = 0;
+				else
+					if (currentItem >= m_pointName.size())
+						currentItem = m_pointName.size() - 1;
+			}
+	
+			if (m_controlPoints.size() > 0)
+				ImGui::SliderFloat3("Coordinates", &(m_controlPoints[currentItem][0]), -10, 10);
+	
+			ImGui::SliderFloat("Parameter", &m_currentParam, 0, (float)(m_controlPoints.size()-1));
+	
+			// 1. feladat: Suzanne feje mindig forduljon a menetirány felé! Először ezt elég síkban (=XZ) megoldani!
+			// 2. feladat: valósíts meg egy Animate gombot! Amíg nyomva van az m_currentParameter periodikusan változzon a [0,m_controlPoints.size()-1] intervallumon belül!
+			// 3. feladat: egyenközű Catmull-Rom spline-nal valósítsd meg Suzanne görbéjét a mostani törött vonal helyett!
+	
+			if (ImGui::Button("Animate"))
+				m_isAnimating = !m_isAnimating;
+		}
+		ImGui::End(); // ...de még ha le is volt, End()-et hívnunk kell			
+	
+	
+Periodikusság - intervallum eltolások:
+
+	[CPU] Példa intervallumok eltolására:
+
+	/*
+		Időtől függően periodikusan változzon a téglalap mérete 0 és 20 pixel között.
+	*/
+		size = sinf(SDL_GetTicks() / 100.0f) * 20.0f + 20.0f;
+		// SDL_GetTicks() - indulás eltelt időmennyiség
+		// sinf(SDL_GetTicks() / 100) * 20  --> -20-ba becsúszunk
+		// (SDL_GetTicks() / 100) * 20 + 20 --> szaggatás, egészértékek vannak
+		// VYSNC-et kikapcsolva elszabadulna
+		
+	
+	periodikusan növekedjen és csökkenjen egy kitöltött körlap a képernyő közepén:
+
+	[CPU]
+	
+	
+		Init():
+			//uniform változó helyének lekérése
+			m_t_loc = glGetUniformLocation(m_programID, "t");
+		
+		Render():
+			//uniform leküldése:
+		
+		
+			glUniform1f(m_t_loc, 
+			sinf( //ciklikusság
+			SDL_GetTicks() //eltelt idő
+			* M_PI //amplitudó gyorsítása
+			/ 2000.0f // diszkrét értékek floattá konvertálása
+			+ 1) //pozitív intervallumba tolás
+			/ 2.0f); //intervallum szűkítése
+	
+	
+	[Fragment shader]
+	
+	//csak néha szeretnénk leküldeni C++-ból
+	uniform float t = 0.5f;
+
+	void main()
+	{
+		 if( pow ( vs_out_pos.x, 2) + pow(vs_out_pos.y, 2) < t) {
+			fs_out_col = vec4(1,1,1,1);
+		 } else {
+			discard;
+		 }
+	}
+	
+Transzformációk:
+
+	/*
+
+	GLM transzformációs mátrixokra példák:
+		glm::rotate<float>( szög, glm::vec3(tengely_x, tengely_y, tengely_z) ) <- tengely_{xyz} körüli elforgatás
+		glm::translate<float>( glm::vec3(eltol_x, eltol_y, eltol_z) ) <- eltolás
+		glm::scale<float>( glm::vec3(s_x, s_y, s_z) ) <- léptékezés
+		
+	Világtranszformáció inverz transzponáltjának előállítása:
+		glm::mat4 wallWorld = glm::translate(glm::vec3(0, 0, 0));
+		m_program.SetUniform("world", wallWorld);
+		m_program.SetUniform("worldIT", glm::transpose(glm::inverse(wallWorld)));
+
+	*/
+		
+		
+	/*
+		
+	Ez működőképes pramisos példa:
+		
+			// kapcsoljuk be a VAO-t (a VBO jön vele együtt)
+			glBindVertexArray(m_vaoID);
+		
+			{
+				m_matWorld = glm::scale(glm::vec3(0.25f, 0.25f, 0.25f));
+				glUniformMatrix4fv( m_loc_world,// erre a helyre töltsünk át adatot
+									1,			// egy darab mátrixot
+									GL_FALSE,	// NEM transzponálva
+									&(m_matWorld[0][0]) ); // innen olvasva a 16 x sizeof(float)-nyi adatot
+				glDrawArrays(	GL_TRIANGLES,	// rajzoljunk ki háromszöglista primitívet
+								0,				// a VB első eleme legyen az első kiolvasott vertex
+								18);				// és 6db csúcspont segítségével rajzoljunk háromszöglistát
+			}
+		
+			glUniformMatrix4fv(m_loc_view, 1, GL_FALSE, &(m_matView[0][0]));
+			glUniformMatrix4fv(m_loc_proj, 1, GL_FALSE, &(m_matProj[0][0]));
+		
+			//raise value by 2 PI (one cycle in 5 mp)
+			float t = SDL_GetTicks() / 5000.0f * 6.28f;
+		
+			for ( int i = 0; i < 6; i++)
+			{
+				m_matWorld = glm::rotate(6.28f / 6.0f * i + t, glm::vec3(0, 1, 0)) * glm::translate(glm::vec3(3, 0, 0));
+				glUniformMatrix4fv(m_loc_world,// erre a helyre töltsünk át adatot
+					1,			// egy darab mátrixot
+					GL_FALSE,	// NEM transzponálva
+					&(m_matWorld[0][0])); // innen olvasva a 16 x sizeof(float)-nyi adatot
+				glDrawArrays(GL_TRIANGLES,	// rajzoljunk ki háromszöglista primitívet
+					0,				// a VB első eleme legyen az első kiolvasott vertex
+					18);				// és 6db csúcspont segítségével rajzoljunk háromszöglistát
+			}
+		
+		
+			// VAO kikapcsolasa
+			glBindVertexArray(0);
+		
+		
+		*/
+		
+		/* 
+	!!!!!!!! Nem annyira oké
+		
+			Körvonal mentén 10 db piramis, egy pedig középen:
+			
+			
+			glm::mat4 mvp;
+		
+			//10 piramis kirajzolása
+			for (int i = 0; i < 10; ++i) {
+				m_matWorld =
+					glm::rotate<float>(360.0f / 10.0f * i, glm::vec3(0, 1, 0))                    //mindig egy piramis sorszámának megfelelő számmal szorozzuk meg az elforgatást
+					* glm::rotate<float>(time / 1000.0f / 10.0f * 360 , glm::vec3(0, 1, 0))        //majd y tengely körül elforgatjuk: azt szeretnénk, hogy egy teljes kört 10 mp alatt tegyen meg
+					* glm::translate<float>(glm::vec3(5, 0, 0))                                  //eltranszformáljuk x tengely mentén jobbra, körnek a sugara nagyjából 5 lesz
+					* glm::rotate<float>(time / 1000.0f * (2.0f * 6.0f * M_PI / 10.0f)/2.0*90.0f, glm::vec3(-1, 0, 0))//1 másodpercenként forduljon/gördüljön (x tengely körül)
+					* glm::rotate<float>(90, glm::vec3(0, 1, 0))                                 //a z tengely körül elforgatjuk 90 fokkal
+					* glm::translate(glm::vec3(0.0f,-1.0f,0.0f));                                         //letoljuk 1-gyel, hogy a testnek a középpontja nagyjából az origo-ban legyen
+																								//legutolsónak mindig a legelső transzformációt adjuk meg
+		
+				mvp = m_matProj * m_matView * m_matWorld;
+				//(2 * 6 *M_PI / 10.0)/2.0*90
+				//kör kerülete osztva 10-el (1 mp alatt mennyit tesz meg a körpályán) és osztva 2-vel (oldalhossza a piramisnak) => hány negyedfordulatot tesz 1 mp alatt => 90-el megszorozva megkapjuk a fokbeli elfordulását
+		
+					//projekciós transzformációt átküldjük a shadernek
+				glUniformMatrix4fv(m_loc_mvp, 1, GL_FALSE, &(mvp[0][0]));
+				glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_SHORT, 0);
+			}
+		
+			//negatív skála is lesz
+			m_matWorld = 
+				glm::rotate<float>(time / 10000.0f * 360, glm::vec3(0, 1, 0)) //Y tengely körül forgatás=> 10 mp alatt forduljon körbe
+				* glm::scale<float>(
+					glm::vec3(1,												//x
+					sin(time / 1000.0f * 2.0f * M_PI) * 2.0f,         //Y tengely körüli pulzálás
+																				//=> másodpercenként egyet nő, majd 2 PI-vel beszorozzuk 
+																				// => sin egy periódusát egy mp alatt fogja megtenni 
+																				// => majd beszorozzuk kettővel, hogy 2 és -2 között ingadozzunk
+						1														//z
+					)
+				);
+		*/
+		
+		
+	// - Keringő kockák kirajzolása a Textures projektből
+		//
+		// Váltsunk át a kocka VAO-jára
+		glBindVertexArray(m_cube_vaoID);
+
+		// a középsõ kocka kirajzolása
+		m_matWorld = glm::translate(glm::vec3(0, 0, 0));
+		mvp = m_matProj * m_matView * m_matWorld;
+		glUniformMatrix4fv(m_loc_mvp, 1, GL_FALSE, &(mvp[0][0]));
+		glUniformMatrix4fv(m_loc_w, 1, GL_FALSE, &(m_matWorld[0][0]));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
+
+		//keringõ kockák
+		float time = SDL_GetTicks() / 1000.0f; // eltelt másodpercek
+		int r = 4, n = 10; // keringés sugara + kockák száma
+		for (int i = 0; i < n; ++i)
+		{
+			float distance = time + M_PI*2.f/n*i;
+			m_matWorld = glm::translate(glm::vec3(cos(distance)*r, sin(distance)*r,0));
+			mvp = m_matProj * m_matView * m_matWorld;
+			glUniformMatrix4fv(m_loc_mvp, 1, GL_FALSE, &(mvp[0][0]));
+			glUniformMatrix4fv(m_loc_w, 1, GL_FALSE, &(m_matWorld[0][0]));
+			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0);
+		}
+		
+	
+Parametrikus felületek:
+
+	Tórusz:
+	
+		glm::vec3	CMyApp::GetPos(float u, float v)
+		{
+			// itt a parametrikus egyenlet
+			// origó középpontú, egységsugarú gömb parametrikus alakja: http://hu.wikipedia.org/wiki/G%C3%B6mb#Egyenletek 
+			// figyeljünk:	matematikában sokszor a Z tengely mutat felfelé, de nálunk az Y, tehát a legtöbb képlethez képest nálunk
+			//				az Y és Z koordináták felcserélve szerepelnek
+			u *= 2*3.1415f;
+			v *= 2*3.1415f;
+			float cu = cosf(u), su = sinf(u), cv = cosf(v), sv = sinf(v);
+			
+			//szükséges két sugár
+			float r = 2;
+			float R = 5;
+
+			return glm::vec3( (R + r * cu) * cv, r * su, (R + r * cu) * sv);
+		}
+		
+	Gömb:
+		glm::vec3 CMyApp::GetPos(float u, float v)
+		{
+			// origó középpontú, r sugarú gömb parametrikus alakja: http://hu.wikipedia.org/wiki/G%C3%B6mb#Egyenletek 
+			// figyeljünk:	matematikában sokszor a Z tengely mutat felfelé, de nálunk az Y, tehát a legtöbb képlethez képest nálunk
+			//				az Y és Z koordináták felcserélve szerepelnek
+			u *= float(2 * M_PI);
+			v *= float(M_PI);
+			float cu = cosf(u), su = sinf(u), cv = cosf(v), sv = sinf(v);
+			float r = 2;
+		
+			return glm::vec3(r*cu*sv, r*cv, r*su*sv);
+		}
+
+
+Interpoláció:
+	
+	[Fragment shader]
+	
+		//két textúra közötti interpoláció az idő függvényében
+		fs_out_col = mix(texture(texImage, vs_out_tex0), texture(texImage2, vs_out_tex0), time);
+		
+	Curves projektből:
+	
+
+		//catmull és sima lineáris interpoláció (hozzáadott pontok számától függően)
+		glm::vec3 CMyApp::Eval(float t)
+		{
+			if (m_controlPoints.size() == 0)
+				return glm::vec3(0);
+		
+			int interval = (int)t;
+		
+			if (interval < 0)
+				return m_controlPoints[0];
+				
+			if (interval >= m_controlPoints.size()-1)
+				return m_controlPoints[m_controlPoints.size()-1];
+		
+			float localT = t - interval;
+		
+			//LINEAR - ha a pontok száma kisebb mint 4
+			if (m_controlPoints.size() < 4 || interval == 0 || interval >= m_controlPoints.size() - 2)
+				return (1- localT) * m_controlPoints[interval] + localT * m_controlPoints[interval+1];
+		
+			//CATMULL - CATMULLT csak akkor lehet alkalmazni ha a hozzáadott pontok száma nagyobb mint 3
+			return Catmull(localT, m_controlPoints[interval - 1], m_controlPoints[interval], m_controlPoints[interval + 1], m_controlPoints[interval + 2]);
+		}
+		
+		//catmull interpoláció
+		glm::vec3 CMyApp::Catmull(float t, glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3)
+		{
+			return 0.5f * ((2.0f * p1) +
+				(-p0 + p2) * t +
+				(2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3) * t * t +
+				(-p0 + 3.0f * p1 - 3.0f * p2 + p3) * t * t * t);
+		}
+
+	
+Áttetszőség:
+
+	Transparency Init()-jéből:
+	
+		// átlátszóság engedélyezése
+		glEnable(GL_BLEND);
+		//parameter: source - destination
+		//van valami már a backbufferben, de szeretnék még rárajzolni
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // meghatározza, hogy az átlátszó objektum az adott pixelben hogyan módosítsa a korábbi fragmentekből oda lerakott színt: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBlendFunc.xhtml
+	
+		//
+		// shaderek betöltése
+		//
+		
+	Transparency Render()-jéből:
+	
+		m_program.Use();
+
+		m_program.SetTexture("texImage", 0, m_textureMetal);
+	
+		// Suzanne 1
+			glm::mat4 suzanne1World = glm::translate(glm::vec3(-2, 0, 0));
+			m_program.SetUniform("world", suzanne1World);
+			m_program.SetUniform("worldIT", glm::transpose(glm::inverse(suzanne1World)));
+			m_program.SetUniform("MVP", m_camera.GetViewProj() * suzanne1World);
+			m_program.SetUniform("Kd", glm::vec4(1, 0.3, 0.3, 1));
+		
+			m_mesh->draw();
+	
+		// Suzanne 2
+			glm::mat4 suzanne2World = glm::translate(glm::vec3(2, 0, 0));
+			m_program.SetUniform("world", suzanne2World);
+			m_program.SetUniform("worldIT", glm::transpose(glm::inverse(suzanne2World)));
+			m_program.SetUniform("MVP", m_camera.GetViewProj() * suzanne2World);
+			m_program.SetUniform("Kd", glm::vec4(0.3, 1, 0.3, 1));
+		
+			m_mesh->draw();
+	
+		// fal
+	
+			// most kikapcsoljuk a hátlapeldobást, hogy lássuk mindkétt oldalát!
+			// Feladat: még mi kellene ahhoz, hogy a megvilágításból származó színek jók legyenek?
+			glDisable(GL_CULL_FACE);
+		
+			glm::mat4 wallWorld = glm::translate(glm::vec3(0, 0, 0));
+			m_program.SetUniform("world", wallWorld);
+			m_program.SetUniform("worldIT", glm::transpose(glm::inverse(wallWorld)));
+			m_program.SetUniform("MVP", m_camera.GetViewProj() * wallWorld);
+			//blending ezt módosítja
+			m_program.SetUniform("Kd", m_wallColor);
+		
+			m_vao.Bind();
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			m_vao.Unbind(); // nem feltétlen szükséges: a m_mesh->draw beállítja a saját VAO-ját
+	
+		glEnable(GL_CULL_FACE);
+	
+		// végetért a 3D színtér rajzolása
+		m_program.Unuse();
+		
+	
+	
+	
+Phong-fénymodell fragment-ben:
+
+	//Órai gyakorlás
+		void main()
+		{	
+			
+			
+			// ambiens szín számítása
+				vec3 ambient = La * Ka;
+		
+			// diffúz szín számítása
+		
+				vec3 n = normalize(vs_out_norm); //normalizáljuk hogy egységhosszú legyen a normálvektor
+				
+				//normalizáljuk a fényforrás irányát
+				vec3 l = normalize(light_dir);
+				
+				//a fényforrás felé mutató irányvektorra van szükségünk - szorzás (-1)-gyel
+				vec3 toLight = -l; //fény felé mutató irányvektor
+				
+				
+				float di = clamp(					dot(n, toLight), //vektorok skalárszorzása (a két vektor által bezárt szög adja a diffúz intenzitásunk mértékét)
+													0, //minimum -> ne lehessen negatív fény
+													1  //maximum -> párhuzamosak, annál nagyobb intenzitás nem lehetséges
+													);
+				
+				vec3 diffuse = 
+					Ld * //diffúz fénytulajdonság
+					Kd * //diffúz anyagtulajdonság
+					di //diffúz intenzitás
+		
+			;
+		
+			//
+			// spekuláris becsillanás
+			//
+		
+		
+				// kamerába mutató irányvektor - hiszen ide kell "visszacsillannia"
+				vec3 c = normalize(eyePos - vs_out_pos);
+			
+				/* reflect (becsillanást kiszámoló függvény):
+					- l: beérkező fény
+					- n: felületi normálvektor
+				*/
+				vec3 r = reflect(l, n);
+			
+				/*
+				spekuláris intenzitás:
+					dot(r, c) --> hogy a c és az r között mekkora a nyílásszög
+					clamp(dot(r, c), 0, 1) --> ne legyen negatív fény
+					pow(clamp(dot(r, c), 0, 1), 16) --> pow kell mert enyhíteni lehet a becsillanás mértékét (hajlítani a spekuláris intenzitás függvényt)
+						
+				*/
+				float si = pow(clamp(dot(r, c), 0, 1), 16);
+				vec3 specular = Ls * Ks * si;
+		
+			
+			//
+			// a fragment végsõ színének meghatározása
+			//
+		
+				fs_out_col = vec4(ambient + diffuse + specular, 1);
+		
+		
+		
+			// textúrával
+			//vec4 textureColor = texture(texImage, vs_out_tex);
+			//fs_out_col = vec4(ambient + diffuse + specular, 1) * textureColor;
+		}
+		
+	Transparency-ben megvalósítva, előre elkészítve:
+	
+		void main()
+		{
+			//
+			// ambiens szín számítása
+			//
+			vec4 ambient = La * Ka;
+		
+			//
+			// diffúz szín számítása
+			//
+		
+			/* segítség:
+				- normalizálás: http://www.opengl.org/sdk/docs/manglsl/xhtml/normalize.xml
+				- skaláris szorzat: http://www.opengl.org/sdk/docs/manglsl/xhtml/dot.xml
+				- clamp: http://www.opengl.org/sdk/docs/manglsl/xhtml/clamp.xml
+			*/
+			vec3 normal = normalize( vs_out_normal );
+			vec3 toLight = normalize(light_pos - vs_out_pos);
+			float di = clamp( dot( toLight, normal), 0.0f, 1.0f );
+			vec4 diffuse = vec4(Ld.rgb*Kd.rgb*di, Kd.a);
+		
+			//
+			// fényfoltképző szín
+			//
+		
+			/* segítség:
+				- reflect: http://www.opengl.org/sdk/docs/manglsl/xhtml/reflect.xml
+				- power: http://www.opengl.org/sdk/docs/manglsl/xhtml/pow.xml
+			*/
+			vec4 specular = vec4(0);
+		
+			if ( di > 0 )
+			{
+				vec3 e = normalize( eye_pos - vs_out_pos );
+				vec3 r = reflect( -toLight, normal );
+				float si = pow( clamp( dot(e, r), 0.0f, 1.0f ), specular_power );
+				specular = Ls*Ks*si;
+			}
+		
+			fs_out_col = (ambient + diffuse + specular ) * texture(texImage, vs_out_tex0.st);
+		}
+
+Pyshics + véletlenszám:
+	// részecskék inicializálása: helyek lefoglalása
+		m_particlePos.reserve(m_particleCount);
+		m_particleVel.reserve(m_particleCount);
+
+		// véletlenszám generátor inicializálása
+		std::random_device rd; //randomszám generátor eszköz
+		std::mt19937 gen(rd()); //randomszám generátor algoritmus
+		std::uniform_real_distribution<> rnd(-1,1); //értékkészlet megadása
+
+		// CPU oldali részecsketömbök feltöltése: pozíciók és sebességek
+		for (int i = 0; i < m_particleCount; ++i)
+		{
+			m_particlePos.push_back( glm::vec3(rnd(gen), rnd(gen), rnd(gen)) );
+			m_particleVel.push_back( glm::vec3( 2*rnd(gen), 2*rnd(gen), 2*rnd(gen) ) );
+		}
+
+		// GPU-ra áttölteni a részecskék pozícióit
+		m_gpuParticleBuffer.BufferData(m_particlePos);	// <=>	m_gpuParticleBuffer = m_particlePos;
+		m_gpuParticleVelBuffer.BufferData(m_particleVel);
+
+		// és végül a VAO-t inicializálni
+		m_gpuParticleVAO.Init({
+			{CreateAttribute<0, glm::vec3, 0, sizeof(glm::vec3)>, m_gpuParticleBuffer},
+			{CreateAttribute<1, glm::vec3, 0, sizeof(glm::vec3)>, m_gpuParticleVelBuffer}
+		});
+		
+	// részecskék update-je:
+	
+		void CMyApp::Update()
+		{
+			static Uint32 last_time = SDL_GetTicks();
+			float delta_time = (SDL_GetTicks() - last_time) / 1000.0f;
+		
+			m_camera.Update(delta_time);
+		
+			// frissítsük a pozíciókat
+			static const float energyRemaining = 0.5f;	// tökéletesen rugalmas ütközés
+			static const float gravity = 9.81f * 0.01;	// tökéletesen rugalmas ütközés
+			for (int i = 0; i < m_particleCount; ++i)
+			{
+		
+				m_particleVel[i].y -= gravity * delta_time;
+		
+				//részecske pozíció megállapítása
+				m_particlePos[i] += m_particleVel[i] * delta_time;
+		
+				//pattogás megvalósítása (ha kimenne a részecske)
+				/// pozitív irányba ki akar menni és pozitív a sebessége VAGY negatív irányba ki akar menni és negatív a sebessége
+				if ( (m_particlePos[i].x >= 1 && m_particleVel[i].x > 0) || (m_particlePos[i].x <= -1 && m_particleVel[i].x < 0) )
+					m_particleVel[i].x *= -energyRemaining; //akkor a sebességet -1-el megfordítjuk/szorozzuk
+				if ( (m_particlePos[i].y >= 1 && m_particleVel[i].y > 0) || (m_particlePos[i].y <= -1 && m_particleVel[i].y < 0))
+					m_particleVel[i].y *= -energyRemaining;
+				if ( (m_particlePos[i].z >= 1 && m_particleVel[i].z > 0) || (m_particlePos[i].z <= -1 && m_particleVel[i].z < 0))
+					m_particleVel[i].z *= -energyRemaining;
+			}
+			
+			m_gpuParticleVelBuffer.BufferSubData(0, sizeof(glm::vec3) * m_particleVel.size(), &(m_particleVel[0][0]));
+			
+			glBindBuffer(GL_ARRAY_BUFFER, m_gpuParticleBuffer);
+			
+			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3)*m_particlePos.size(), &(m_particlePos[0][0]));
+			
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			last_time = SDL_GetTicks();
+		}
+	
+Mandelbrot a fragment shaderben:
+
+	#version 130
+	
+	in vec3 vs_out_col;
+	in vec3 vs_out_pos;
+	
+	out vec4 fs_out_col;
+	
+	vec2 cplx_mul(vec2 u, vec2 v) {
+		return vec2(u.x * v.x - u.y * v.y,
+					u.x * v.y + u.y * v.x);
+	}
+	
+	void main()
+	{
+		vec2 c = vs_out_pos.xy;
+		vec2 z = vs_out_pos.xy;
+	
+		for (int i = 1; i < 30; ++i) {
+			z = cplx_mul(z, z) + c;
+		}
+	
+		if (length(z) < 1)
+			fs_out_col = vec4(vs_out_col, 1);
+		else discard;
+	}
+	
+	// 1. feladat: rajzoljuk ki fehérrel a téglalapot!
+	
+	// 2. feladat: uniform változók - az alkalmazás állítsa be, hogy milyen színnel töltsünk ki!
+	
+	// 3. feladat: rajzoljuk ki az origó középpontú, 1 sugarú kört! Mit kell tenni, ha nem a
+	//    körlapot, hanem csak a körvonalat akarjuk? Eml.: discard eldobja a fragmentet
+	
+	// 4. feladat: komplex számok....
+	
+	
+	
+
+	
+
