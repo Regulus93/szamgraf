@@ -283,7 +283,7 @@ void CMyApp::InitShaders()
 
 glm::vec3 CMyApp::GetGroundPos(float u, float v)
 {
-	return glm::vec3(-u * 20.0f + 10.0f, sinf(u * 20.0f) * 0.5f, v * 20.0f - 10.0f);
+	return glm::vec3(-u * 20.0f + 10.0f, sinf((1 + v + u)  * 20.0f) * 0.5f, v * 20.0f - 10.0f);
 }
 glm::vec3 CMyApp::GetGroundNorm(float u, float v)
 {
@@ -352,14 +352,14 @@ void CMyApp::InitGround()
 			if (rnd(gen) > 0.8f) {
 				m_trees[i][j] = rnd(gen);
 			} else {
-				RenderTree(u, v,);
+				//RenderTree(u, v,);
 			}
 		}
 	}
 	for (int i = 0; i < N; ++i)
 	{
-		m_particlePos.push_back(glm::vec3(rnd(gen), rnd(gen), rnd(gen)));
-		m_particleVel.push_back(glm::vec3(2 * rnd(gen), 2 * rnd(gen), 2 * rnd(gen)));
+		//m_particlePos.push_back(glm::vec3(rnd(gen), rnd(gen), rnd(gen)));
+		//m_particleVel.push_back(glm::vec3(2 * rnd(gen), 2 * rnd(gen), 2 * rnd(gen)));
 	}
 }
 

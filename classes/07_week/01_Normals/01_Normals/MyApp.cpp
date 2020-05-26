@@ -248,6 +248,7 @@ bool CMyApp::Init()
 	m_loc_worldIT = glGetUniformLocation(m_programID, "worldIT");
 	//kamerapozíció memóriahelye
 	m_loc_eyePos = glGetUniformLocation(m_programID, "eyePos");
+	m_time = glGetUniformLocation(m_programID, "time");
 	//m_loc_tex = glGetUniformLocation(m_programID, "texImage");
 	
 	return true;
@@ -270,6 +271,22 @@ void CMyApp::Update()
 	float delta_time = (SDL_GetTicks() - last_time) / 1000.0f;
 
 	m_camera.Update(delta_time);
+
+	static float elapsedSinceSlowed = 0;
+	elapsedSinceSlowed += delta_time;
+	float asd = elapsedSinceSlowed;
+
+
+	if (elapsedSinceSlowed > 30.f) {
+		elapsedSinceSlowed = 0.f;
+	}
+	else if (elapsedSinceSlowed < 30.f) {
+		//std::cout << "flushed: " << elapsedSinceSlowed << std::endl;
+		glUseProgram(m_programID);
+		glUniform1f(m_time, asd);
+		
+	}
+	
 
 	last_time = SDL_GetTicks();
 }
@@ -296,6 +313,7 @@ void CMyApp::Render()
 	glUniformMatrix4fv(m_loc_worldIT, 1, GL_FALSE, &wolrdIT[0][0]);
 	//kamerapozíció leküldése fragment shaderb
 	glUniform3fv(m_loc_eyePos, 1, &m_camera.GetEye()[0]);
+
 
 	// feladat - textúra
 

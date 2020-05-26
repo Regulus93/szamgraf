@@ -5,12 +5,15 @@ in vec3 vs_out_pos;
 in vec3 vs_out_norm;
 in vec2 vs_out_tex;
 uniform vec3 eyePos;
+uniform float time;
 
 // kimenõ érték - a fragment színe
 out vec4 fs_out_col;
 
 // irány fényforrás: fény iránya
 uniform vec3 light_dir = vec3(-1,-1,-1);
+uniform vec3 light_dir2 = vec3(0.5f,-0.5f,-1);
+uniform vec3 light_dir3 = vec3(-00.25f,-0.5f,-1);
 
 // fénytulajdonságok: ambiens, diffúz, ...
 uniform vec3 La = vec3(0.4, 0.0, 0.0);
@@ -29,6 +32,8 @@ uniform vec3 Ks = vec3(1, 1, 1);
 void main()
 {	
 	vec3 l = normalize(light_dir);
+	vec3 l2 = normalize(light_dir2);
+	vec3 l3 = normalize(light_dir3);
 	
 	//
 	// ambiens szín számítása
@@ -75,6 +80,8 @@ void main()
 		- n: felületi normálvektor
 	*/
 	vec3 r = reflect(l, n);
+	vec3 r2 = reflect(l2, n);
+	vec3 r3 = reflect(l3, n);
 	
 	/*
 	spekuláris intenzitás:
@@ -83,15 +90,30 @@ void main()
 		pow(clamp(dot(r, c), 0, 1), 16) --> pow kell mert enyhíteni lehet a becsillanás mértékét (hajlítani a spekuláris intenzitás függvényt)
 			
 	*/
-	float si = pow(clamp(dot(r, c), 0, 1), 16);
+	float si = pow(clamp(dot(r, c), 0, 1), 64);
+	float si2 = pow(clamp(dot(r2, c), 0, 1), 64);
+	float si3 = pow(clamp(dot(r3, c), 0, 1), 64);
 	vec3 specular = Ls * Ks * si;
+	vec3 specular2 = Ls * Ks * si2;
+	vec3 specular3 = Ls * Ks * si3;
 
 	
 	//
 	// a fragment végsõ színének meghatározása
 	//
+	
+	if (time > 5.0f && time < 10.f) {
+		fs_out_col = vec4(ambient + diffuse + specular, 1);
+	} else if ( time >= 10.f && time < 30.f ) {
+		fs_out_col = vec4(ambient + diffuse + specular + specular2, 1);
+	} else if ( time <= 30.f ) {
+		fs_out_col = vec4(ambient + diffuse + specular + specular2 + specular3, 1);
+	} else if (time < 5.0f) {
+		fs_out_col = vec4(ambient + diffuse, 1);
+	}
 
-	fs_out_col = vec4(ambient + diffuse + specular, 1);
+
+	//fs_out_col = vec4(ambient + diffuse + speculars, 1);
 
 	// felületi normális
 	//fs_out_col = vec4(vs_out_norm, 1);

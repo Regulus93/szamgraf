@@ -64,6 +64,7 @@ protected:
 	GLuint m_loc_mvp;
 	GLuint m_loc_world;
 	GLuint m_loc_worldIT;
+	GLuint m_time;
 	//kamerapozíció leküldéséhez szükséges
 	GLuint m_loc_eyePos;
 	//GLuint m_loc_tex;
