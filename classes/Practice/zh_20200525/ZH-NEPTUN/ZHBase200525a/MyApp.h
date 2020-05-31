@@ -87,6 +87,7 @@ protected:
 	Texture2D			taylorDressTexture;
 	Texture2D			dancerDressTexture;
 
+
 	// nyers OGL azonosítók
 	GLuint				m_skyboxTexture = 0;
 
@@ -105,6 +106,8 @@ protected:
 	void InitCube();
 	void InitSphere();
 	void InitSkyBox();
+
+	bool movingStage = false;
 	
 	void RenderCube(glm::mat4 transformations);
 	void RenderSphere(glm::mat4 transformations);

@@ -509,6 +509,22 @@ float GetPersonYPosition(Uint32 time, float periodChange) {
 
 void CMyApp::Render()
 {
+	
+
+	ImGui::SetNextWindowPos(ImVec2(300, 400), ImGuiSetCond_FirstUseEver);
+	if (ImGui::Begin("Tesztablak"))
+	{
+
+		if (ImGui::Button("Start")) {
+			movingStage = true;
+		}
+
+		if (ImGui::Button("Stop")) {
+			movingStage = false;
+		}
+	}
+	ImGui::End();
+
 	// töröljük a framebuffert (GL_COLOR_BUFFER_BIT) és a mélységi Z buffert (GL_DEPTH_BUFFER_BIT)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -520,21 +536,21 @@ void CMyApp::Render()
 	Uint32 renderTime = SDL_GetTicks();
 
 	//TaylorSwift
-	RenderPerson(glm::vec3(0.f, GetPersonYPosition(renderTime, 0.f), 2.f), true);
+	float periodChange = 0.05f;
+	RenderPerson(glm::vec3(0.f, movingStage ? GetPersonYPosition(renderTime, periodChange) : 2.5f, 2.f), true);
 
 	//1. vonal
-	RenderPerson(glm::vec3(-1.f, GetPersonYPosition(renderTime, -0.05f), 1.f),false);
+	periodChange -= 0.05f;
+	RenderPerson(glm::vec3(-1.f, movingStage ? GetPersonYPosition(renderTime, periodChange) : 2.5f, 1.f),false);
 	
 	//2. vonal
-	RenderPerson(glm::vec3(-1.5f, GetPersonYPosition(renderTime, -0.10f), 0.f), false);
+	periodChange -= 0.05f;
+	RenderPerson(glm::vec3(-1.5f, movingStage ? GetPersonYPosition(renderTime, periodChange) : 2.5f, 0.f), false);
 
 	//3. vonal
-	RenderPerson(glm::vec3(-2.f, GetPersonYPosition(renderTime, -0.15f), -1.f), false);
-
-
-
-
-
+	periodChange -= 0.05f;
+	RenderPerson(glm::vec3(-2.f, movingStage ? GetPersonYPosition(renderTime, periodChange) : 2.5f, -1.f), false);
+	
 	// tengelyek
 	m_AxesProgram.Use();
 	m_AxesProgram.SetUniform("mvp", viewProj);
@@ -559,12 +575,6 @@ void CMyApp::Render()
 	// ImGui demo ablak
 	//ImGui::ShowTestWindow();
 
-	ImGui::SetNextWindowPos(ImVec2(300, 400), ImGuiSetCond_FirstUseEver);
-	if (ImGui::Begin("Tesztablak"))
-	{
-		ImGui::Text("Tesztszoveg");
-	}
-	ImGui::End();
 }
 
 void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
