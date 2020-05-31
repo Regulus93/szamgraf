@@ -485,6 +485,28 @@ void CMyApp::RenderHead(glm::vec3 position, bool isTaylor) {
 
 }
 
+
+/*
+Util function to do this:
+
+	RenderPerson(glm::vec3(-1.f, sinf((last_time / 1000.0f) * 0.9f) * 3.0f + 1.5f + 3.f, 1.f),false);
+
+	- sinf((last_time / 1000.0f) * 0.9f)						=> period is translated with 0.9f
+	- sinf((last_time / 1000.0f) * 0.9f) * 3.0f					=> value of the sin increased from (-1.0f,1.0f) to (-3.0f,3.0f)
+	- sinf((last_time / 1000.0f) * 0.9f) * 3.0f + 1.5f + 3.f	=> value of the sin translated from (-3.0f,3.0f) to (1.5f,7.5f)
+
+*/
+float GetPersonYPosition(Uint32 time, float periodChange) {
+
+	float valueOfSin = sinf(time / 1000.0f * (1.0f - periodChange));
+
+	float highOfStage = 2.5f;
+	float intervalMax = 3.f;
+	float intervalToPositive = 3.f;
+
+	return valueOfSin * intervalMax + highOfStage + intervalToPositive;
+}
+
 void CMyApp::Render()
 {
 	// töröljük a framebuffert (GL_COLOR_BUFFER_BIT) és a mélységi Z buffert (GL_DEPTH_BUFFER_BIT)
@@ -495,16 +517,19 @@ void CMyApp::Render()
 	RenderGround();
 	RenderStage();
 
+	Uint32 renderTime = SDL_GetTicks();
+
 	//TaylorSwift
-	
-	RenderPerson(glm::vec3(0.f, 2.5f, 2.f), true);
+	RenderPerson(glm::vec3(0.f, GetPersonYPosition(renderTime, 0.f), 2.f), true);
 
 	//1. vonal
-	RenderPerson(glm::vec3(-1.f, 2.5f, 1.f),false);
+	RenderPerson(glm::vec3(-1.f, GetPersonYPosition(renderTime, -0.05f), 1.f),false);
+	
 	//2. vonal
-	RenderPerson(glm::vec3(-1.5f, 2.5f, 0.f), false);
+	RenderPerson(glm::vec3(-1.5f, GetPersonYPosition(renderTime, -0.10f), 0.f), false);
+
 	//3. vonal
-	RenderPerson(glm::vec3(-2.f, 2.5f, -1.f), false);
+	RenderPerson(glm::vec3(-2.f, GetPersonYPosition(renderTime, -0.15f), -1.f), false);
 
 
 
