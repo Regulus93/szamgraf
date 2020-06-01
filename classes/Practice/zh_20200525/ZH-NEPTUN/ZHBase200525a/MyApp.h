@@ -107,6 +107,7 @@ protected:
 
 	// mesh adatok
 	Mesh *m_SuzanneMesh = nullptr;
+	Mesh *pianoMesh = nullptr;
 
 	// a jobb olvashatóság kedvéért
 	void InitShaders();
@@ -129,6 +130,7 @@ protected:
 	void RenderPiano(glm::vec3 pos);
 
 	void CMyApp::RenderStage();
+	void CMyApp::RenderMeshPiano(glm::vec3 pos);
 
 	void CMyApp::RenderPerson(glm::vec3 pos, bool isTaylor);
 	void CMyApp::RenderBody(glm::vec3 pos, bool isTaylor);

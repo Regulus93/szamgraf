@@ -19,14 +19,15 @@ uniform sampler2D texImage;
 void main()
 {
 
-	vec3 ambient = La;
-
-	vec3 normal = normalize(vs_out_norm);
-	vec3 to_light = normalize(-light_dir);
-	
-	float cosa = clamp(dot(normal, to_light), 0, 1);
-
-	vec3 diffuse = cosa*Ld;
-	
-	fs_out_col = vec4(ambient + diffuse, 1) * texture(texImage, vs_out_tex);
+	//vec3 ambient = La;
+	//
+	//vec3 normal = normalize(vs_out_norm);
+	//vec3 to_light = normalize(-light_dir);
+	//
+	//float cosa = clamp(dot(normal, to_light), 0, 1);
+	//
+	//vec3 diffuse = cosa*Ld;
+	//
+	//fs_out_col = vec4(ambient + diffuse, 1) * texture(texImage, vs_out_tex);
+	fs_out_col = vec4(1.f);
 }

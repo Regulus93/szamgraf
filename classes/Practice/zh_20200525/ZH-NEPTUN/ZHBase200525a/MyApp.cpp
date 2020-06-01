@@ -446,8 +446,8 @@ bool CMyApp::Init()
 	pianoTexture.FromFile("assets/pianoTexture.jpg");
 
 	// mesh betöltése
-	m_SuzanneMesh = ObjParser::parse("assets/Suzanne.obj");
-	m_SuzanneMesh->initBuffers();
+	pianoMesh = ObjParser::parse("assets/Piano.obj");
+	pianoMesh->initBuffers();
 	
 	// kamera
 	m_camera.SetProj(45.0f, 640.0f / 480.0f, 0.01f, 1000.0f);
@@ -460,6 +460,7 @@ void CMyApp::Clean()
 	glDeleteTextures(1, &m_skyboxTexture);
 
 	delete m_SuzanneMesh;
+	delete pianoMesh;
 }
 
 void CMyApp::Update()
@@ -597,6 +598,21 @@ void CMyApp::RenderPiano(glm::vec3 position) {
 	ringProgram.Unuse();
 }
 
+void CMyApp::RenderMeshPiano(glm::vec3 position) {
+	m_MeshProgram.Use();
+	
+	glm::mat4 viewProj = m_camera.GetViewProj();
+
+	glm::mat4 world = glm::translate(position);
+
+	m_MeshProgram.SetUniform("MVP", viewProj * world);
+	m_MeshProgram.SetUniform("world", world);
+	m_MeshProgram.SetUniform("worldIT", glm::inverse(glm::transpose(world)));
+
+	pianoMesh->draw();
+	m_MeshProgram.Unuse();
+}
+
 /*
 Util function to do this:
 
@@ -644,6 +660,7 @@ void CMyApp::Render()
 	RenderGround();
 	RenderStage();
 	RenderPiano(glm::vec3(-3.5f, 3.f, -2.f));
+	RenderMeshPiano(glm::vec3(0.f,2.f,-2.f));
 
 	Uint32 renderTime = SDL_GetTicks();
 
