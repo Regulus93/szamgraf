@@ -507,7 +507,7 @@ void CMyApp::RenderCube(glm::mat4 world) {
 	cubeProgram.SetUniform("MVP", viewProj * world);
 	cubeProgram.SetUniform("world", world);
 	cubeProgram.SetUniform("worldIT", glm::inverse(glm::transpose(world)));
-
+	cubeProgram.SetUniform("eyePos", m_camera.GetEye());
 	m_CubeVao.Bind();
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 	m_CubeVao.Unbind();
