@@ -15,6 +15,8 @@ void main()
 	}
 	else if (coloring == 2) {
 		fs_out_col = texture(texImage2, vs_out_tex);
+	} else if (coloring == 3) {
+		fs_out_col = vec4(vec3(1.f),1);
 	}
 	
 }

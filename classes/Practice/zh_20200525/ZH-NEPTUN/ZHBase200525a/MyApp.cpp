@@ -278,6 +278,18 @@ void CMyApp::InitShaders()
 		}
 	);
 
+	ringProgram.Init(
+		{
+			{ GL_VERTEX_SHADER, "ring.vert" },
+			{ GL_FRAGMENT_SHADER, "ring.frag" }
+		},
+		{
+			{ 0, "vs_in_pos" },
+			{ 1, "vs_in_norm" },
+			{ 2, "vs_in_tex" },
+		}
+		);
+
 	cubeProgram.Init(
 		{
 			{ GL_VERTEX_SHADER, "cube.vert" },
@@ -344,6 +356,68 @@ void CMyApp::InitGround() {
 	);
 }
 
+glm::vec3	CMyApp::GetRingPos(float u, float v)
+{
+	// itt a parametrikus egyenlet
+	// origó középpontú, egységsugarú gömb parametrikus alakja: http://hu.wikipedia.org/wiki/G%C3%B6mb#Egyenletek 
+	// figyeljünk:	matematikában sokszor a Z tengely mutat felfelé, de nálunk az Y, tehát a legtöbb képlethez képest nálunk
+	//				az Y és Z koordináták felcserélve szerepelnek
+	u *= 1 * 3.1415f;
+	v *= 2 * 3.1415f;
+	float cu = cosf(u), su = sinf(u), cv = cosf(v), sv = sinf(v);
+
+	//szükséges két sugár
+	float r = 0.65f;
+	float R = 1;
+
+	return glm::vec3((R + r * cu) * cv, 0, (R + r * cu) * sv);
+}
+
+glm::vec3 CMyApp::GetRingNorm(float u, float v)
+{
+	glm::vec3 du = GetRingPos(u + 0.01, v) - GetRingPos(u - 0.01, v);
+	glm::vec3 dv = GetRingPos(u, v + 0.01) - GetRingPos(u, v - 0.01);
+
+	return glm::normalize(glm::cross(du, dv));
+}
+
+void CMyApp::InitRing() {
+	std::vector<Vertex>vertices((N + 1) * (M + 1));
+	for (int i = 0; i <= N; ++i)
+		for (int j = 0; j <= M; ++j)
+		{
+			float u = i / (float)N;
+			float v = j / (float)M;
+
+			vertices[i + j * (N + 1)].p = GetRingPos(u,v);
+			vertices[i + j * (N + 1)].n = GetRingNorm(u, v);
+			vertices[i + j * (N + 1)].t = glm::vec2(1-sinf(u)*cosf(u), 1-sinf(v) * cosf(v));
+		}
+
+	std::vector<GLuint> indices(3 * 2 * (N) * (M));
+	for (int i = 0; i < N; ++i)
+		for (int j = 0; j < M; ++j)
+		{
+			indices[6 * i + j * 3 * 2 * (N)+0] = (i)+(j) * (N + 1);
+			indices[6 * i + j * 3 * 2 * (N)+1] = (i + 1) + (j) * (N + 1);
+			indices[6 * i + j * 3 * 2 * (N)+2] = (i)+(j + 1) * (N + 1);
+			indices[6 * i + j * 3 * 2 * (N)+3] = (i + 1) + (j) * (N + 1);
+			indices[6 * i + j * 3 * 2 * (N)+4] = (i + 1) + (j + 1) * (N + 1);
+			indices[6 * i + j * 3 * 2 * (N)+5] = (i)+(j + 1) * (N + 1);
+		}
+
+	ringVbo.BufferData(vertices);
+	ringInd.BufferData(indices);
+	ringVao.Init(
+		{
+			{ CreateAttribute<0, glm::vec3, 0,						sizeof(Vertex)>, ringVbo },
+			{ CreateAttribute<1, glm::vec3,	(sizeof(glm::vec3)),	sizeof(Vertex)>, ringVbo },
+			{ CreateAttribute<2, glm::vec2, (2 * sizeof(glm::vec3)),sizeof(Vertex)>, ringVbo },
+		},
+		ringInd
+		);
+}
+
 bool CMyApp::Init()
 {
 	// törlési szín legyen kékes
@@ -357,7 +431,7 @@ bool CMyApp::Init()
 	InitCube();
 	InitSphere();
 	InitGround();
-	
+	InitRing();
 
 	// egyéb textúrák betöltése
 	m_WoodTexture.FromFile("assets/wood.jpg");
@@ -368,6 +442,8 @@ bool CMyApp::Init()
 	taylorTexture.FromFile("assets/taylor.jpg");
 	dancerTexture.FromFile("assets/dancer.jpg");
 	dancerDressTexture.FromFile("assets/dancerDress.jpg");
+
+	pianoTexture.FromFile("assets/pianoTexture.jpg");
 
 	// mesh betöltése
 	m_SuzanneMesh = ObjParser::parse("assets/Suzanne.obj");
@@ -485,6 +561,41 @@ void CMyApp::RenderHead(glm::vec3 position, bool isTaylor) {
 
 }
 
+void CMyApp::RenderPiano(glm::vec3 position) {
+
+	glm::mat4 viewProj = m_camera.GetViewProj();
+	glm::mat4 world = glm::translate(position);
+
+	cubeProgram.Use();
+	cubeProgram.SetUniform("coloring", 3);
+
+	float pianoLegHeight = 1.f;
+	for (int i = 0; i < 3; i++)
+	{
+
+		glm::mat4 pianoColumnWorld = 
+			glm::translate(glm::vec3(position.x, position.y-(pianoLegHeight/2), position.z)) 
+			* glm::rotate(6.28f / 3.0f * i, glm::vec3(0, 1, 0)) 
+			* glm::translate(glm::vec3(GetRingPos(position.x+5.f,position.z+5.f))) 
+			* glm::scale(glm::vec3(0.15f, pianoLegHeight , 0.15f));
+
+		RenderCube(pianoColumnWorld);
+	}
+	cubeProgram.Unuse();
+
+	ringProgram.Use();
+
+	ringProgram.SetTexture("texImage", 0, pianoTexture);
+	ringProgram.SetUniform("MVP", viewProj * world);
+	ringProgram.SetUniform("world", world);
+	ringProgram.SetUniform("worldIT", glm::inverse(glm::transpose(world)));
+
+	ringVao.Bind();
+	glDrawElements(GL_TRIANGLES, N * M * 6, GL_UNSIGNED_INT, nullptr);
+	ringVao.Unbind();
+
+	ringProgram.Unuse();
+}
 
 /*
 Util function to do this:
@@ -532,6 +643,7 @@ void CMyApp::Render()
 
 	RenderGround();
 	RenderStage();
+	RenderPiano(glm::vec3(-3.5f, 3.f, -2.f));
 
 	Uint32 renderTime = SDL_GetTicks();
 

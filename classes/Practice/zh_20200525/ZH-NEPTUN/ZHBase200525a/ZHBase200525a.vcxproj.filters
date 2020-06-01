@@ -158,5 +158,11 @@
     <None Include="sphere.frag">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="ring.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="ring.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

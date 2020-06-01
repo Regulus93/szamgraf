@@ -52,6 +52,7 @@ protected:
 	ProgramObject		groundProgram;		
 	ProgramObject		cubeProgram;		
 	ProgramObject		sphereProgram;		
+	ProgramObject		ringProgram;		
 
 	// kocka
 	VertexArrayObject	m_CubeVao;			// VAO
@@ -70,6 +71,10 @@ protected:
 	IndexBuffer			m_SphereIndices;
 	ArrayBuffer			m_SphereVertexBuffer;
 
+	// tórusz zongora
+	VertexArrayObject	ringVao;
+	IndexBuffer			ringInd;
+	ArrayBuffer			ringVbo;
 
 	// színpad
 	VertexArrayObject	groundVao;			
@@ -86,6 +91,8 @@ protected:
 	Texture2D			dancerTexture;
 	Texture2D			taylorDressTexture;
 	Texture2D			dancerDressTexture;
+
+	Texture2D			pianoTexture;
 
 
 	// nyers OGL azonosítók
@@ -116,12 +123,17 @@ protected:
 	glm::vec3 GetGroundPos(float u, float v);
 	void RenderGround();
 
+	void InitRing();
+	glm::vec3 CMyApp::GetRingPos(float u, float v);
+	glm::vec3 CMyApp::GetRingNorm(float u, float v);
+	void RenderPiano(glm::vec3 pos);
+
 	void CMyApp::RenderStage();
 
 	void CMyApp::RenderPerson(glm::vec3 pos, bool isTaylor);
 	void CMyApp::RenderBody(glm::vec3 pos, bool isTaylor);
 	void CMyApp::RenderHead(glm::vec3 pos, bool isTaylor);
 
-
+	
 };
 
