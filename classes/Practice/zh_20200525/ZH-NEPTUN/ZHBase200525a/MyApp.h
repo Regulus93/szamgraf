@@ -116,6 +116,7 @@ protected:
 	void InitSkyBox();
 
 	bool movingStage = false;
+	bool choreoIsOn = true;
 	
 	void RenderCube(glm::mat4 transformations);
 	void RenderSphere(glm::mat4 transformations);
@@ -129,13 +130,15 @@ protected:
 	glm::vec3 CMyApp::GetRingNorm(float u, float v);
 	void RenderPiano(glm::vec3 pos);
 
-	void CMyApp::RenderStage();
-	void CMyApp::RenderMeshPiano(glm::vec3 pos);
+	void RenderStage();
+	void RenderMeshPiano(glm::vec3 pos);
 
-	void CMyApp::RenderPerson(glm::vec3 pos, bool isTaylor);
-	void CMyApp::RenderBody(glm::vec3 pos, bool isTaylor);
-	void CMyApp::RenderHead(glm::vec3 pos, bool isTaylor);
+	void RenderPerson(glm::vec3 pos, bool isTaylor);
+	void RenderBody(glm::vec3 pos, bool isTaylor);
+	void RenderHead(glm::vec3 pos, bool isTaylor);
 
-	
+	glm::vec3 Eval(float t);
+	glm::vec3 GetChoreoPos(glm::vec3 pos, float time, bool isTaylor);
+	std::vector<glm::vec3> m_controlPoints{ {glm::vec3(0.f, 0.f, 0.f)}, {glm::vec3(0.f, 2.5f, 2.f)} };
 };
 

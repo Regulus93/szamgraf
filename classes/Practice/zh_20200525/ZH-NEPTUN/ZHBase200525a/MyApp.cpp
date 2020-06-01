@@ -623,7 +623,7 @@ Util function to do this:
 	- sinf((last_time / 1000.0f) * 0.9f) * 3.0f + 1.5f + 3.f	=> value of the sin translated from (-3.0f,3.0f) to (1.5f,7.5f)
 
 */
-float GetPersonYPosition(Uint32 time, float periodChange) {
+float GetWavingYCoord(Uint32 time, float periodChange) {
 
 	float valueOfSin = sinf(time / 1000.0f * (1.0f - periodChange));
 
@@ -634,10 +634,55 @@ float GetPersonYPosition(Uint32 time, float periodChange) {
 	return valueOfSin * intervalMax + highOfStage + intervalToPositive;
 }
 
+glm::vec3 CMyApp::GetChoreoPos(glm::vec3 pos, float time, bool isTaylor) {
+	
+
+	if (isTaylor) {
+
+		if (time < 2.0f) {
+			float controlPointCount = (m_controlPoints.size() - 1) / 2.f;
+			float valueOfSin = sinf(time * 1000.f / 2000.f * M_PI / (float)m_controlPoints.size()) 
+				* controlPointCount //interval scale
+				+ controlPointCount; //interval to positive
+			return Eval(valueOfSin);
+		}
+		else if (time >= 4.0f) {
+			//2 másodperc parabola
+		}
+		else {
+			//maradjon az aktuális pozíciójában
+		}
+
+	}
+	else {
+		//GetDancerChoreoPos
+		//x másodperc tánc
+	}
+
+	return pos;
+}
+
+glm::vec3 CMyApp::Eval(float t)
+{
+	if (m_controlPoints.size() == 0)
+		return glm::vec3(0);
+
+	int interval = (int)t;
+
+	if (interval < 0)
+		return m_controlPoints[0];
+
+	if (interval >= m_controlPoints.size() - 1)
+		return m_controlPoints[m_controlPoints.size() - 1];
+
+	float localT = t - interval;
+
+	return (1 - localT) * m_controlPoints[interval] + localT * m_controlPoints[interval + 1];
+}
+
 void CMyApp::Render()
 {
 	
-
 	ImGui::SetNextWindowPos(ImVec2(300, 400), ImGuiSetCond_FirstUseEver);
 	if (ImGui::Begin("Tesztablak"))
 	{
@@ -662,24 +707,30 @@ void CMyApp::Render()
 	RenderPiano(glm::vec3(-3.5f, 3.f, -2.f));
 	RenderMeshPiano(glm::vec3(0.f,2.f,-2.f));
 
-	Uint32 renderTime = SDL_GetTicks();
+	static Uint32 last_time = SDL_GetTicks();
+	float delta_time = (SDL_GetTicks() - last_time) / 1000.0f;
+	last_time = SDL_GetTicks();
+	static float coreoDelta = 0;
+	coreoDelta += delta_time;
+	
+	if (choreoIsOn && coreoDelta >= 6.0f) {
+		coreoDelta = 0.f;
+		choreoIsOn = false;
+	}
+
+	glm::vec3 taylorStarterPos = glm::vec3(0.f, 2.5f, 2.f);
+	glm::vec3 dancers1Pos	   = glm::vec3(-1.f, 2.5f, 1.f);
+	glm::vec3 dancers2Pos      = glm::vec3(-1.5f, 2.5f, 0.f);
 
 	//TaylorSwift
-	float periodChange = 0.05f;
-	RenderPerson(glm::vec3(0.f, movingStage ? GetPersonYPosition(renderTime, periodChange) : 2.5f, 2.f), true);
+	RenderPerson(choreoIsOn ? GetChoreoPos(taylorStarterPos, coreoDelta, true) : taylorStarterPos, true);
 
 	//1. vonal
-	periodChange -= 0.05f;
-	RenderPerson(glm::vec3(-1.f, movingStage ? GetPersonYPosition(renderTime, periodChange) : 2.5f, 1.f),false);
+	RenderPerson(dancers1Pos, false);
 	
 	//2. vonal
-	periodChange -= 0.05f;
-	RenderPerson(glm::vec3(-1.5f, movingStage ? GetPersonYPosition(renderTime, periodChange) : 2.5f, 0.f), false);
+	RenderPerson(dancers2Pos, false);
 
-	//3. vonal
-	periodChange -= 0.05f;
-	RenderPerson(glm::vec3(-2.f, movingStage ? GetPersonYPosition(renderTime, periodChange) : 2.5f, -1.f), false);
-	
 	// tengelyek
 	m_AxesProgram.Use();
 	m_AxesProgram.SetUniform("mvp", viewProj);
