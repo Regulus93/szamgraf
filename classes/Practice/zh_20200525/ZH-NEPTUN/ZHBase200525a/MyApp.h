@@ -139,6 +139,12 @@ protected:
 
 	glm::vec3 Eval(float t);
 	glm::vec3 GetChoreoPos(glm::vec3 pos, float time, bool isTaylor);
-	std::vector<glm::vec3> m_controlPoints{ {glm::vec3(0.f, 0.f, 0.f)}, {glm::vec3(0.f, 2.5f, 2.f)} };
+	std::vector<glm::vec3> m_controlPoints{ 
+		  {glm::vec3(0.f, 0.f, 0.f)}
+		, {glm::vec3(0.f, 2.5f, 2.f)}
+		, {glm::vec3(0.f, -5.f, 10.f)}
+	
+	};
+
 };
 

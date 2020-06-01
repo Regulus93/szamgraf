@@ -554,7 +554,7 @@ void CMyApp::RenderBody(glm::vec3 position, bool isTaylor) {
 }
 
 void CMyApp::RenderHead(glm::vec3 position, bool isTaylor) {
-	glm::mat4 world = glm::translate(glm::vec3(position.x, position.y+0.75f, position.z)) * glm::scale<float>(glm::vec3(0.25f, 0.25f, 0.25f));
+	glm::mat4 world = glm::translate(glm::vec3(position.x, position.y+0.75f, position.z)) * glm::rotate(1.25f, glm::vec3(0.f, 1.f, 0.f)) * glm::scale<float>(glm::vec3(0.25f, 0.25f, 0.25f));
 	cubeProgram.Use();
 	cubeProgram.SetTexture("texImage", 0, isTaylor ? taylorTexture : dancerTexture);
 
@@ -640,23 +640,25 @@ glm::vec3 CMyApp::GetChoreoPos(glm::vec3 pos, float time, bool isTaylor) {
 	if (isTaylor) {
 
 		if (time < 2.0f) {
-			float controlPointCount = (m_controlPoints.size() - 1) / 2.f;
-			float valueOfSin = sinf(time * 1000.f / 2000.f * M_PI / (float)m_controlPoints.size()) 
-				* controlPointCount //interval scale
-				+ controlPointCount; //interval to positive
-			return Eval(valueOfSin);
+			float valueOfSin = sinf(time * 1000.f / 4000.f * M_PI); //interval to positive
+
+			return Eval(valueOfSin > 1.0f ? 1.0f : valueOfSin);
 		}
 		else if (time >= 4.0f) {
-			//2 másodperc parabola
+			float valueOfSin = sinf(( time - 4.0f) * 1000.f / 6000.f * (M_PI/2.f)) + 1.f;
+
+			return Eval(valueOfSin);
 		}
-		else {
-			//maradjon az aktuális pozíciójában
+		else if ( time < 4.0f && time >= 2.0f ) {
+			return m_controlPoints[1];
 		}
 
 	}
 	else {
-		//GetDancerChoreoPos
-		//x másodperc tánc
+		if (time > 2.0f) {
+			return glm::vec3(pos.x, pos.y, pos.z + sinf(time * 1000.f / 1000.f * M_PI));
+		}
+
 	}
 
 	return pos;
@@ -669,6 +671,17 @@ glm::vec3 CMyApp::Eval(float t)
 
 	int interval = (int)t;
 
+	//std::cout << "Interval: " << interval << " start: x ["
+	//	<< m_controlPoints[interval].x << "], y["
+	//	<< m_controlPoints[interval].y << "],  z["
+	//	<< m_controlPoints[interval].z << "] " << std::endl;
+	//
+	//std::cout << "Interval: " << interval << " destination: x [" 
+	//	<< m_controlPoints[interval+1].x << "], y[" 
+	//	<< m_controlPoints[interval+1].y << "],  z["
+	//	<< m_controlPoints[interval+1].z << "] " << std::endl;
+
+
 	if (interval < 0)
 		return m_controlPoints[0];
 
@@ -677,25 +690,19 @@ glm::vec3 CMyApp::Eval(float t)
 
 	float localT = t - interval;
 
-	return (1 - localT) * m_controlPoints[interval] + localT * m_controlPoints[interval + 1];
+	glm::vec3 interpolationResult = (1 - localT) * m_controlPoints[interval] + localT * m_controlPoints[interval + 1];
+
+	if (interval < 1) {
+		return interpolationResult;
+	}
+	else {
+		return glm::vec3(interpolationResult.x, -0.49f * interpolationResult.z * interpolationResult.z + 5.0f * interpolationResult.z - 5.52f, interpolationResult.z);
+	}
+	
 }
 
 void CMyApp::Render()
 {
-	
-	ImGui::SetNextWindowPos(ImVec2(300, 400), ImGuiSetCond_FirstUseEver);
-	if (ImGui::Begin("Tesztablak"))
-	{
-
-		if (ImGui::Button("Start")) {
-			movingStage = true;
-		}
-
-		if (ImGui::Button("Stop")) {
-			movingStage = false;
-		}
-	}
-	ImGui::End();
 
 	// töröljük a framebuffert (GL_COLOR_BUFFER_BIT) és a mélységi Z buffert (GL_DEPTH_BUFFER_BIT)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -713,7 +720,7 @@ void CMyApp::Render()
 	static float coreoDelta = 0;
 	coreoDelta += delta_time;
 	
-	if (choreoIsOn && coreoDelta >= 6.0f) {
+	if (choreoIsOn && coreoDelta >= 10.0f) {
 		coreoDelta = 0.f;
 		choreoIsOn = false;
 	}
@@ -723,13 +730,14 @@ void CMyApp::Render()
 	glm::vec3 dancers2Pos      = glm::vec3(-1.5f, 2.5f, 0.f);
 
 	//TaylorSwift
-	RenderPerson(choreoIsOn ? GetChoreoPos(taylorStarterPos, coreoDelta, true) : taylorStarterPos, true);
+	//std::cout << "Before render: " << coreoDelta << std::endl;
+	RenderPerson(choreoIsOn ? GetChoreoPos(m_controlPoints[0], coreoDelta, true) : taylorStarterPos, true);
 
 	//1. vonal
-	RenderPerson(dancers1Pos, false);
+	RenderPerson(choreoIsOn ? GetChoreoPos(dancers1Pos, coreoDelta, false) : dancers1Pos, false);
 	
 	//2. vonal
-	RenderPerson(dancers2Pos, false);
+	RenderPerson(choreoIsOn ? GetChoreoPos(dancers2Pos, coreoDelta, false) : dancers2Pos, false);
 
 	// tengelyek
 	m_AxesProgram.Use();
@@ -754,7 +762,20 @@ void CMyApp::Render()
 	
 	// ImGui demo ablak
 	//ImGui::ShowTestWindow();
+	ImGui::SetNextWindowPos(ImVec2(300, 400), ImGuiSetCond_FirstUseEver);
+	if (ImGui::Begin("Tesztablak"))
+	{
 
+		if (ImGui::Button("Start")) {
+			coreoDelta = 0.f;
+			choreoIsOn = true;
+		}
+
+		if (ImGui::Button("Stop")) {
+			choreoIsOn = false;
+		}
+	}
+	ImGui::End();
 }
 
 void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
