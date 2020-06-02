@@ -9,13 +9,13 @@ uniform int coloring = 0;
 
 
 // fénytulajdonságok: ambiens, diffúz, ...
-uniform vec4 La = vec4(0.4, 0, 0.0,1);
-uniform vec4 Ld = vec4(0, 0, 1,1);
+uniform vec4 La = vec4(0, 0, 0.0,1);
+uniform vec4 Ld = vec4(0, 0, 0,1);
 //fehér legyen a spekuláris fény
 uniform vec4 Ls = vec4(1, 1, 1,1);
 
 // anyagtulajdonságok: ambiens, diffúz, ...
-uniform vec4 Ka = vec4(1, 1, 1,1);
+uniform vec4 Ka = vec4(0, 0, 0,1);
 uniform vec4 Kd = vec4(1, 1, 1,1);
 //fehéren reagáljon rá a felület
 uniform vec4 Ks = vec4(1, 1, 1,1);
@@ -24,12 +24,12 @@ uniform vec4 Ks3 = vec4(1, 0, 0,1);
 uniform vec4 Ks4 = vec4(1, 1, 0,1);
 
 // fénytulajdonságok
-uniform vec3 light_pos = vec3( 6, 2, 0 );
-uniform vec3 light_pos2 = vec3( 1, 5, 5 );
-uniform vec3 light_pos3 = vec3( -7, 2, -2 );
+uniform vec3 light_pos = vec3( 1, 3, 0 );
+uniform vec3 light_pos2 = vec3( 2, 3, 0 );
+uniform vec3 light_pos3 = vec3( 3, 3, 0 );
 //színtértulajdonságok
 uniform vec3 eyePos;
-uniform float specular_power = 24;
+uniform float specular_power = 87;
 
 
 
@@ -53,11 +53,18 @@ void main()
 	    - clamp: http://www.opengl.org/sdk/docs/manglsl/xhtml/clamp.xml
 	*/
 	vec3 normal = normalize( vs_out_norm );
+
 	vec3 toLight = normalize(light_pos - vs_out_pos);
 	vec3 toLight2 = normalize(light_pos2 - vs_out_pos);
 	vec3 toLight3 = normalize(light_pos3 - vs_out_pos);
+
 	float di = clamp( dot( toLight, normal), 0.0f, 1.0f );
+	float di2 = clamp( dot( toLight2, normal), 0.0f, 1.0f );
+	float di3 = clamp( dot( toLight3, normal), 0.0f, 1.0f );
+
 	vec4 diffuse = vec4(Ld.rgb*Kd.rgb*di, Kd.a);
+	vec4 diffuse2 = vec4(Ld.rgb*Kd.rgb*di2, Kd.a);
+	vec4 diffuse3 = vec4(Ld.rgb*Kd.rgb*di3, Kd.a);
 
 	//
 	// fényfoltképzõ szín
@@ -86,7 +93,7 @@ void main()
 	}
 
 	if (coloring == 1) {
-		fs_out_col = (ambient + diffuse + specular + specular2 + specular3 ) * vec4(vec3(0.1f),1);
+		fs_out_col = (ambient + diffuse + diffuse2 + diffuse3 + specular + specular2 + specular3 ) * vec4(vec3(1.f),1);
 	}
 	else if (coloring == 2) {
 		fs_out_col = texture(texImage2, vs_out_tex);

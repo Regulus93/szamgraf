@@ -26,35 +26,35 @@ void CMyApp::InitCube()
 	vertices.reserve(6 * 4);
 	
 	//front									 
-	vertices.push_back({ glm::vec3(-0.5, -0.5, +0.5), glm::vec3(0, 0, 1), glm::vec2(0, 0) });
-	vertices.push_back({ glm::vec3(+0.5, -0.5, +0.5), glm::vec3(0, 0, 1), glm::vec2(1, 0) });
-	vertices.push_back({ glm::vec3(-0.5, +0.5, +0.5), glm::vec3(0, 0, 1), glm::vec2(0, 1) });
-	vertices.push_back({ glm::vec3(+0.5, +0.5, +0.5), glm::vec3(0, 0, 1), glm::vec2(1, 1) });
+	vertices.push_back({ glm::vec3(-0.5, -0.5, +0.5), glm::vec3(0, 0, 0.5), glm::vec2(0, 0) });
+	vertices.push_back({ glm::vec3(+0.5, -0.5, +0.5), glm::vec3(0, 0, 0.5), glm::vec2(1, 0) });
+	vertices.push_back({ glm::vec3(-0.5, +0.5, +0.5), glm::vec3(0, 0, 0.5), glm::vec2(0, 1) });
+	vertices.push_back({ glm::vec3(+0.5, +0.5, +0.5), glm::vec3(0, 0, 0.5), glm::vec2(1, 1) });
 	//back
-	vertices.push_back({ glm::vec3(+0.5, -0.5, -0.5), glm::vec3(0, 0, -1), glm::vec2(0, 0) });
-	vertices.push_back({ glm::vec3(-0.5, -0.5, -0.5), glm::vec3(0, 0, -1), glm::vec2(1, 0) });
-	vertices.push_back({ glm::vec3(+0.5, +0.5, -0.5), glm::vec3(0, 0, -1), glm::vec2(0, 1) });
-	vertices.push_back({ glm::vec3(-0.5, +0.5, -0.5), glm::vec3(0, 0, -1), glm::vec2(1, 1) });
+	vertices.push_back({ glm::vec3(+0.5, -0.5, -0.5), glm::vec3(0, 0, -0.5), glm::vec2(0, 0) });
+	vertices.push_back({ glm::vec3(-0.5, -0.5, -0.5), glm::vec3(0, 0, -0.5), glm::vec2(1, 0) });
+	vertices.push_back({ glm::vec3(+0.5, +0.5, -0.5), glm::vec3(0, 0, -0.5), glm::vec2(0, 1) });
+	vertices.push_back({ glm::vec3(-0.5, +0.5, -0.5), glm::vec3(0, 0, -0.5), glm::vec2(1, 1) });
 	//right									 
-	vertices.push_back({ glm::vec3(+0.5, -0.5, +0.5), glm::vec3(1, 0, 0), glm::vec2(0, 0) });
-	vertices.push_back({ glm::vec3(+0.5, -0.5, -0.5), glm::vec3(1, 0, 0), glm::vec2(1, 0) });
-	vertices.push_back({ glm::vec3(+0.5, +0.5, +0.5), glm::vec3(1, 0, 0), glm::vec2(0, 1) });
-	vertices.push_back({ glm::vec3(+0.5, +0.5, -0.5), glm::vec3(1, 0, 0), glm::vec2(1, 1) });
+	vertices.push_back({ glm::vec3(+0.5, -0.5, +0.5), glm::vec3(0.5, 0, 0), glm::vec2(0, 0) });
+	vertices.push_back({ glm::vec3(+0.5, -0.5, -0.5), glm::vec3(0.5, 0, 0), glm::vec2(1, 0) });
+	vertices.push_back({ glm::vec3(+0.5, +0.5, +0.5), glm::vec3(0.5, 0, 0), glm::vec2(0, 1) });
+	vertices.push_back({ glm::vec3(+0.5, +0.5, -0.5), glm::vec3(0.5, 0, 0), glm::vec2(1, 1) });
 	//left									 
-	vertices.push_back({ glm::vec3(-0.5, -0.5, -0.5), glm::vec3(-1, 0, 0), glm::vec2(0, 0) });
-	vertices.push_back({ glm::vec3(-0.5, -0.5, +0.5), glm::vec3(-1, 0, 0), glm::vec2(1, 0) });
-	vertices.push_back({ glm::vec3(-0.5, +0.5, -0.5), glm::vec3(-1, 0, 0), glm::vec2(0, 1) });
-	vertices.push_back({ glm::vec3(-0.5, +0.5, +0.5), glm::vec3(-1, 0, 0), glm::vec2(1, 1) });
+	vertices.push_back({ glm::vec3(-0.5, -0.5, -0.5), glm::vec3(-0.5, 0, 0), glm::vec2(0, 0) });
+	vertices.push_back({ glm::vec3(-0.5, -0.5, +0.5), glm::vec3(-0.5, 0, 0), glm::vec2(1, 0) });
+	vertices.push_back({ glm::vec3(-0.5, +0.5, -0.5), glm::vec3(-0.5, 0, 0), glm::vec2(0, 1) });
+	vertices.push_back({ glm::vec3(-0.5, +0.5, +0.5), glm::vec3(-0.5, 0, 0), glm::vec2(1, 1) });
 	//top									 
-	vertices.push_back({ glm::vec3(-0.5, +0.5, +0.5), glm::vec3(0, 1, 0), glm::vec2(0, 0) });
-	vertices.push_back({ glm::vec3(+0.5, +0.5, +0.5), glm::vec3(0, 1, 0), glm::vec2(1, 0) });
-	vertices.push_back({ glm::vec3(-0.5, +0.5, -0.5), glm::vec3(0, 1, 0), glm::vec2(0, 1) });
-	vertices.push_back({ glm::vec3(+0.5, +0.5, -0.5), glm::vec3(0, 1, 0), glm::vec2(1, 1) });
+	vertices.push_back({ glm::vec3(-0.5, +0.5, +0.5), glm::vec3(0, 0.5, 0), glm::vec2(0, 0) });
+	vertices.push_back({ glm::vec3(+0.5, +0.5, +0.5), glm::vec3(0, 0.5, 0), glm::vec2(1, 0) });
+	vertices.push_back({ glm::vec3(-0.5, +0.5, -0.5), glm::vec3(0, 0.5, 0), glm::vec2(0, 1) });
+	vertices.push_back({ glm::vec3(+0.5, +0.5, -0.5), glm::vec3(0, 0.5, 0), glm::vec2(1, 1) });
 	//bottom								 
-	vertices.push_back({ glm::vec3(-0.5, -0.5, -0.5), glm::vec3(0, -1, 0), glm::vec2(0, 0) });
-	vertices.push_back({ glm::vec3(+0.5, -0.5, -0.5), glm::vec3(0, -1, 0), glm::vec2(1, 0) });
-	vertices.push_back({ glm::vec3(-0.5, -0.5, +0.5), glm::vec3(0, -1, 0), glm::vec2(0, 1) });
-	vertices.push_back({ glm::vec3(+0.5, -0.5, +0.5), glm::vec3(0, -1, 0), glm::vec2(1, 1) });
+	vertices.push_back({ glm::vec3(-0.5, -0.5, -0.5), glm::vec3(0, -0.5, 0), glm::vec2(0, 0) });
+	vertices.push_back({ glm::vec3(+0.5, -0.5, -0.5), glm::vec3(0, -0.5, 0), glm::vec2(1, 0) });
+	vertices.push_back({ glm::vec3(-0.5, -0.5, +0.5), glm::vec3(0, -0.5, 0), glm::vec2(0, 1) });
+	vertices.push_back({ glm::vec3(+0.5, -0.5, +0.5), glm::vec3(0, -0.5, 0), glm::vec2(1, 1) });
 
 	std::vector<GLuint> indices(36);
 	size_t index = 0;
