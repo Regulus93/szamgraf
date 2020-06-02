@@ -6,6 +6,7 @@
 #include <array>
 #include <list>
 #include <tuple>
+#include <random>
 #include <imgui/imgui.h>
 #include "includes/GLUtils.hpp"
 
@@ -327,7 +328,7 @@ void CMyApp::InitGround() {
 			float u = i / (float)groundN;
 			float v = j / (float)groundM;
 
-			vertices.push_back({ GetGroundPos(u, v), glm::vec3(0.5f), glm::vec2(0.25f)});
+			vertices.push_back({ GetGroundPos(u, v), GetRingNorm(u,v), glm::vec2(0.25f)});
 		}
 
 	groundVbo.BufferData(vertices);
@@ -375,8 +376,8 @@ glm::vec3	CMyApp::GetRingPos(float u, float v)
 
 glm::vec3 CMyApp::GetRingNorm(float u, float v)
 {
-	glm::vec3 du = GetRingPos(u + 0.01, v) - GetRingPos(u - 0.01, v);
-	glm::vec3 dv = GetRingPos(u, v + 0.01) - GetRingPos(u, v - 0.01);
+	glm::vec3 du = GetGroundPos(u + 0.01, v) - GetGroundPos(u - 0.01, v);
+	glm::vec3 dv = GetGroundPos(u, v + 0.01) - GetGroundPos(u, v - 0.01);
 
 	return glm::normalize(glm::cross(du, dv));
 }
@@ -390,7 +391,7 @@ void CMyApp::InitRing() {
 			float v = j / (float)M;
 
 			vertices[i + j * (N + 1)].p = GetRingPos(u,v);
-			vertices[i + j * (N + 1)].n = GetRingNorm(u, v);
+			vertices[i + j * (N + 1)].n = glm::vec3(0.f);
 			vertices[i + j * (N + 1)].t = glm::vec2(1-sinf(u)*cosf(u), 1-sinf(v) * cosf(v));
 		}
 
@@ -452,6 +453,8 @@ bool CMyApp::Init()
 	// kamera
 	m_camera.SetProj(45.0f, 640.0f / 480.0f, 0.01f, 1000.0f);
 
+	randomNumber = GetRandomNumber(0.f, 7.f);
+
 	return true;
 }
 
@@ -479,6 +482,8 @@ void CMyApp::RenderGround()
 
 	groundProgram.Use();
 	groundProgram.SetUniform("MVP", viewProj);
+	groundProgram.SetUniform("time", SDL_GetTicks()/1000.f);
+	groundProgram.SetUniform("randomNumber", randomNumber);
 
 	groundVao.Bind();
 	glDrawElements(GL_TRIANGLES,	// primitív típus
@@ -596,6 +601,13 @@ void CMyApp::RenderPiano(glm::vec3 position) {
 	ringVao.Unbind();
 
 	ringProgram.Unuse();
+}
+
+float CMyApp::GetRandomNumber(float left, float right) {
+	std::random_device rd; //randomszám generátor eszköz
+	std::mt19937 gen(rd()); //randomszám generátor algoritmus
+	std::uniform_real_distribution<> rnd(left, right); //értékkészlet megadása
+	return rnd(gen);
 }
 
 void CMyApp::RenderMeshPiano(glm::vec3 position) {

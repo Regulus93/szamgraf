@@ -120,6 +120,7 @@ protected:
 	
 	void RenderCube(glm::mat4 transformations);
 	void RenderSphere(glm::mat4 transformations);
+	float GetRandomNumber(float left, float right);
 
 	void InitGround();
 	glm::vec3 GetGroundPos(float u, float v);
@@ -145,6 +146,8 @@ protected:
 		, {glm::vec3(0.f, -5.f, 10.f)}
 	
 	};
+
+	float randomNumber = 0.f;
 
 };
 
